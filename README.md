@@ -11,7 +11,7 @@ Node.js 24 (tested with v24.19.0), npm, Docker Desktop.
 
 ## Local setup
 ```bash
-docker compose up -d                       # PostgreSQL 16 on localhost:5433
+docker compose up -d                       # PostgreSQL 16 on localhost:5434
 cp server/.env.example server/.env         # then set JWT_SECRET and seed passwords
 cd server && npm install                   # also runs prisma generate
 npx prisma migrate deploy                  # once feature migrations exist
