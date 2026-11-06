@@ -10,12 +10,12 @@
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
 |---|---|---|---|---|---|---|---|
-| F-01 | Authentication and session | 1 | SPECIFIED | Sxr1n | sprint-1/F01-auth.md | — | — |
-| F-02 | Administrator user access | 1 | SPECIFIED | Sxr1n | sprint-1/F02-admin-user-access.md | — | — |
-| F-03 | Opening balance | 1 | SPECIFIED | <Student B> | sprint-1/F03-opening-balance.md | — | — |
-| F-04 | Receive money | 1 | SPECIFIED | <Student B> | sprint-1/F04-receive-money.md | — | — |
-| F-05 | Make a payment or record a charge | 1 | SPECIFIED | <Student B> | sprint-1/F05-payment-charge.md | — | — |
-| F-06 | Overview, summary and history | 1 | SPECIFIED | Sxr1n | sprint-1/F06-overview-history.md | — | — |
+| F-01 | Authentication and session | 1 | SPECIFIED | Sxr1n | sprint-1/F01-auth.md | #1 | — |
+| F-02 | Administrator user access | 1 | SPECIFIED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | — |
+| F-03 | Opening balance | 1 | SPECIFIED | <Student B> | sprint-1/F03-opening-balance.md | #3 | — |
+| F-04 | Receive money | 1 | SPECIFIED | <Student B> | sprint-1/F04-receive-money.md | #4 | — |
+| F-05 | Make a payment or record a charge | 1 | SPECIFIED | <Student B> | sprint-1/F05-payment-charge.md | #5 | — |
+| F-06 | Overview, summary and history | 1 | SPECIFIED | Sxr1n | sprint-1/F06-overview-history.md | #6 | — |
 | F-07 | Account management | 2 | PLANNED | — | — | — | — |
 | F-08 | Opening balance management | 2 | PLANNED | — | — | — | — |
 | F-09 | Transfers | 2 | PLANNED | — | — | — | — |
@@ -34,9 +34,9 @@
 ## Session log (ใหม่สุดอยู่บนสุด)
 ### 2026-11-07 — D1-S4 — Claude + Sxr1n
 - Done: contracts `docs/sprints/sprint-1/F01–F06-*.md` (40 AC, 40 STS rows, status SPECIFIED), `docs/dod.md` v0.1; traceability v0.2 (sync AC-F03-02 + test levels, ปิด gap line type), features v0.2 (F-03 มี account list)
-- Evidence: ยังไม่ commit (branch `spec/sprint-1-contracts` แตกจาก `docs/d1-baseline`)
+- Evidence: `7dbc7ec` (spec), `1dbaac0` (docs) บน `spec/sprint-1-contracts` (pushed); Issues #1–#6
 - Decisions: Sprint 1 รับ line เฉพาะ RECEIPT←INCOME และ PAYMENT→EXPENSE/LOAN_TAKEN; ใช้ 2 PR (docs/d1-baseline → staging แล้วตามด้วย contracts → staging); owner: Sxr1n = F-01/F-02/F-06, <Student B> = F-03/F-04/F-05; note ≤ 200 ตัวอักษร (ขีดจำกัดระดับ contract)
-- Open issues: **เพื่อนยังไม่ได้เป็น collaborator ของ repo** (review PR ไม่ได้); ยังไม่รู้ GitHub username ของเพื่อน; Issue 6 ตัวจะสร้างหลัง push; ถาม TA เรื่อง Q-01
+- Open issues: **เพื่อนยังไม่ได้เป็น collaborator ของ repo** (review PR ไม่ได้); ยังไม่รู้ GitHub username ของเพื่อน; Issue ของ F-03/04/05 ยังไม่ได้ assign (รอ username ของเพื่อน); ถาม TA เรื่อง Q-01
 - Next session: เปิด PR 2 ตัวให้เพื่อน review → D1-S5 ∥ D1-S6
 
 ### 2026-11-07 — D1-S3 — Claude + Sxr1n
