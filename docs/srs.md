@@ -5,10 +5,10 @@
 | Course | CPE334, Semester 1/2026 — Group Project, Theme 7 |
 | Team | `<Student A name – ID>`, `<Student B name – ID>` |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Document version | 0.1 (draft for team review) |
+| Document version | 0.2 (decisions accepted by team) |
 | Source brief | `docs/course/group_work_specs_v1.pdf` §6 Theme 7 |
 
-> **Status of this draft:** decisions marked **Proposed** in §8 must be confirmed by both students (and, where noted, the TA) before the Sprint 1 contracts are frozen. Record the confirmation in §8 and in the revision history.
+> **Status:** decisions D-01–D-09 in §8.2 were accepted by the team on 2026-11-07 (v0.2). D-03 still awaits TA confirmation (Q-01); a different TA answer will be handled as a CHG.
 
 ---
 
@@ -136,15 +136,15 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | BR-04 | Every account in a transaction must belong to the acting user and be active (not archived). A line must not use the primary account, and the same account must not appear in two lines of one transaction. | FR-11–17, FR-20 |
 | BR-05 | Recording, editing or voiding a transaction must update every affected account balance according to §4.3 within one atomic database transaction. | FR-11–21 |
 | BR-06 | Only INCOME lines count as income and only EXPENSE lines count as expense. Transfers, lending, borrowing, loan repayments and opening balances are never counted as income or expense. | FR-24–27 |
-| BR-07 | A CASH account's balance must not become negative: a PAYMENT from CASH, or a RECEIPT line transferring from CASH, is rejected if the resulting current balance would be < 0. *(Proposed — D-03)* | FR-12–17, FR-20 |
-| BR-08 | A repayment cannot exceed what is outstanding: a LOAN_TAKEN repayment line cannot exceed that account's current debt, and a LOAN_GIVEN repayment line cannot exceed that account's current receivable. *(Proposed — D-04)* | FR-13, FR-15, FR-20 |
-| BR-09 | A transaction date must not be later than today in Asia/Bangkok and not earlier than 2000-01-01. *(Proposed — D-05)* | FR-11–20 |
+| BR-07 | A CASH account's balance must not become negative: a PAYMENT from CASH, or a RECEIPT line transferring from CASH, is rejected if the resulting current balance would be < 0. *(D-03)* | FR-12–17, FR-20 |
+| BR-08 | A repayment cannot exceed what is outstanding: a LOAN_TAKEN repayment line cannot exceed that account's current debt, and a LOAN_GIVEN repayment line cannot exceed that account's current receivable. *(D-04)* | FR-13, FR-15, FR-20 |
+| BR-09 | A transaction date must not be later than today in Asia/Bangkok and not earlier than 2000-01-01. *(D-05)* | FR-11–20 |
 | BR-10 | An opening balance is allowed only for CASH, LOAN_TAKEN and LOAN_GIVEN accounts, must be ≥ 0, is at most one per account, and is never counted as income or expense. | FR-07, FR-10 |
 | BR-11 | A user may read or change only their own accounts, transactions, favourites and summaries. A request for another user's record returns **404 Not Found** without revealing whether it exists. | All user features |
 | BR-12 | An administrator may not call any financial endpoint (**403 Forbidden**); a user may not call any administration endpoint (**403**). Role and identity come only from the server session, never from client input. | All |
 | BR-13 | A disabled user cannot log in, and their existing sessions are rejected from the next request. An administrator cannot disable their own account. | FR-01, FR-05 |
 | BR-14 | Account names are 1–50 characters and unique per user and type (case-insensitive). | FR-08, FR-09 |
-| BR-15 | An account that has transactions cannot be deleted, only archived. A CASH, LOAN_TAKEN or LOAN_GIVEN account can be archived only when its balance is 0. *(Proposed — D-07)* | FR-09 |
+| BR-15 | An account that has transactions cannot be deleted, only archived. A CASH, LOAN_TAKEN or LOAN_GIVEN account can be archived only when its balance is 0. *(D-07)* | FR-09 |
 | BR-16 | A voided transaction cannot be edited; it remains in history marked VOID and is excluded from balances and summaries. Edits re-validate BR-01–BR-09 against the corrected values. | FR-20, FR-21 |
 | BR-17 | Duplicate copies form, primary account, lines and note, sets the date to today, does not copy the favourite flag, and stores nothing until the user submits (which then applies all rules). | FR-23 |
 
@@ -180,15 +180,15 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 ### 8.2 Decisions
 | ID | Decision | Rationale | Status |
 |---|---|---|---|
-| D-01 | Store money as integer satang (BIGINT); format as THB only at the UI. | Avoids floating-point error (NFR-05). | Proposed |
-| D-02 | Identity and role come only from a server-side session; cross-user access returns 404, wrong role 403. | Specs §5.2; avoids leaking record existence. | Proposed |
-| D-03 | CASH accounts may not go negative (BR-07); overdraft is not modelled. | Target users rarely have overdraft; gives a clear, testable rule. Simplification: checks the current balance, not the balance on the transaction date. | Proposed |
-| D-04 | Repayments cannot exceed the outstanding amount (BR-08); credit cards have no credit limit in the baseline. | Prevents meaningless negative debts; a credit limit is not in the brief. | Proposed |
-| D-05 | Future-dated transactions are rejected (BR-09). | The product logs what happened; scheduled/recurring items are excluded. | Proposed |
-| D-06 | Corrections use edit and void (FR-20, FR-21); a voided transaction remains visible. | Keeps history auditable while allowing fixes. | Proposed |
-| D-07 | Accounts with transactions are archived, never deleted (BR-15). | Preserves history and report totals. | Proposed |
-| D-08 | Disabling a user revokes their sessions on the next request (BR-13). | Administrator control must take effect immediately. | Proposed |
-| D-09 | Sprint 1 uses seeded accounts; account creation UI arrives in Sprint 2 (FR-08). | Matches the specs' Sprint 1 example and keeps the slice feasible. | Proposed |
+| D-01 | Store money as integer satang (BIGINT); format as THB only at the UI. | Avoids floating-point error (NFR-05). | Accepted (team, 2026-11-07) |
+| D-02 | Identity and role come only from a server-side session; cross-user access returns 404, wrong role 403. | Specs §5.2; avoids leaking record existence. | Accepted (team, 2026-11-07) |
+| D-03 | CASH accounts may not go negative (BR-07); overdraft is not modelled. | Target users rarely have overdraft; gives a clear, testable rule. Simplification: checks the current balance, not the balance on the transaction date. | Accepted (team, 2026-11-07); TA confirmation pending (Q-01) |
+| D-04 | Repayments cannot exceed the outstanding amount (BR-08); credit cards have no credit limit in the baseline. | Prevents meaningless negative debts; a credit limit is not in the brief. | Accepted (team, 2026-11-07) |
+| D-05 | Future-dated transactions are rejected (BR-09). | The product logs what happened; scheduled/recurring items are excluded. | Accepted (team, 2026-11-07) |
+| D-06 | Corrections use edit and void (FR-20, FR-21); a voided transaction remains visible. | Keeps history auditable while allowing fixes. | Accepted (team, 2026-11-07) |
+| D-07 | Accounts with transactions are archived, never deleted (BR-15). | Preserves history and report totals. | Accepted (team, 2026-11-07) |
+| D-08 | Disabling a user revokes their sessions on the next request (BR-13). | Administrator control must take effect immediately. | Accepted (team, 2026-11-07) |
+| D-09 | Sprint 1 uses seeded accounts; account creation UI arrives in Sprint 2 (FR-08). | Matches the specs' Sprint 1 example and keeps the slice feasible. | Accepted (team, 2026-11-07) |
 
 ### 8.3 Open questions
 | ID | Question | Owner | Resolution |
@@ -210,3 +210,4 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial draft from Theme 7 brief (AI-assisted draft, pending team review) | `<Student>` + Claude |
+| 0.2 | 2026-11-07 | D-01–D-09 changed from Proposed to Accepted (team); removed "Proposed" markers from BR-07/08/09/15. No FR/BR/NFR text changed. Reason: freeze rules before Sprint 1 contracts (D1-S2). | Team + Claude |
