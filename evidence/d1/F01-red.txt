@@ -1,0 +1,149 @@
+# F-01 RED run — tests written before implementation
+# Command: cd server && npx vitest run tests/f01-auth.api.test.ts tests/f01-session.unit.test.ts --reporter=verbose
+# Base commit: 519d9f3 (+ uncommitted test files; committed next as test(F01): red)
+# Date: 2026-11-06T23:58:07Z
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ × tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 181ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie 70ms
+   → expected 404 to be 401 // Object.is equality
+ × tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password 63ms
+   → expected 404 to be 401 // Object.is equality
+ × tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected 61ms
+   → login failed for alice: 404
+ × tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data 6ms
+   → GET /api/auth/me: expected 404 to be 401 // Object.is equality
+ × tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 7ms
+   → Cannot find module '/prisma/seed' imported from C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/tests/f01-auth.api.test.ts
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f01-session.unit.test.ts [ tests/f01-session.unit.test.ts ]
+Error: Cannot find module '../src/lib/auth' imported from C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/tests/f01-session.unit.test.ts
+ ❯ tests/f01-session.unit.test.ts:3:1
+      1| import jwt from 'jsonwebtoken'
+      2| import { describe, expect, it } from 'vitest'
+      3| import { SESSION_TTL_SECONDS, signSessionToken, verifySessionToken } f…
+       | ^
+      4|
+      5| describe('F-01 session token', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f01-auth.api.test.ts:21:24
+     19|     const res = await request(app).post('/api/auth/login').send({ user…
+     20|
+     21|     expect(res.status).toBe(200)
+       |                        ^
+     22|     expect(res.body).toEqual({ id: alice.id, username: 'alice', displa…
+     23|     const cookie = (res.headers['set-cookie'] as unknown as string[]).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie
+AssertionError: expected 404 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 404
+
+ ❯ tests/f01-auth.api.test.ts:39:26
+     37|
+     38|     for (const res of [wrongPassword, unknownUser]) {
+     39|       expect(res.status).toBe(401)
+       |                          ^
+     40|       expect(res.body).toEqual({ error: { code: 'INVALID_CREDENTIALS',…
+     41|       expect(res.headers['set-cookie']).toBeUndefined()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password
+AssertionError: expected 404 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 404
+
+ ❯ tests/f01-auth.api.test.ts:50:24
+     48|     const res = await request(app).post('/api/auth/login').send({ user…
+     49|
+     50|     expect(res.status).toBe(401)
+       |                        ^
+     51|     expect(res.body).toEqual({ error: { code: 'INVALID_CREDENTIALS', m…
+     52|     expect(res.headers['set-cookie']).toBeUndefined()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected
+Error: login failed for alice: 404
+ ❯ loginCookie tests/helpers/db.ts:35:33
+     33| export async function loginCookie(username: string, password = TEST_PA…
+     34|   const res = await request(app).post('/api/auth/login').send({ userna…
+     35|   if (res.status !== 200) throw new Error(`login failed for ${username…
+       |                                 ^
+     36|   const setCookie = res.headers['set-cookie'] as unknown as string[]
+     37|   return setCookie.map((c) => c.split(';')[0]).join('; ')
+ ❯ tests/f01-auth.api.test.ts:57:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data
+AssertionError: GET /api/auth/me: expected 404 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 404
+
+ ❯ tests/f01-auth.api.test.ts:85:61
+     83|     for (const [method, path] of endpoints) {
+     84|       const res = await request(app)[method](path).send({})
+     85|       expect(res.status, `${method.toUpperCase()} ${path}`).toBe(401)
+       |                                                             ^
+     86|       expect(Object.keys(res.body), `${method.toUpperCase()} ${path}`)…
+     87|       expect(res.body.error.code).toBe('UNAUTHENTICATED')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned
+Error: Cannot find module '/prisma/seed' imported from C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/tests/f01-auth.api.test.ts
+ ❯ tests/f01-auth.api.test.ts:94:22
+     92|     process.env.SEED_USER_PASSWORD = 'Seed-user-pass-1'
+     93|     process.env.SEED_ADMIN_PASSWORD = 'Seed-admin-pass-1'
+     94|     const { seed } = await import('../prisma/seed')
+       |                      ^
+     95|     await seed(prisma)
+     96|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed (6)
+   Start at  06:58:08
+   Duration  2.51s (transform 73ms, setup 28ms, import 269ms, tests 390ms, environment 0ms)
+

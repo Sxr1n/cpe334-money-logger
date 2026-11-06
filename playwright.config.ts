@@ -1,5 +1,12 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// E2E logs in with the synthetic seed passwords from server/.env (never committed).
+try {
+  process.loadEnvFile('server/.env')
+} catch {
+  // CI provides the variables directly.
+}
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: false,
