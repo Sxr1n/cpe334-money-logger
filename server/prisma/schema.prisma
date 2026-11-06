@@ -1,0 +1,10 @@
+// Models are added by feature migrations (F-01 users, F-03 accounts, F-04 transactions).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}

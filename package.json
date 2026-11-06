@@ -1,0 +1,11 @@
+{
+  "name": "cpe334-money-logger",
+  "private": true,
+  "description": "E2E tests (Playwright). client/ and server/ are separate npm projects.",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
