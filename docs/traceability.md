@@ -3,7 +3,7 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1 |
-| Document version | 0.1 |
+| Document version | 0.2 |
 | Tested release | — (no release yet) |
 
 Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and results live in the Sprint 1 contracts (`docs/sprints/sprint-1/`). Sprint 2–3 requirements are allocated to a feature and sprint; their AC/TEST are written with the sprint's contracts. Test results use `PASS / FAIL / SKIPPED / NOT RUN / INCOMPLETE` with the commit SHA.
@@ -80,7 +80,7 @@ A rule shared by several features is verified in Sprint 1 where it first applies
 | NFR-11 | SR-03 | 1 / every release | Fresh-clone check (manual, recorded per release) | TEST-NFR11-01 |
 
 ## 2. Sprint 1 planned AC and tests
-Short descriptions only; the contracts in D1-S4 hold the full wording and may refine it (with revision history). Levels: unit, API-DB (Supertest against a real PostgreSQL test database), E2E (Playwright). "TDD" marks rule tests whose failing run must be kept in `evidence/d1/`.
+Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full wording and may refine it (with revision history). Levels: unit, API-DB (Supertest against a real PostgreSQL test database), E2E (Playwright). "TDD" marks rule tests whose failing run must be kept in `evidence/d1/`.
 
 | AC | Short description | TEST | Level | TDD | Test file::name | Result | Commit |
 |---|---|---|---|---|---|---|---|
@@ -99,7 +99,7 @@ Short descriptions only; the contracts in D1-S4 hold the full wording and may re
 | AC-F02-05 | User calls any admin endpoint → 403 | TEST-F02-05 | API-DB | | — | NOT RUN | — |
 | AC-F02-06 | Admin endpoints without a session → 401 | TEST-F02-06 | API-DB | | — | NOT RUN | — |
 | AC-F03-01 | Set opening balance and date on seeded Bank → balance shows the amount | TEST-F03-01 | API-DB | | — | NOT RUN | — |
-| AC-F03-02 | Opening balance is not counted as income in the summary | TEST-F03-02 | API-DB | TDD | — | NOT RUN | — |
+| AC-F03-02 | Setting an opening balance creates no transaction/line row (summary-level check: AC-F06-03) | TEST-F03-02 | API-DB | TDD | — | NOT RUN | — |
 | AC-F03-03 | Negative, > 2 decimals or > 999,999,999.99 → 422, nothing stored | TEST-F03-03 | unit + API-DB | | — | NOT RUN | — |
 | AC-F03-04 | Opening balance on INCOME/EXPENSE account, or a second opening balance → rejected | TEST-F03-04 | API-DB | | — | NOT RUN | — |
 | AC-F03-05 | Opening balance on another user's account → 404, nothing stored | TEST-F03-05 | API-DB | | — | NOT RUN | — |
@@ -110,11 +110,11 @@ Short descriptions only; the contracts in D1-S4 hold the full wording and may re
 | AC-F04-05 | Primary or line account belongs to another user → 404, nothing stored | TEST-F04-05 | API-DB | | — | NOT RUN | — |
 | AC-F04-06 | Injected failure after first line insert → no transaction, lines or balance change | TEST-F04-06 | API-DB | | — | NOT RUN | — |
 | AC-F04-07 | Receive-money form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F04-07 | E2E | | — | NOT RUN | — |
-| AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | API-DB | | — | NOT RUN | — |
-| AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | API-DB | TDD | — | NOT RUN | — |
+| AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | unit + API-DB | | — | NOT RUN | — |
+| AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | unit + API-DB | TDD | — | NOT RUN | — |
 | AC-F05-03 | PAYMENT with line sum ≠ total → 422, nothing stored | TEST-F05-03 | API-DB | | — | NOT RUN | — |
 | AC-F05-04 | PAYMENT primary of type INCOME/EXPENSE/LOAN_GIVEN, line equal to primary, or same account in two lines → 422 | TEST-F05-04 | unit + API-DB | | — | NOT RUN | — |
-| AC-F05-05 | PAYMENT from Bank larger than Bank balance → 422 (BR-07) | TEST-F05-05 | API-DB | TDD | — | NOT RUN | — |
+| AC-F05-05 | PAYMENT from Bank larger than Bank balance → 422 (BR-07) | TEST-F05-05 | unit + API-DB | TDD | — | NOT RUN | — |
 | AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | — | NOT RUN | — |
 | AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | — | NOT RUN | — |
 | AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | — | NOT RUN | — |
@@ -132,7 +132,7 @@ Short descriptions only; the contracts in D1-S4 hold the full wording and may re
 | D-03 (CASH cannot go negative, BR-07) accepted by team but not yet confirmed by TA (Q-01). | BR-07, AC-F05-05 | Ask TA before D1-S4 freezes F-05; a different answer becomes a CHG. |
 | Q-03: may an opening balance be edited after transactions exist? | FR-10, F-08 | Decide before the Sprint 2 contract of F-08. |
 | Q-02: administrator aggregate statistics — no requirement exists; current answer is "none". | — | Close as "no" unless the team adds an FR. |
-| Sprint 1 engine scope: whether the API accepts line types belonging to Sprint 2 features (transfer, loan lines) or rejects them until F-09/F-10. | BR-03, F-04, F-05, F-09, F-10 | Decide in D1-S4 (F-04/F-05 contracts). |
+| Sprint 1 accepts only RECEIPT←INCOME and PAYMENT→EXPENSE/LOAN_TAKEN lines; other §4.2 line types return 422 until F-09/F-10 (decided D1-S4). | BR-03, FR-14–17 | Sprint 2 contracts of F-09/F-10 extend the allowed-lines table. |
 | NFR-07 and NFR-09 cannot be verified before Lab 5 deployment/CI. | SR-03 | Verified in Sprint 2 (Lab 5 evidence). |
 | NFR-08 is verified only in Sprint 3. | SR-04 | Scripted measurement on the deployed RC. |
 
@@ -146,3 +146,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial traceability for SRS v0.2 and features v0.1 | D1-S2 baseline |
+| 0.2 | 2026-11-07 | Aligned with Sprint 1 contracts: AC-F03-02 wording; Sprint 1 line-type gap resolved | D1-S4 |
