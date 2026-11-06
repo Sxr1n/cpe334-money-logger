@@ -11,7 +11,7 @@
 ## 1. บริบท
 - วิชา CPE334 ภาคเรียน 1/2026 งานกลุ่ม 2 คน: `<ชื่อ–รหัส นศ. A>`, `<ชื่อ–รหัส นศ. B>`
 - ธีม/บริบท: **Personal Money and Expense Logging System** (ระบบบันทึกรายรับ-รายจ่ายส่วนตัว)
-- Repo: `<GitHub URL>`
+- Repo: https://github.com/Sxr1n/cpe334-money-logger
 - Stack: `<frontend>` / `<backend>` / `<database + migration tool>` / tests: `<unit>`, `<API/integration>`, `<E2E>`
 - Source of truth ของ scope: `group_work_specs_v1.pdf` (§5 ข้อกำหนดร่วม, §6 ข้อ 7 ธีมของเรา, §8 workflow, §10 labs) + CHG ที่อนุมัติแล้วใน `docs/changes.md`
 - เกณฑ์ของแต่ละ checkpoint: `project_deliverable_1_v1.pdf`, `project_deliverable_2_v1.pdf`, `project_final_delivery_v1.pdf`
