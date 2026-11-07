@@ -1,5 +1,5 @@
 # F-03 Opening balance — Sprint 1
-Linked: FR-07, BR-02, BR-06, BR-10, BR-11, NFR-02, NFR-05   Status: SPECIFIED   Owner: `<Student B>`
+Linked: FR-07, BR-02, BR-06, BR-10, BR-11, NFR-02, NFR-05   Status: SPECIFIED   Owner: Leviathan-c137
 Depends on: F-01. Design references: `docs/system-sds.md` §2.4 (balances, SD-02), §4
 
 This feature also delivers the basic account list (`GET /api/accounts`) because the opening-balance form and the transaction forms of F-04/F-05 need it to pick accounts. F-06 extends the same endpoint with INCOME/EXPENSE period totals (FR-06).
@@ -95,3 +95,4 @@ Seed per user: Bank (CASH), Credit Card (LOAN_TAKEN), Salary (INCOME), Dining, G
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract. AC-F03-02 verified at DB level (no transaction rows); the summary-level check is AC-F06-03. | D1-S4 |
+| 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |

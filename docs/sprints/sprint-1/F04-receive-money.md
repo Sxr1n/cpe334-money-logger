@@ -1,5 +1,5 @@
 # F-04 Receive money — Sprint 1
-Linked: FR-11, BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: SPECIFIED   Owner: `<Student B>`
+Linked: FR-11, BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
 Depends on: F-01, F-03 (account list). Design references: `docs/system-sds.md` §1.3, §2.4 (posting algorithm), §4
 
 This feature builds the **shared transaction engine** (`POST /api/transactions`, ledger core, posting service). F-05 adds the PAYMENT form to the same engine.
@@ -123,3 +123,4 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract. Sprint 1 accepts only INCOME lines for RECEIPT (team decision D1-S4). | D1-S4 |
+| 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
