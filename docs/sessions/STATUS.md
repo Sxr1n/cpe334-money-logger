@@ -27,6 +27,22 @@
 | F-15 | Category spending | 3 | PLANNED | — | — | — | — |
 | F-16 | Period reports | 3 | PLANNED | — | — | — | — |
 
+## Work split (ตกลง 2026-11-07)
+**D1 (15 Nov)**
+| วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
+|---|---|---|
+| 8 Nov | push branch, assign Issue, สร้าง project board, ส่ง Q-01 ถาม TA | Review + merge PR #7 → #8 → #9 → #10 → #11 → PR เลื่อนวันส่ง (finding อย่างน้อย 1 ข้อต่อ PR) |
+| 9–10 Nov | Lab 5: Dockerfile + compose (L5-S1) | F-03 Opening balance (TDD) |
+| 10–11 Nov | Review F-03 · CI (L5-S2) | F-04 Receive money + transaction engine |
+| 11–12 Nov | Review F-04 · เตรียม F-06 | F-05 Payment/charge |
+| 12–13 Nov | F-06 Overview/history + E2E journey (TEST-F06-07) | Review F-05 และ F-06 · ภาพหน้าจอ rule rejection |
+| 14 Nov | ทำคู่: release `v0.1.0-sprint1` | ทำคู่ |
+| 14–15 Nov | PDF Part A–C | PDF Part D–F |
+
+**Lab 5 (22 Nov):** L5-S1, L5-S2 = Sxr1n · L5-S3 (CD → GCP) = Leviathan-c137 · L5-S4 = ทำคู่
+
+กติกา: ต่างคนต่าง review PR ของอีกฝ่าย; commit ด้วยบัญชีตัวเอง; ถ้าโค้ดต่างจาก contract ให้แก้ contract + revision history ใน PR เดียวกัน; F-04 ต้อง merge ภายใน 11 Nov ไม่งั้น F-06 และ release เลื่อน
+
 ## Open defects / changes (สรุป รายละเอียดอยู่ใน docs/changes.md)
 | ID | Summary | Severity | Status |
 |---|---|---|---|
