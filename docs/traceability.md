@@ -4,7 +4,7 @@
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1 |
 | Document version | 0.2 |
-| Tested release | — (no release yet) |
+| Tested release | — (no release yet; Sprint 1 results are per feature commit until v0.1.0-sprint1) |
 
 Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and results live in the Sprint 1 contracts (`docs/sprints/sprint-1/`). Sprint 2–3 requirements are allocated to a feature and sprint; their AC/TEST are written with the sprint's contracts. Test results use `PASS / FAIL / SKIPPED / NOT RUN / INCOMPLETE` with the commit SHA.
 
@@ -84,14 +84,14 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 
 | AC | Short description | TEST | Level | TDD | Test file::name | Result | Commit |
 |---|---|---|---|---|---|---|---|
-| AC-F01-01 | Valid login sets session cookie; `/me` returns id, username, display name, role | TEST-F01-01 | API-DB | | — | NOT RUN | — |
-| AC-F01-02 | Wrong password or unknown username → 401 with the same generic message | TEST-F01-02 | API-DB | | — | NOT RUN | — |
-| AC-F01-03 | Disabled user cannot log in (same generic 401) | TEST-F01-03 | API-DB | | — | NOT RUN | — |
-| AC-F01-04 | After logout the old session token → 401 | TEST-F01-04 | API-DB | | — | NOT RUN | — |
-| AC-F01-05 | Every protected endpoint without a session → 401, no private data in body | TEST-F01-05 | API-DB | | — | NOT RUN | — |
-| AC-F01-06 | Stored password is a bcrypt hash (cost ≥ 10); no password/hash in any response | TEST-F01-06 | API-DB | | — | NOT RUN | — |
-| AC-F01-07 | Session older than 8 hours → 401 | TEST-F01-07 | unit | | — | NOT RUN | — |
-| AC-F01-08 | User logs in and out through the UI | TEST-F01-08 | E2E | | — | NOT RUN | — |
+| AC-F01-01 | Valid login sets session cookie; `/me` returns id, username, display name, role | TEST-F01-01 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
+| AC-F01-02 | Wrong password or unknown username → 401 with the same generic message | TEST-F01-02 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
+| AC-F01-03 | Disabled user cannot log in (same generic 401) | TEST-F01-03 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
+| AC-F01-04 | After logout the old session token → 401 | TEST-F01-04 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
+| AC-F01-05 | Every protected endpoint without a session → 401, no private data in body | TEST-F01-05 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
+| AC-F01-06 | Stored password is a bcrypt hash (cost ≥ 10); no password/hash in any response | TEST-F01-06 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
+| AC-F01-07 | Session older than 8 hours → 401 | TEST-F01-07 | unit | | `server/tests/f01-session.unit.test.ts` | PASS | 56ac71d |
+| AC-F01-08 | User logs in and out through the UI | TEST-F01-08 | E2E | | `e2e/f01-auth.spec.ts` | PASS | 56ac71d |
 | AC-F02-01 | Admin lists users with username, display name, role, status, created date and no financial fields | TEST-F02-01 | API-DB | | — | NOT RUN | — |
 | AC-F02-02 | Admin disables a user → that user's existing session → 401 on next request; re-enable restores login | TEST-F02-02 | API-DB | | — | NOT RUN | — |
 | AC-F02-03 | Admin cannot disable own account → rejected, status unchanged | TEST-F02-03 | API-DB | | — | NOT RUN | — |

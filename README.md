@@ -14,18 +14,20 @@ Node.js 24 (tested with v24.19.0), npm, Docker Desktop.
 docker compose up -d                       # PostgreSQL 16 on localhost:5434
 cp server/.env.example server/.env         # then set JWT_SECRET and seed passwords
 cd server && npm install                   # also runs prisma generate
-npx prisma migrate deploy                  # once feature migrations exist
-npx prisma db seed                         # once the seed exists
+npx prisma migrate deploy                  # apply migrations to the dev database
+npx prisma generate                        # Prisma 7 does not regenerate the client after migrate
+npx prisma db seed                         # alice, bob (USER) and admin (ADMIN); passwords from server/.env
 npm run dev                                # API on http://localhost:4000
 cd ../client && npm install && npm run dev # UI on http://localhost:5173 (proxies /api)
 ```
 
 ## Tests
 ```bash
-cd server && npm test                      # unit + API-DB tests (Vitest + Supertest)
+docker exec money-logger-postgres psql -U postgres -c "CREATE DATABASE money_logger_test"   # once
+cd server && npm test                      # unit + API-DB tests on TEST_DATABASE_URL (migrated automatically)
 cd client && npm run build                 # type-check + production build
 npm install && npx playwright install chromium   # once, at repo root
-npx playwright test                        # E2E (starts server and client automatically)
+npx playwright test                        # E2E on the seeded dev database (starts server and client)
 ```
 
 ## Configuration
