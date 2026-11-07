@@ -1,0 +1,111 @@
+# Quality gate (Lab 5 L5-S2): every job must pass before a PR can merge into staging/* or main.
+# Values below are CI-only placeholders for a throwaway database, not real secrets.
+name: CI
+
+on:
+  pull_request:
+    branches: [main, 'staging/**']
+  push:
+    branches: [main, 'staging/**']
+
+env:
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/money_logger
+  TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/money_logger_test
+  JWT_SECRET: ci-only-jwt-secret-not-used-anywhere-else
+  SEED_USER_PASSWORD: ci-demo-user-pass
+  SEED_ADMIN_PASSWORD: ci-demo-admin-pass
+
+jobs:
+  server:
+    name: Server typecheck + unit/API-DB tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: money_logger_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+
+  client:
+    name: Client build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: money_logger
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm ci
+        working-directory: server
+      - run: npm ci
+        working-directory: client
+      - name: Migrate and seed the E2E database
+        working-directory: server
+        run: npx prisma migrate deploy && npx prisma db seed
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
+  docker:
+    name: Docker image build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --build-arg APP_VERSION=${{ github.sha }} -t money-logger-app:ci .
+
+  secret-scan:
+    name: Secret scan (NFR-09)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
