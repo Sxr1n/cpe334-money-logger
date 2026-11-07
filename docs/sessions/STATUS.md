@@ -1,7 +1,7 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: Phase 1 — D1 (15 Nov 23:59; all deadlines +7 days per instructor's LEB2 announcement, recorded 2026-11-07)
+- Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
 - Next session: D1-S6 (F-03–F-05 ledger, Leviathan-c137) → F-06 (Sxr1n); meanwhile Lab 5 groundwork (Sxr1n)
 - Latest release on main: —
 - Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)

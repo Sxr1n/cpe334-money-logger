@@ -21,13 +21,13 @@
 | Checkpoint | ส่ง (23:59) | คะแนน | แก่นของงาน |
 |---|---|---|---|
 | D1 | 15 Nov | 80 | SRS, features/traceability, System SDS, แผน 3 sprint, contracts ของ Sprint 1 และ Sprint 1 ที่ทำงานได้จริงบน `main` |
-| Lab 5 | 22 Nov | 100 lab | Docker, CI ที่เป็น quality gate (ต้องสาธิต check ที่ fail แล้วบล็อกได้), CD → GCP, ข้อมูลยังอยู่หลัง redeploy |
-| Lab 6 | 29 Nov | 100 lab | UAT ข้ามทีม (อย่างน้อย 4 case), triage, แก้ defect และให้ partner re-test |
-| Lab 7 | 6 Dec | 100 lab | change ที่ TA อนุมัติ (TDD + regression), metrics 5 ตัว, release readiness และ retrospective |
-| D2 | 6 Dec | 70 | Sprint 2 ครบ, contracts ของ Sprint 3 ทุกตัว, มีงาน Sprint 3 ที่ทำงานได้จริงอย่างน้อย 1 workflow และ RC ที่ deploy บน GCP |
-| Final | 20 Dec | 100 | product ครบ, regression + UAT re-test, traceability ฉบับสุดท้าย, DoD review และวิดีโอ |
+| Lab 5 | 15 Nov | 100 lab | Docker, CI ที่เป็น quality gate (ต้องสาธิต check ที่ fail แล้วบล็อกได้), CD → GCP, ข้อมูลยังอยู่หลัง redeploy |
+| Lab 6 | 22 Nov | 100 lab | UAT ข้ามทีม (อย่างน้อย 4 case), triage, แก้ defect และให้ partner re-test |
+| Lab 7 | 29 Nov | 100 lab | change ที่ TA อนุมัติ (TDD + regression), metrics 5 ตัว, release readiness และ retrospective |
+| D2 | 29 Nov | 70 | Sprint 2 ครบ, contracts ของ Sprint 3 ทุกตัว, มีงาน Sprint 3 ที่ทำงานได้จริงอย่างน้อย 1 workflow และ RC ที่ deploy บน GCP |
+| Final | 13 Dec | 100 | product ครบ, regression + UAT re-test, traceability ฉบับสุดท้าย, DoD review และวิดีโอ |
 
-วันส่งทุกตัวเลื่อน +7 วันตามประกาศของอาจารย์ใน LEB2 (บันทึก 2026-11-07) ช่วง 1–11 Dec เป็นช่วงสอบและ Lab 7/D2 (6 Dec) ตกอยู่ในช่วงสอบ ดังนั้น product ต้อง**เกือบเสร็จภายใน 30 Nov** และห้ามทิ้ง workflow หลักไว้ทำ 2 วันสุดท้าย
+วันส่งตาม LEB2 (ตรวจ 2026-11-07): D1 เลื่อนจาก 8 เป็น 15 Nov และส่งวันเดียวกับ Lab 5; D2 และ Final ไม่เลื่อน; Lab 6/7 ยังไม่ได้ตรวจใน LEB2 จึงใช้วันเดิม ช่วง 1–11 Dec เป็นช่วงสอบ ดังนั้น product ต้อง**เกือบเสร็จภายใน 29 Nov** และห้ามทิ้ง workflow หลักไว้ทำ 2 วันสุดท้าย
 
 ## 3. Session protocol
 ทำงานเป็น session สั้นๆ ที่มีขอบเขตชัด ตามรายการใน `docs/sessions/SESSION_PLAN.md` และ**ไม่มีความจำข้าม session** ทุกอย่างที่ต้องส่งต่อจึงต้องอยู่ใน repo

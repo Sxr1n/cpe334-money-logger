@@ -3,17 +3,17 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1, `docs/traceability.md` v0.1 |
-| Document version | 0.2 |
+| Document version | 0.3 |
 
 ## 1. Overview
 
 | Sprint | Window | Checkpoint | Goal | Features | Release tag |
 |---|---|---|---|---|---|
 | 1 | to 15 Nov | Deliverable 1 (15 Nov) | Small working ledger slice with authentication, two roles, backend permissions and persistence | F-01–F-06 | `v0.1.0-sprint1` |
-| 2 | 16 Nov–6 Dec (target 30 Nov) | Deliverable 2 (6 Dec) | Complete the core ledger: all account types, every line type of both forms, corrections and search | F-07–F-12 | `v0.2.0-sprint2` |
-| 3 | 23 Nov–20 Dec | D2 progress (6 Dec) → Final (20 Dec) | Remaining user features, reports, performance and product hardening | F-13–F-16 | `v0.3.0-rc1` (29 Nov), `v1.0.0` (13 Dec) |
+| 2 | 16–29 Nov | Deliverable 2 (29 Nov) | Complete the core ledger: all account types, every line type of both forms, corrections and search | F-07–F-12 | `v0.2.0-sprint2` |
+| 3 | 23 Nov–13 Dec | D2 progress (29 Nov) → Final (13 Dec) | Remaining user features, reports, performance and product hardening | F-13–F-16 | `v0.3.0-rc1` (29 Nov), `v1.0.0` (13 Dec) |
 
-Sprint 3 starts before Sprint 2 ends because Deliverable 2 requires at least one working Sprint 3 workflow and an RC on GCP by Deliverable 2 (6 Dec), and 1–11 Dec is the exam period, so that work is targeted for 30 Nov. Lab 5–7 work (Docker, CI/CD, GCP, UAT, maintenance) runs in parallel on the Sprint 1/2 releases.
+Sprint 3 starts before Sprint 2 ends because Deliverable 2 requires at least one working Sprint 3 workflow and an RC on GCP by 29 Nov, and 1–11 Dec is the exam period. Lab 5–7 work (Docker, CI/CD, GCP, UAT, maintenance) runs in parallel on the Sprint 1/2 releases.
 
 ## 2. Sprint 1 — Working ledger slice (Deliverable 1)
 
@@ -83,9 +83,9 @@ Also verified: NFR-05 1,000-transaction recomputation (SR-02); NFR-07 durability
 
 Also verified: NFR-08 responsiveness with 5,000 transactions (SR-04); full regression and UAT re-test.
 
-**Order.** F-13 and F-15 are planned first. At least one of them must be working in `v0.3.0-rc1` on GCP by 30 Nov for Deliverable 2 (6 Dec). F-14 and F-16 follow, and the product must be nearly complete by 30 Nov because of the 1–11 Dec exams.
+**Order.** F-13 and F-15 are planned first. At least one of them must be working in `v0.3.0-rc1` on GCP by 29 Nov (Deliverable 2). F-14 and F-16 follow, and the product must be nearly complete by 29 Nov because of the 1–11 Dec exams.
 
-**Completion outcome.** `v1.0.0` on `main` and GCP by 20 Dec; every FR/BR/NFR has a final result in `docs/traceability.md`; DoD review done; known limitations disclosed.
+**Completion outcome.** `v1.0.0` on `main` and GCP by 13 Dec; every FR/BR/NFR has a final result in `docs/traceability.md`; DoD review done; known limitations disclosed.
 
 ## 5. Cross-sprint dependencies and risks
 | Risk / dependency | Impact | Mitigation |
@@ -93,10 +93,11 @@ Also verified: NFR-08 responsiveness with 5,000 transactions (SR-04); full regre
 | Transaction engine (F-04) is on the critical path for F-05, F-09, F-10, F-11, F-14 | A design flaw delays everything later | Write the balance-effect table (SRS §4.3) as a unit-tested pure function in Sprint 1 |
 | TA rejects D-03 (Q-01) | BR-07 and AC-F05-05 change | Ask the TA before freezing F-05; handle the answer as a CHG |
 | Lab 7 approved change lands in Sprint 2/3 | Unplanned scope | Keep Sprint 3 order flexible; record as CHG with impact analysis |
-| Exam period 1–11 Dec | Little work possible before Final | Product nearly complete by 30 Nov; only regression, UAT re-test and video after |
+| Exam period 1–11 Dec | Little work possible before Final | Product nearly complete by 29 Nov; only regression, UAT re-test and video after |
 
 ## 6. Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial three-sprint plan | D1-S2 baseline |
 | 0.2 | 2026-11-07 | All checkpoint dates +7 days (D1 15 Nov, Lab 5 22 Nov, Lab 6 29 Nov, Lab 7 and D2 6 Dec, Final 20 Dec) per the instructor's LEB2 announcement; internal target for near-complete product stays before the 1–11 Dec exams (30 Nov) | Course schedule change |
+| 0.3 | 2026-11-07 | Correction of v0.2 after checking LEB2: only D1 moved (8 → 15 Nov, same day as Lab 5); D2 29 Nov and Final 13 Dec unchanged; Sprint 2/3 windows restored | LEB2 schedule |
