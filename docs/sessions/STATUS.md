@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
-- Next session: D1-S6 (F-03–F-05 ledger, Leviathan-c137) → F-06 (Sxr1n); meanwhile Lab 5 groundwork (Sxr1n)
+- Next session: Leviathan-c137 → review PRs, then D1-S6 (F-03–F-05) · Sxr1n → L5-S1 (Docker), L5-S2 (CI), L5-S3 (GCP), then F-06
 - Latest release on main: —
 - Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)
 - Deployed URL / version: —
@@ -27,21 +27,19 @@
 | F-15 | Category spending | 3 | PLANNED | — | — | — | — |
 | F-16 | Period reports | 3 | PLANNED | — | — | — | — |
 
-## Work split (ตกลง 2026-11-07)
-**D1 (15 Nov)**
+## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
 | วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
 |---|---|---|
-| 8 Nov | push branch, assign Issue, สร้าง project board, ส่ง Q-01 ถาม TA | Review + merge PR #7 → #8 → #9 → #10 → #11 → PR เลื่อนวันส่ง (finding อย่างน้อย 1 ข้อต่อ PR) |
-| 9–10 Nov | Lab 5: Dockerfile + compose (L5-S1) | F-03 Opening balance (TDD) |
-| 10–11 Nov | Review F-03 · CI (L5-S2) | F-04 Receive money + transaction engine |
-| 11–12 Nov | Review F-04 · เตรียม F-06 | F-05 Payment/charge |
-| 12–13 Nov | F-06 Overview/history + E2E journey (TEST-F06-07) | Review F-05 และ F-06 · ภาพหน้าจอ rule rejection |
-| 14 Nov | ทำคู่: release `v0.1.0-sprint1` | ทำคู่ |
-| 14–15 Nov | PDF Part A–C | PDF Part D–F |
+| 8 Nov | push, assign Issue, project board, ส่ง Q-01 ถาม TA · อ่านไฟล์แนบ 3 ไฟล์ของ Lab 5 (วิธีเข้า GCP) | Review + merge PR #7–#11 และ PR เรื่องวันส่ง (finding อย่างน้อย 1 ข้อต่อ PR) |
+| 9 Nov | L5-S1 Dockerfile + compose | F-03 Opening balance (TDD) |
+| 10 Nov | L5-S2 CI quality gate + สาธิต check ที่ fail แล้วบล็อก merge · review F-03 | F-04 Receive money + transaction engine |
+| 11 Nov | L5-S3 CD → GCP + DB ถาวร + secrets | F-04 (ต่อ) → merge ภายในวันนี้ |
+| 12 Nov | review F-04 · F-06 backend | F-05 Payment/charge |
+| 13 Nov | F-06 UI + E2E journey (TEST-F06-07) | review F-06 · `docs/labs/lab5/` (หลักฐาน redeploy แล้วข้อมูลยังอยู่) |
+| 14 Nov | ทำคู่: release `v0.1.0-sprint1` → deploy GCP (L5-S4) | ทำคู่ |
+| 14–15 Nov | PDF D1 Part A–C · รายงาน Lab 5 | PDF D1 Part D–F |
 
-**Lab 5 (22 Nov):** L5-S1, L5-S2 = Sxr1n · L5-S3 (CD → GCP) = Leviathan-c137 · L5-S4 = ทำคู่
-
-กติกา: ต่างคนต่าง review PR ของอีกฝ่าย; commit ด้วยบัญชีตัวเอง; ถ้าโค้ดต่างจาก contract ให้แก้ contract + revision history ใน PR เดียวกัน; F-04 ต้อง merge ภายใน 11 Nov ไม่งั้น F-06 และ release เลื่อน
+กติกา: ต่างคนต่าง review PR ของอีกฝ่าย; commit ด้วยบัญชีตัวเอง; ถ้าโค้ดต่างจาก contract ให้แก้ contract + revision history ใน PR เดียวกัน; F-04 ต้อง merge ภายใน 11 Nov; ถ้า Sxr1n ไม่ทัน ให้ย้าย L5-S3 มาทำคู่วันที่ 13
 
 ## Open defects / changes (สรุป รายละเอียดอยู่ใน docs/changes.md)
 | ID | Summary | Severity | Status |
