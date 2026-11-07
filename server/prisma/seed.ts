@@ -15,10 +15,11 @@ export async function seed(prisma: PrismaClient) {
     const password = process.env[u.passwordEnv]
     if (!password) throw new Error(`${u.passwordEnv} is not set`)
     const passwordHash = await bcrypt.hash(password, BCRYPT_COST)
-    // Idempotent: re-running resets the demo password and status but keeps the id.
+    // Idempotent and non-destructive: existing users (and an admin's disable) are left untouched,
+    // so SEED_ON_START can stay on across restarts and redeploys.
     await prisma.user.upsert({
       where: { username: u.username },
-      update: { displayName: u.displayName, role: u.role, passwordHash, status: 'ACTIVE' },
+      update: {},
       create: { username: u.username, displayName: u.displayName, role: u.role, passwordHash },
     })
   }
