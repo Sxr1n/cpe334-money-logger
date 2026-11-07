@@ -47,7 +47,7 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
 
 ---
 
-## Phase 1 — Deliverable 1 (ส่ง 8 Nov 23:59)
+## Phase 1 — Deliverable 1 (ส่ง 15 Nov 23:59)
 
 | ID | เป้าหมาย | Inputs | Outputs | Done เมื่อ |
 |---|---|---|---|---|
@@ -82,7 +82,7 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
   - User เรียก API ของ admin → 403
 - Sprint 2 และ 3 (ตาม "Later sprints" ในสเปก): สร้าง/จัดการ account ครบ 5 ชนิด, ยืมและให้ยืมพร้อมการชำระคืน, transfer, จัดการ opening balance, แก้ไขรายการ, search/filter, favorite + duplicate, สรุปการใช้จ่ายตามหมวด และ reports
 
-## Phase 2 — Lab 5 (ส่ง 15 Nov) Docker / CI/CD / GCP
+## Phase 2 — Lab 5 (ส่ง 22 Nov) Docker / CI/CD / GCP
 ใช้ release ของ Sprint 1 เป็นตั้งต้น และเก็บหลักฐานไว้ที่ `docs/labs/lab5/`
 
 | ID | เป้าหมาย | Done เมื่อ |
@@ -92,7 +92,7 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
 | L5-S3 | CD → GCP + DB ที่เก็บข้อมูลถาวร + secrets | URL ใช้งานได้, domain workflow วิ่งผ่าน UI/API/DB ได้, ข้อมูลยังอยู่หลัง restart/redeploy, แสดง version ที่ deploy |
 | L5-S4 | ทดลองเส้นทางเต็ม: change ที่ review แล้ว → CI → merge → deploy | release commit ระบุตัวได้ และขั้นตอนทำซ้ำได้ |
 
-## Phase 2b — Lab 6 (ส่ง 22 Nov) UAT ข้ามทีม
+## Phase 2b — Lab 6 (ส่ง 29 Nov) UAT ข้ามทีม
 | ID | เป้าหมาย | Done เมื่อ |
 |---|---|---|
 | L6-S1 | เขียน UAT case ของระบบเรา ≥ 4 case: normal journey, domain rule/boundary, role/ownership, state/persistence + ส่งต่อบัญชีทดสอบและ version ให้ทีม partner | case แต่ละข้อมี ID, goal, precondition, steps, expected |
@@ -100,14 +100,14 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
 | L6-S3 | Triage findings ของระบบเรา → DEF register | ทุก finding มี severity และ decision พร้อมเหตุผล (accepted/duplicate/not-defect/enhancement) |
 | L6-S4 | แก้ defect อย่างน้อย 1 ตัว (T-FIX) → CI → deploy → partner re-test | ครบ chain: regression test (red) → fix → PR review → deploy → re-test PASS |
 
-## Phase 2c — Lab 7 (ส่ง 29 Nov) Maintenance
+## Phase 2c — Lab 7 (ส่ง 6 Dec) Maintenance
 | ID | เป้าหมาย | Done เมื่อ |
 |---|---|---|
 | L7-S1 | ขอ change จาก TA → impact analysis → แก้ contract (เป็น revision ใหม่) | change request ชี้ไปที่ REQ/F/SDS/AC/test/code ที่กระทบ |
 | L7-S2 | Implement change (T-FIX หรือ T-FEAT): test ที่เปลี่ยนต้องล้มก่อน → implement → regression → review → deploy | มีหลักฐาน red/green และ CI กับ deploy เขียว |
 | L7-S3 | Metrics 5 ตัวพร้อมวันที่และแหล่งข้อมูล + release readiness + retrospective 3 ข้อ | ตีความไม่เกิน 100 คำ |
 
-## Phase 3 — Deliverable 2 (ส่ง 29 Nov 23:59)
+## Phase 3 — Deliverable 2 (ส่ง 6 Dec 23:59)
 
 | ID | เป้าหมาย | Outputs | Done เมื่อ |
 |---|---|---|---|
@@ -121,9 +121,9 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
 | D2-RC | RC + deploy + readiness | tag `v0.3.0-rc1`, CI run, post-deploy check, แผนงานที่เหลือพร้อม owner และวันที่ | version ที่ deploy ตรงกับ tag, ผ่าน regression ข้าม feature, Sprint 1 journey ยังใช้ได้ |
 | D2-P | Evidence + PDF (T-EVIDENCE, T-PDF) | PDF ของ D2 | checklist ของ D2 §5 ครบ |
 
-เป้าหมายของ phase นี้: ภายใน 29 Nov product ต้อง**เกือบเสร็จ** เพราะ 1–11 Dec เป็นช่วงสอบ
+เป้าหมายของ phase นี้: ภายใน 30 Nov (ก่อนช่วงสอบ 1–11 Dec) product ต้อง**เกือบเสร็จ** เพราะ 1–11 Dec เป็นช่วงสอบ
 
-## Phase 4 — Final (ส่ง 13 Dec 23:59)
+## Phase 4 — Final (ส่ง 20 Dec 23:59)
 
 | ID | เป้าหมาย | Done เมื่อ |
 |---|---|---|

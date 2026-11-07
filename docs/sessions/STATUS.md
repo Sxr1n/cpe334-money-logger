@@ -1,8 +1,8 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: Phase 1 — D1 (8 Nov 23:59)
-- Next session: D1-S6 (F-03–F-05 ledger, <Student B>) → F-06 (Sxr1n)
+- Phase / next checkpoint: Phase 1 — D1 (15 Nov 23:59; all deadlines +7 days per instructor's LEB2 announcement, recorded 2026-11-07)
+- Next session: D1-S6 (F-03–F-05 ledger, <Student B>) → F-06 (Sxr1n); meanwhile Lab 5 groundwork (Sxr1n)
 - Latest release on main: —
 - Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)
 - Deployed URL / version: —
