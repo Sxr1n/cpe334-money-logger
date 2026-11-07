@@ -1,0 +1,30 @@
+# Seed regression — GREEN on b5154a9 (working tree also had the uncommitted L5-S1 edits to server/src/app.ts and routes/auth.ts; they do not touch the seed)
+# Command: cd server && npx vitest run --reporter=verbose (full server suite)
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ✓ tests/seed.api.test.ts > seed (runs on every container start when SEED_ON_START=true) > re-running the seed keeps existing users unchanged, including an admin disable 1282ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-01 admin lists all users with exactly the six non-financial fields 897ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login 975ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 admin cannot disable their own account 869ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422 805ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 1066ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 821ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-06 admin endpoints return 401 without a session 577ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 602ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie 312ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password 169ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected 329ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data 73ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 1122ms
+ ✓ tests/app.api.test.ts > app scaffold > GET /api/health returns status and version 38ms
+ ✓ tests/app.api.test.ts > app scaffold > unknown /api route returns the standard 404 error shape 8ms
+ ✓ tests/app.api.test.ts > app scaffold > malformed JSON returns 400 BAD_REQUEST without a stack trace 29ms
+ ✓ tests/f01-session.unit.test.ts > F-01 session token > TEST-F01-07 a token past its 8-hour expiry is rejected 10ms
+
+ Test Files  5 passed (5)
+      Tests  18 passed (18)
+   Start at  17:30:08
+   Duration  23.46s (transform 815ms, setup 213ms, import 3.61s, tests 10.01s, environment 1ms)
+

@@ -3,7 +3,7 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1, `docs/traceability.md` v0.1 |
-| Document version | 0.2 |
+| Document version | 0.3 |
 | Scope | Whole product (Sprints 1–3). Feature contracts in `docs/sprints/sprint-N/` give exact endpoints, fields and screens. |
 
 ---
@@ -271,7 +271,10 @@ Verification (SR-01): each protected endpoint has three API-DB tests — no sess
 | `TEST_DATABASE_URL` | API-DB tests | `postgresql://postgres:postgres@localhost:5434/money_logger_test` | no (local only) |
 | `JWT_SECRET` | server | `change-me-to-a-long-random-string` | yes |
 | `PORT` | server | `4000` | no |
-| `NODE_ENV` | server (cookie `Secure`, static files) | `development` | no |
+| `NODE_ENV` | server (default for cookie `Secure`) | `development` | no |
+| `COOKIE_SECURE` | server: overrides the cookie `Secure` flag (`false` while a deployment has no HTTPS) | `false` | no |
+| `CLIENT_DIST` | server: folder of the built React app to serve (set in the Docker image) | unset locally | no |
+| `SEED_ON_START` | Docker entrypoint: run the seed after migrations; the seed only creates missing users | `false` | no |
 | `APP_VERSION` | `/api/health`, UI footer | `dev` (set to the release tag at build) | no |
 | `SEED_USER_PASSWORD`, `SEED_ADMIN_PASSWORD` | seed script | `change-me` | yes |
 | `POSTGRES_PASSWORD` | compose database service | `postgres` (local only) | yes in production |
@@ -299,7 +302,7 @@ flowchart LR
 |---|---|
 | Image | Multi-stage Dockerfile: build client and server, copy built files into a slim Node LTS runtime image; `APP_VERSION` build argument = release tag. |
 | Database durability (NFR-07) | PostgreSQL data in a named Docker volume on the VM's persistent disk; survives container restart and redeploy. Verified in Lab 5 by record → redeploy → retrieve. Backup: scheduled `pg_dump` to a file outside the container plus disk snapshots. |
-| Migrations | The app container runs `prisma migrate deploy` before starting; seed runs only when explicitly requested. |
+| Migrations | The app container runs `prisma migrate deploy` before starting; seed runs only when `SEED_ON_START=true`, and it only creates missing demo users (never resets existing ones). |
 | Secrets | Production `.env` lives only on the VM (readable by the deploy user only) or is fetched from GCP Secret Manager at deploy; the SSH deploy key is a GitHub Actions secret. Never in Git or the image. |
 | Pipeline | PR → CI build + all tests (required check blocks merge) → merge to `main` → tagged release builds and pushes the image → deploy job (documented manual approval allowed) pulls and restarts on the VM. |
 | Open for Lab 5 | HTTPS (reverse proxy such as Caddy with a domain, needed for the `Secure` cookie), VM size, and how GCP access is granted — depends on the Lab 5 instructions. |
@@ -313,7 +316,7 @@ flowchart LR
 | SD-02 | Opening balance as `opening_balance` + `opening_date` fields on the account | Special OPENING transaction (needs a third form and extra exclusions everywhere) | Accepted (team, 2026-11-07) |
 | SD-03 | Deploy on one Compute Engine VM with docker compose (app + PostgreSQL on a persistent volume) | Cloud Run + Cloud SQL (less to operate, but costs more and depends on Lab 5 access); separate client/server images (needs CORS and cross-site cookies) | Accepted (team, 2026-11-07); details finalised in Lab 5 |
 | SD-04 | Session = JWT cookie with `token_version`; logout and disable increment it | Server-side session table (per-device logout, more code and new tests) | Accepted (team, 2026-11-07) |
-| SD-05 | One app image: Express serves the built React app (same origin) | Two images (client + server) | Proposed (follows from SD-03; confirm in Lab 5) |
+| SD-05 | One app image: Express serves the built React app (same origin) | Two images (client + server) | Accepted (implemented in Lab 5 L5-S1) |
 | SD-06 | Validation failures → 422; another user's record → 404; wrong role → 403 | 400 for all validation (TokTickIT) | Accepted (follows D-02 and `docs/traceability.md`) |
 
 Open (decided in D1-S4): whether Sprint 1's `POST /api/transactions` already accepts line types of Sprint 2 features (transfer, loan lines) or rejects them until F-09/F-10.
@@ -323,3 +326,4 @@ Open (decided in D1-S4): whether Sprint 1's `POST /api/transactions` already acc
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial System SDS | D1-S3 baseline |
 | 0.2 | 2026-11-07 | Local PostgreSQL host port 5433 → 5434 (5433 is taken by the Labs 1–4 database on developer machines) | D1-S5 |
+| 0.3 | 2026-11-07 | Docker image and compose `app` service (L5-S1): env `COOKIE_SECURE`, `CLIENT_DIST`, `SEED_ON_START`; seed made non-destructive; SD-05 accepted | Lab 5 L5-S1 |

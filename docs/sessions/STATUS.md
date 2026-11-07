@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-07 — L5-S1 (Docker + compose) — Claude + Sxr1n
+- Done: `Dockerfile` (multi-stage, image เดียว Express serve React — SD-05 Accepted), service `app` ใน compose (port 8080), `server/docker-entrypoint.sh` (migrate deploy + seed ถ้า `SEED_ON_START=true`), root `.env.example`, env `COOKIE_SECURE`/`CLIENT_DIST`; README มีหัวข้อ Docker; SDS v0.3
+- Defect ที่เจอระหว่างทำ: seed reset status ของ user ทุกครั้งที่ container start (admin disable หายหลัง restart) → red `7785f76` (`evidence/d1/seed-nondestructive-red.txt`) → fix `b5154a9` → green (server 18/18)
+- Evidence: `docs/labs/lab5/L5-S1-compose-check.txt` — fresh volume + `build --no-cache` → migration applied, seed, `/` และ `/overview` 200 HTML, `/api/accounts` 401, bob DISABLED คงอยู่หลัง restart และหลัง down/up; full suite server 18/18, E2E 3/3
+- Open issues: ยังไม่ได้อ่านไฟล์แนบ Lab 5 (วิธีเข้า GCP); HTTPS ยังไม่มี → ใช้ `COOKIE_SECURE=false`; image มี dev dependencies (shortcut ใน Dockerfile)
+- Next session: L5-S2 CI quality gate
+
 ### 2026-11-07 — D1-S5b (F-02) — Claude + Sxr1n
 - Done: F-02 ครบ AC-F02-01–06 — `GET /api/admin/users`, `PATCH /api/admin/users/:id` (disable เพิ่ม token_version, ห้าม disable ตัวเอง), หน้า Users
 - Evidence: red `50c09ff` → `evidence/d1/F02-red.txt` (4 fail, 3 pass เพราะ guard จาก F-01); green `1090928` → `evidence/d1/F02-green.txt` (server 17/17, client build OK, E2E 3/3 regression)

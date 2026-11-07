@@ -1,5 +1,6 @@
 import cookieParser from 'cookie-parser'
 import express, { type NextFunction, type Request, type Response } from 'express'
+import path from 'node:path'
 import { requireAuth } from './middleware/requireAuth'
 import { requireRole } from './middleware/requireRole'
 import adminRouter from './routes/admin'
@@ -22,6 +23,13 @@ app.use(['/api/accounts', '/api/transactions', '/api/overview', '/api/summary'],
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Not found.' } })
 })
+
+// SD-05: in the Docker image Express also serves the built React app, so UI and API share one origin.
+const clientDist = process.env.CLIENT_DIST
+if (clientDist) {
+  app.use(express.static(clientDist))
+  app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.resolve(clientDist, 'index.html')))
+}
 
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof SyntaxError && 'body' in err) {
