@@ -92,12 +92,12 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F01-06 | Stored password is a bcrypt hash (cost ≥ 10); no password/hash in any response | TEST-F01-06 | API-DB | | `server/tests/f01-auth.api.test.ts` | PASS | 56ac71d |
 | AC-F01-07 | Session older than 8 hours → 401 | TEST-F01-07 | unit | | `server/tests/f01-session.unit.test.ts` | PASS | 56ac71d |
 | AC-F01-08 | User logs in and out through the UI | TEST-F01-08 | E2E | | `e2e/f01-auth.spec.ts` | PASS | 56ac71d |
-| AC-F02-01 | Admin lists users with username, display name, role, status, created date and no financial fields | TEST-F02-01 | API-DB | | — | NOT RUN | — |
-| AC-F02-02 | Admin disables a user → that user's existing session → 401 on next request; re-enable restores login | TEST-F02-02 | API-DB | | — | NOT RUN | — |
-| AC-F02-03 | Admin cannot disable own account → rejected, status unchanged | TEST-F02-03 | API-DB | | — | NOT RUN | — |
-| AC-F02-04 | Admin calls any financial endpoint → 403 | TEST-F02-04 | API-DB | | — | NOT RUN | — |
-| AC-F02-05 | User calls any admin endpoint → 403 | TEST-F02-05 | API-DB | | — | NOT RUN | — |
-| AC-F02-06 | Admin endpoints without a session → 401 | TEST-F02-06 | API-DB | | — | NOT RUN | — |
+| AC-F02-01 | Admin lists users with username, display name, role, status, created date and no financial fields | TEST-F02-01 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
+| AC-F02-02 | Admin disables a user → that user's existing session → 401 on next request; re-enable restores login | TEST-F02-02 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
+| AC-F02-03 | Admin cannot disable own account → rejected, status unchanged | TEST-F02-03 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
+| AC-F02-04 | Admin calls any financial endpoint → 403 | TEST-F02-04 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
+| AC-F02-05 | User calls any admin endpoint → 403 | TEST-F02-05 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
+| AC-F02-06 | Admin endpoints without a session → 401 | TEST-F02-06 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
 | AC-F03-01 | Set opening balance and date on seeded Bank → balance shows the amount | TEST-F03-01 | API-DB | | — | NOT RUN | — |
 | AC-F03-02 | Setting an opening balance creates no transaction/line row (summary-level check: AC-F06-03) | TEST-F03-02 | API-DB | TDD | — | NOT RUN | — |
 | AC-F03-03 | Negative, > 2 decimals or > 999,999,999.99 → 422, nothing stored | TEST-F03-03 | unit + API-DB | | — | NOT RUN | — |

@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 (8 Nov 23:59)
-- Next session: D1-S5b (F-02 admin) ∥ D1-S6 (ledger)
+- Next session: D1-S6 (F-03–F-05 ledger, <Student B>) → F-06 (Sxr1n)
 - Latest release on main: —
 - Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)
 - Deployed URL / version: —
@@ -11,7 +11,7 @@
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
 |---|---|---|---|---|---|---|---|
 | F-01 | Authentication and session | 1 | TESTED | Sxr1n | sprint-1/F01-auth.md | #1 | red `e9f9653`, green `56ac71d` (evidence/d1/F01-*.txt) |
-| F-02 | Administrator user access | 1 | SPECIFIED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | — |
+| F-02 | Administrator user access | 1 | TESTED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | red `50c09ff`, green `1090928` (evidence/d1/F02-*.txt) |
 | F-03 | Opening balance | 1 | SPECIFIED | <Student B> | sprint-1/F03-opening-balance.md | #3 | — |
 | F-04 | Receive money | 1 | SPECIFIED | <Student B> | sprint-1/F04-receive-money.md | #4 | — |
 | F-05 | Make a payment or record a charge | 1 | SPECIFIED | <Student B> | sprint-1/F05-payment-charge.md | #5 | — |
@@ -32,6 +32,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-07 — D1-S5b (F-02) — Claude + Sxr1n
+- Done: F-02 ครบ AC-F02-01–06 — `GET /api/admin/users`, `PATCH /api/admin/users/:id` (disable เพิ่ม token_version, ห้าม disable ตัวเอง), หน้า Users
+- Evidence: red `50c09ff` → `evidence/d1/F02-red.txt` (4 fail, 3 pass เพราะ guard จาก F-01); green `1090928` → `evidence/d1/F02-green.txt` (server 17/17, client build OK, E2E 3/3 regression)
+- Decisions: branch `feature/F02-admin-user-access` แตกจาก `feature/F01-auth` → PR ต้อง merge หลัง #10
+- Open issues: หน้า Users ไม่มี E2E (STS ไม่ได้กำหนด) — ตรวจผ่าน API test เท่านั้น
+- Next session: F-03–F-05 (เพื่อน) แล้ว F-06
+
 ### 2026-11-07 — D1-S5 (F-01) — Claude + Sxr1n
 - Done: F-01 Auth ครบ AC-F01-01–08 — migration `init_users`, seed (alice, bob, admin), login/logout/me, `requireAuth`/`requireRole` mount ที่ `/api/admin` และกลุ่ม route การเงิน, หน้า Login + navbar + route guard; README มีขั้นตอน test DB/generate/seed; ย้าย port DB ในเครื่องเป็น 5434 (SDS v0.2)
 - Evidence: red `e9f9653` → `evidence/d1/F01-red.txt` (API 6 fail, unit fail), `F01-e2e-red.txt` (2 fail); green `56ac71d` → `evidence/d1/F01-green.txt` (server 10/10 passed, client build OK, E2E 3/3 passed)
