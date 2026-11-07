@@ -9,7 +9,7 @@
 เอกสารของวิชาอยู่ที่ `docs/course/` (group_work_specs_v1.pdf และ handout ของแต่ละ checkpoint) ให้อ่านเมื่อต้องเช็กเกณฑ์
 
 ## 1. บริบท
-- วิชา CPE334 ภาคเรียน 1/2026 งานกลุ่ม 2 คน: `<ชื่อ–รหัส นศ. A>`, `<ชื่อ–รหัส นศ. B>`
+- วิชา CPE334 ภาคเรียน 1/2026 งานกลุ่ม 2 คน: นายศารินทร์ ไชยารัตน์ 67070505207 (GitHub `Sxr1n`), นายตันติยวัตร จันทร์ศิริ 67070505216 (GitHub `Leviathan-c137`)
 - ธีม/บริบท: **Personal Money and Expense Logging System** (ระบบบันทึกรายรับ-รายจ่ายส่วนตัว)
 - Repo: https://github.com/Sxr1n/cpe334-money-logger
 - Stack (reused from TokTickIT): React 19 + Vite + TypeScript + Bootstrap / Express 5 + TypeScript + Prisma 7 / PostgreSQL 16 (docker compose) / auth: bcryptjs + JWT in cookie, session and user status checked on the server every request / tests: Vitest (unit), Vitest + Supertest (API/integration), Playwright (E2E)
