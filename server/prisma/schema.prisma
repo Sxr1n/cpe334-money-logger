@@ -19,6 +19,14 @@ enum UserStatus {
   DISABLED
 }
 
+enum AccountType {
+  CASH
+  LOAN_TAKEN
+  LOAN_GIVEN
+  INCOME
+  EXPENSE
+}
+
 model User {
   id           Int        @id @default(autoincrement())
   username     String     @unique @db.VarChar(30)
@@ -29,5 +37,25 @@ model User {
   tokenVersion Int        @default(0) @map("token_version")
   createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  accounts     Account[]
+
   @@map("users")
+}
+
+model Account {
+  id             Int         @id @default(autoincrement())
+  userId         Int         @map("user_id")
+  name           String      @db.VarChar(50)
+  type           AccountType
+  balance        BigInt      @default(0)
+  openingBalance BigInt?     @map("opening_balance")
+  openingDate    DateTime?   @map("opening_date") @db.Date
+  archivedAt     DateTime?   @map("archived_at") @db.Timestamptz(6)
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user           User        @relation(fields: [userId], references: [id])
+
+  @@unique([userId, type, name])
+  @@index([userId])
+  @@map("accounts")
 }

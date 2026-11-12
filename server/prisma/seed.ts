@@ -10,6 +10,16 @@ const USERS = [
   { username: 'admin', displayName: 'Platform Admin', role: 'ADMIN', passwordEnv: 'SEED_ADMIN_PASSWORD' },
 ] as const
 
+export const DEFAULT_ACCOUNTS = [
+  { name: 'Bank', type: 'CASH' },
+  { name: 'Credit Card', type: 'LOAN_TAKEN' },
+  { name: 'Salary', type: 'INCOME' },
+  { name: 'Dining', type: 'EXPENSE' },
+  { name: 'Groceries', type: 'EXPENSE' },
+  { name: 'Electricity', type: 'EXPENSE' },
+  { name: 'Telecom', type: 'EXPENSE' },
+] as const
+
 export async function seed(prisma: PrismaClient) {
   for (const u of USERS) {
     const password = process.env[u.passwordEnv]
@@ -17,11 +27,28 @@ export async function seed(prisma: PrismaClient) {
     const passwordHash = await bcrypt.hash(password, BCRYPT_COST)
     // Idempotent and non-destructive: existing users (and an admin's disable) are left untouched,
     // so SEED_ON_START can stay on across restarts and redeploys.
-    await prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: { username: u.username },
       update: {},
       create: { username: u.username, displayName: u.displayName, role: u.role, passwordHash },
     })
+
+    if (u.role === 'USER') {
+      for (const acc of DEFAULT_ACCOUNTS) {
+        const existing = await prisma.account.findFirst({
+          where: { userId: user.id, type: acc.type, name: acc.name },
+        })
+        if (!existing) {
+          await prisma.account.create({
+            data: {
+              userId: user.id,
+              name: acc.name,
+              type: acc.type,
+            },
+          })
+        }
+      }
+    }
   }
 }
 
