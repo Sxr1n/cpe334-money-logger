@@ -11,8 +11,8 @@
 ## 1. บริบท
 - วิชา CPE334 ภาคเรียน 1/2026 งานกลุ่ม 2 คน: `<ชื่อ–รหัส นศ. A>`, `<ชื่อ–รหัส นศ. B>`
 - ธีม/บริบท: **Personal Money and Expense Logging System** (ระบบบันทึกรายรับ-รายจ่ายส่วนตัว)
-- Repo: `<GitHub URL>`
-- Stack: `<frontend>` / `<backend>` / `<database + migration tool>` / tests: `<unit>`, `<API/integration>`, `<E2E>`
+- Repo: https://github.com/Sxr1n/cpe334-money-logger
+- Stack (reused from TokTickIT): React 19 + Vite + TypeScript + Bootstrap / Express 5 + TypeScript + Prisma 7 / PostgreSQL 16 (docker compose) / auth: bcryptjs + JWT in cookie, session and user status checked on the server every request / tests: Vitest (unit), Vitest + Supertest (API/integration), Playwright (E2E)
 - Source of truth ของ scope: `group_work_specs_v1.pdf` (§5 ข้อกำหนดร่วม, §6 ข้อ 7 ธีมของเรา, §8 workflow, §10 labs) + CHG ที่อนุมัติแล้วใน `docs/changes.md`
 - เกณฑ์ของแต่ละ checkpoint: `project_deliverable_1_v1.pdf`, `project_deliverable_2_v1.pdf`, `project_final_delivery_v1.pdf`
 - ภาษา: คุยกับผู้ใช้เป็นภาษาไทย แต่ทุกอย่างที่ส่งอาจารย์ (docs/, PDF, Issue, PR, commit message) ให้เขียนเป็นภาษาอังกฤษ
@@ -63,6 +63,7 @@
 - Requirements: `FR-01`, `BR-01`, `NFR-01` (ใช้ ID เดิมตลอด ห้ามเรียงเลขใหม่)
 - Features: `F-01` · AC: `AC-F01-01` · Tests: `TEST-F01-01` · NFR checks: `TEST-NFR01-01`
 - Changes: `CHG-01` · Defects: `DEF-01` · UAT: `UAT-01`
+- System responsibilities (cross-cutting NFR/BR): `SR-01`
 - Branches: `staging/sprint-N`, `feature/F01-<slug>`, `fix/DEF03-<slug>`
 - Release tags: `v0.1.0-sprint1`, `v0.2.0-sprint2`, `v0.3.0-rc1`, `v1.0.0`
 - สถานะของ feature/AC: `PLANNED → SPECIFIED → IN PROGRESS → IMPLEMENTED → TESTED → ACCEPTED` (ถ้าไม่ครบใช้ `INCOMPLETE`)
