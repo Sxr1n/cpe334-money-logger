@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth'
 import Layout from './components/Layout'
+import AccountsPage from './pages/AccountsPage'
 import LoginPage from './pages/LoginPage'
 import UsersPage from './pages/UsersPage'
 
@@ -25,6 +26,7 @@ export default function App() {
           <Route element={<Layout role="USER" />}>
             {/* F-06 replaces this placeholder with the Overview screen. */}
             <Route path="/overview" element={<h1 className="h4">Overview</h1>} />
+            <Route path="/accounts" element={<AccountsPage />} />
           </Route>
           <Route element={<Layout role="ADMIN" />}>
             <Route path="/admin/users" element={<UsersPage />} />
