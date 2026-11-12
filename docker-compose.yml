@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: money-logger-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: money_logger
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      # Host port 5433 so it does not collide with a native PostgreSQL on 5432.
+      - "5433:5432"
+    volumes:
+      - money_logger_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d money_logger"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  money_logger_pgdata:
