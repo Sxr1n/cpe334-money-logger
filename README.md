@@ -28,6 +28,7 @@ cd server && npm test                      # unit + API-DB tests on TEST_DATABAS
 cd client && npm run build                 # type-check + production build
 npm install && npx playwright install chromium   # once, at repo root
 npx playwright test                        # E2E on the seeded dev database (starts server and client)
+PW_CHANNEL=chrome npx playwright test      # Windows with Smart App Control: use the installed Google Chrome
 ```
 
 ## Configuration
