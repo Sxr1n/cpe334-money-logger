@@ -3,14 +3,14 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1, `docs/traceability.md` v0.1 |
-| Document version | 0.1 |
+| Document version | 0.3 |
 
 ## 1. Overview
 
 | Sprint | Window | Checkpoint | Goal | Features | Release tag |
 |---|---|---|---|---|---|
-| 1 | to 8 Nov | Deliverable 1 (8 Nov) | Small working ledger slice with authentication, two roles, backend permissions and persistence | F-01–F-06 | `v0.1.0-sprint1` |
-| 2 | 9–29 Nov | Deliverable 2 (29 Nov) | Complete the core ledger: all account types, every line type of both forms, corrections and search | F-07–F-12 | `v0.2.0-sprint2` |
+| 1 | to 15 Nov | Deliverable 1 (15 Nov) | Small working ledger slice with authentication, two roles, backend permissions and persistence | F-01–F-06 | `v0.1.0-sprint1` |
+| 2 | 16–29 Nov | Deliverable 2 (29 Nov) | Complete the core ledger: all account types, every line type of both forms, corrections and search | F-07–F-12 | `v0.2.0-sprint2` |
 | 3 | 23 Nov–13 Dec | D2 progress (29 Nov) → Final (13 Dec) | Remaining user features, reports, performance and product hardening | F-13–F-16 | `v0.3.0-rc1` (29 Nov), `v1.0.0` (13 Dec) |
 
 Sprint 3 starts before Sprint 2 ends because Deliverable 2 requires at least one working Sprint 3 workflow and an RC on GCP by 29 Nov, and 1–11 Dec is the exam period. Lab 5–7 work (Docker, CI/CD, GCP, UAT, maintenance) runs in parallel on the Sprint 1/2 releases.
@@ -47,7 +47,7 @@ Also established: SR-01 access control, SR-02 ledger integrity (integer satang, 
 - **It is the course minimum, no less.** It covers every step of the Theme 7 Sprint 1 example and the required identity/access cases (specs §6.7, D1 §2): real login/logout/current user, two roles, a domain transaction with allocation lines, a tested business rule and backend enforcement.
 - **It builds the parts everything else depends on.** The transaction engine (line validation, form/type rules, atomic balance posting) and the access-control layer are reused by every later feature. Getting them right and tested first lowers the risk of Sprints 2–3.
 - **It leaves out what the scenario does not need.** Accounts are seeded (D-09), so account creation/archiving (F-07) moves to Sprint 2. Transfers, loans, corrections, search, favourites, duplicate and reports are not in the example and would double the size of the slice without adding a new engineering risk.
-- **It fits the time.** Sprint 1 ends on 8 Nov and must also produce Parts A–E of the documentation. Six small features (40 planned AC, most of them API-DB tests) keep the slice reviewable by two students in that time.
+- **It fits the time.** Sprint 1 ends on 15 Nov and must also produce Parts A–E of the documentation. Six small features (40 planned AC, most of them API-DB tests) keep the slice reviewable by two students in that time.
 
 ## 3. Sprint 2 — Core ledger complete (Deliverable 2)
 
@@ -99,3 +99,5 @@ Also verified: NFR-08 responsiveness with 5,000 transactions (SR-04); full regre
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial three-sprint plan | D1-S2 baseline |
+| 0.2 | 2026-11-07 | All checkpoint dates +7 days (D1 15 Nov, Lab 5 22 Nov, Lab 6 29 Nov, Lab 7 and D2 6 Dec, Final 20 Dec) per the instructor's LEB2 announcement; internal target for near-complete product stays before the 1–11 Dec exams (30 Nov) | Course schedule change |
+| 0.3 | 2026-11-07 | Correction of v0.2 after checking LEB2: only D1 moved (8 → 15 Nov, same day as Lab 5); D2 29 Nov and Final 13 Dec unchanged; Sprint 2/3 windows restored | LEB2 schedule |

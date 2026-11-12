@@ -3,9 +3,9 @@
 | Item | Value |
 |---|---|
 | Course | CPE334, Semester 1/2026 — Group Project, Theme 7 |
-| Team | `<Student A name – ID>`, `<Student B name – ID>` |
+| Team | นายศารินทร์ ไชยารัตน์ 67070505207 (GitHub `Sxr1n`); นายตันติยวัตร จันทร์ศิริ 67070505216 (GitHub `Leviathan-c137`) |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Document version | 0.2 (decisions accepted by team) |
+| Document version | 0.3 (decisions accepted by team) |
 | Source brief | `docs/course/group_work_specs_v1.pdf` §6 Theme 7 |
 
 > **Status:** decisions D-01–D-09 in §8.2 were accepted by the team on 2026-11-07 (v0.2). D-03 still awaits TA confirmation (Q-01); a different TA answer will be handled as a CHG.
@@ -211,3 +211,4 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial draft from Theme 7 brief (AI-assisted draft, pending team review) | `<Student>` + Claude |
 | 0.2 | 2026-11-07 | D-01–D-09 changed from Proposed to Accepted (team); removed "Proposed" markers from BR-07/08/09/15. No FR/BR/NFR text changed. Reason: freeze rules before Sprint 1 contracts (D1-S2). | Team + Claude |
+| 0.3 | 2026-11-07 | Team names and student IDs filled in. No requirement changed. | Team |

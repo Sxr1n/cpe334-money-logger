@@ -1,8 +1,8 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: Phase 1 — D1 (8 Nov 23:59)
-- Next session: D1-S6 (F-03–F-05 ledger, <Student B>) → F-06 (Sxr1n)
+- Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
+- Next session: Leviathan-c137 → review PRs, then D1-S6 (F-03–F-05) · Sxr1n → L5-S1 (Docker), L5-S2 (CI), L5-S3 (GCP), then F-06
 - Latest release on main: —
 - Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)
 - Deployed URL / version: —
@@ -12,9 +12,9 @@
 |---|---|---|---|---|---|---|---|
 | F-01 | Authentication and session | 1 | TESTED | Sxr1n | sprint-1/F01-auth.md | #1 | red `e9f9653`, green `56ac71d` (evidence/d1/F01-*.txt) |
 | F-02 | Administrator user access | 1 | TESTED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | red `50c09ff`, green `1090928` (evidence/d1/F02-*.txt) |
-| F-03 | Opening balance | 1 | SPECIFIED | <Student B> | sprint-1/F03-opening-balance.md | #3 | — |
-| F-04 | Receive money | 1 | SPECIFIED | <Student B> | sprint-1/F04-receive-money.md | #4 | — |
-| F-05 | Make a payment or record a charge | 1 | SPECIFIED | <Student B> | sprint-1/F05-payment-charge.md | #5 | — |
+| F-03 | Opening balance | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 | — |
+| F-04 | Receive money | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 | — |
+| F-05 | Make a payment or record a charge | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 | — |
 | F-06 | Overview, summary and history | 1 | SPECIFIED | Sxr1n | sprint-1/F06-overview-history.md | #6 | — |
 | F-07 | Account management | 2 | PLANNED | — | — | — | — |
 | F-08 | Opening balance management | 2 | PLANNED | — | — | — | — |
@@ -26,6 +26,20 @@
 | F-14 | Duplicate transaction | 3 | PLANNED | — | — | — | — |
 | F-15 | Category spending | 3 | PLANNED | — | — | — | — |
 | F-16 | Period reports | 3 | PLANNED | — | — | — | — |
+
+## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
+| วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
+|---|---|---|
+| 8 Nov | push, assign Issue, project board, ส่ง Q-01 ถาม TA · อ่านไฟล์แนบ 3 ไฟล์ของ Lab 5 (วิธีเข้า GCP) | Review + merge PR #7–#11 และ PR เรื่องวันส่ง (finding อย่างน้อย 1 ข้อต่อ PR) |
+| 9 Nov | L5-S1 Dockerfile + compose | F-03 Opening balance (TDD) |
+| 10 Nov | L5-S2 CI quality gate + สาธิต check ที่ fail แล้วบล็อก merge · review F-03 | F-04 Receive money + transaction engine |
+| 11 Nov | L5-S3 CD → GCP + DB ถาวร + secrets | F-04 (ต่อ) → merge ภายในวันนี้ |
+| 12 Nov | review F-04 · F-06 backend | F-05 Payment/charge |
+| 13 Nov | F-06 UI + E2E journey (TEST-F06-07) | review F-06 · `docs/labs/lab5/` (หลักฐาน redeploy แล้วข้อมูลยังอยู่) |
+| 14 Nov | ทำคู่: release `v0.1.0-sprint1` → deploy GCP (L5-S4) | ทำคู่ |
+| 14–15 Nov | PDF D1 Part A–C · รายงาน Lab 5 | PDF D1 Part D–F |
+
+กติกา: ต่างคนต่าง review PR ของอีกฝ่าย; commit ด้วยบัญชีตัวเอง; ถ้าโค้ดต่างจาก contract ให้แก้ contract + revision history ใน PR เดียวกัน; F-04 ต้อง merge ภายใน 11 Nov; ถ้า Sxr1n ไม่ทัน ให้ย้าย L5-S3 มาทำคู่วันที่ 13
 
 ## Open defects / changes (สรุป รายละเอียดอยู่ใน docs/changes.md)
 | ID | Summary | Severity | Status |

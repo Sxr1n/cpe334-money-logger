@@ -1,5 +1,5 @@
 # F-05 Make a payment or record a charge — Sprint 1
-Linked: FR-12, FR-13, BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: SPECIFIED   Owner: `<Student B>`
+Linked: FR-12, FR-13, BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
 Depends on: F-04 (transaction engine). Design references: `docs/system-sds.md` §2.4, F-04 contract §2 and §5
 
 ## 1 Behavior & workflow
@@ -91,3 +91,4 @@ No change (uses tables from F-03 and F-04).
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract. Sprint 1 PAYMENT lines limited to EXPENSE and LOAN_TAKEN (team decision D1-S4). BR-07 per D-03, TA confirmation pending (Q-01). | D1-S4 |
+| 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
