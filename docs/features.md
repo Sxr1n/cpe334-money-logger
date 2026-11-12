@@ -3,7 +3,7 @@
 | Item | Value |
 |---|---|
 | Source | `docs/srs.md` v0.2 |
-| Document version | 0.1 |
+| Document version | 0.2 |
 | Related | `docs/traceability.md` (requirement → feature → sprint → AC/TEST), `docs/sprints/plan.md` |
 
 Feature IDs are stable. A feature that is dropped is marked `WITHDRAWN (CHG-xx)`, never renumbered. Status follows `PLANNED → SPECIFIED → IN PROGRESS → IMPLEMENTED → TESTED → ACCEPTED` (`INCOMPLETE` if not finished).
@@ -14,7 +14,7 @@ Feature IDs are stable. A feature that is dropped is marked `WITHDRAWN (CHG-xx)`
 |---|---|---|---|---|---|---|---|---|
 | F-01 | Authentication and session | Login with username/password, logout, current user (`/me`). Seeded users and administrators only. Disabled users cannot log in. | FR-01, FR-02, FR-03 | BR-12, BR-13 | NFR-01, NFR-03, NFR-04 | — | 1 | PLANNED |
 | F-02 | Administrator user access | Administrator lists platform users (no financial data) and disables/re-enables them; disabling revokes the user's sessions on the next request. Administrators get 403 on every financial endpoint; users get 403 on every admin endpoint. | FR-04, FR-05 | BR-12, BR-13 | NFR-01, NFR-02 | F-01 | 1 | PLANNED |
-| F-03 | Opening balance | Set the opening balance and opening date of a seeded CASH, LOAN_TAKEN or LOAN_GIVEN account (once per account). Never counted as income or expense. | FR-07 | BR-02, BR-06, BR-10, BR-11 | NFR-02, NFR-05 | F-01 | 1 | PLANNED |
+| F-03 | Opening balance | Set the opening balance and opening date of a seeded CASH, LOAN_TAKEN or LOAN_GIVEN account (once per account). Never counted as income or expense. Also delivers the basic own-account list used by F-04/F-05 pickers. | FR-07 | BR-02, BR-06, BR-10, BR-11 | NFR-02, NFR-05 | F-01 | 1 | PLANNED |
 | F-04 | Receive money | Record a RECEIPT into a CASH account with one or more INCOME lines (e.g. salary into Bank). Establishes the shared transaction engine: line validation, form/account-type rules and atomic balance posting. | FR-11 | BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11 | NFR-02, NFR-05, NFR-06, NFR-10 | F-01, F-03 | 1 | PLANNED |
 | F-05 | Make a payment or record a charge | Record a PAYMENT from a CASH or LOAN_TAKEN account with one or more EXPENSE lines (e.g. card purchase split Dining + Groceries), and repay a LOAN_TAKEN account from a CASH account (e.g. pay the card bill from Bank). | FR-12, FR-13 | BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11 | NFR-02, NFR-05, NFR-06, NFR-10 | F-04 | 1 | PLANNED |
 | F-06 | Overview, summary and history | Accounts grouped by type with balances/period totals; overview of CASH balances, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN; income/expense summary for a period (default: current Bangkok month); paginated transaction history and detail. | FR-06, FR-18, FR-24, FR-25 | BR-06, BR-11 | NFR-02, NFR-08 | F-03, F-04, F-05 | 1 | PLANNED |
@@ -46,3 +46,4 @@ Requirements that apply to every feature are owned by a named system responsibil
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial inventory F-01–F-16, SR-01–SR-04 | D1-S2 baseline |
+| 0.2 | 2026-11-07 | F-03 also delivers the basic account list (needed by F-04/F-05); FR-06 display stays in F-06 | D1-S4 contracts |
