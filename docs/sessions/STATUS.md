@@ -2,15 +2,15 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 (8 Nov 23:59)
-- Next session: D1-S5 (auth) ∥ D1-S6 (ledger)
+- Next session: D1-S5b (F-02 admin) ∥ D1-S6 (ledger)
 - Latest release on main: —
-- Active staging branch: —
+- Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)
 - Deployed URL / version: —
 
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
 |---|---|---|---|---|---|---|---|
-| F-01 | Authentication and session | 1 | SPECIFIED | Sxr1n | sprint-1/F01-auth.md | #1 | — |
+| F-01 | Authentication and session | 1 | TESTED | Sxr1n | sprint-1/F01-auth.md | #1 | red `e9f9653`, green `56ac71d` (evidence/d1/F01-*.txt) |
 | F-02 | Administrator user access | 1 | SPECIFIED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | — |
 | F-03 | Opening balance | 1 | SPECIFIED | <Student B> | sprint-1/F03-opening-balance.md | #3 | — |
 | F-04 | Receive money | 1 | SPECIFIED | <Student B> | sprint-1/F04-receive-money.md | #4 | — |
@@ -32,6 +32,18 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-07 — D1-S5 (F-01) — Claude + Sxr1n
+- Done: F-01 Auth ครบ AC-F01-01–08 — migration `init_users`, seed (alice, bob, admin), login/logout/me, `requireAuth`/`requireRole` mount ที่ `/api/admin` และกลุ่ม route การเงิน, หน้า Login + navbar + route guard; README มีขั้นตอน test DB/generate/seed; ย้าย port DB ในเครื่องเป็น 5434 (SDS v0.2)
+- Evidence: red `e9f9653` → `evidence/d1/F01-red.txt` (API 6 fail, unit fail), `F01-e2e-red.txt` (2 fail); green `56ac71d` → `evidence/d1/F01-green.txt` (server 10/10 passed, client build OK, E2E 3/3 passed)
+- Decisions: branch `feature/F01-auth` แตกจาก `spec/sprint-1-contracts` + merge `chore/scaffold` (ผู้ใช้อนุมัติ เพราะ #7–#9 รอ review) — PR ของ F-01 ต้อง merge หลัง #8 และ #9
+- Open issues: เพื่อนยังไม่ได้เป็น collaborator; Prisma 7 ไม่ generate client หลัง `migrate dev` (ใส่ใน README แล้ว)
+- Next session: F-02 Admin (D1-S5b) บน branch ที่แตกจาก F-01; เพื่อนเริ่ม F-03–F-05
+
+### 2026-11-07 — Scaffold (ระหว่าง D1-S4 → D1-S5) — Claude + Sxr1n
+- Done: โครง server/client/e2e, health endpoint, error shape, docker-compose, `.env.example`, README
+- Evidence: commit `a91af97` (PR #9) — server 3/3 passed, client build OK, smoke E2E 1/1 passed
+- Next session: D1-S5
+
 ### 2026-11-07 — D1-S4 — Claude + Sxr1n
 - Done: contracts `docs/sprints/sprint-1/F01–F06-*.md` (40 AC, 40 STS rows, status SPECIFIED), `docs/dod.md` v0.1; traceability v0.2 (sync AC-F03-02 + test levels, ปิด gap line type), features v0.2 (F-03 มี account list)
 - Evidence: `7dbc7ec` (spec), `1dbaac0` (docs) บน `spec/sprint-1-contracts` (pushed); Issues #1–#6

@@ -1,5 +1,5 @@
 # F-01 Authentication and session — Sprint 1
-Linked: FR-01, FR-02, FR-03, BR-12, BR-13, NFR-01, NFR-03, NFR-04   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-01, FR-02, FR-03, BR-12, BR-13, NFR-01, NFR-03, NFR-04   Status: TESTED   Owner: Sxr1n
 Design references: `docs/system-sds.md` §5 (permissions), §6 (auth and session)
 
 ## 1 Behavior & workflow
@@ -95,16 +95,17 @@ Seed: `alice` (USER), `bob` (USER), `admin` (ADMIN); passwords from `SEED_USER_P
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F01-01 | — | NOT RUN | — |
-| AC-F01-02 | — | NOT RUN | — |
-| AC-F01-03 | — | NOT RUN | — |
-| AC-F01-04 | — | NOT RUN | — |
-| AC-F01-05 | — | NOT RUN | — |
-| AC-F01-06 | — | NOT RUN | — |
-| AC-F01-07 | — | NOT RUN | — |
-| AC-F01-08 | — | NOT RUN | — |
+| AC-F01-01 | `server/tests/f01-auth.api.test.ts::TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity` | PASS | 56ac71d |
+| AC-F01-02 | `server/tests/f01-auth.api.test.ts::TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie` | PASS | 56ac71d |
+| AC-F01-03 | `server/tests/f01-auth.api.test.ts::TEST-F01-03 a DISABLED user cannot log in with the correct password` | PASS | 56ac71d |
+| AC-F01-04 | `server/tests/f01-auth.api.test.ts::TEST-F01-04 after logout the old session cookie is rejected` | PASS | 56ac71d |
+| AC-F01-05 | `server/tests/f01-auth.api.test.ts::TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data` | PASS | 56ac71d |
+| AC-F01-06 | `server/tests/f01-auth.api.test.ts::TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned` | PASS | 56ac71d |
+| AC-F01-07 | `server/tests/f01-session.unit.test.ts::TEST-F01-07 a token past its 8-hour expiry is rejected` | PASS | 56ac71d |
+| AC-F01-08 | `e2e/f01-auth.spec.ts::TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login; TEST-F01-08 (login error) wrong password shows the generic error and keeps the username` | PASS | 56ac71d |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract | D1-S4 |
+| 0.2 | 2026-11-07 | Done evidence filled (red `e9f9653`: evidence/d1/F01-red.txt, F01-e2e-red.txt; green `56ac71d`: evidence/d1/F01-green.txt). TEST-F01-08 also covers the Login error state from §4 (second E2E case). No behaviour change. | D1-S5 |

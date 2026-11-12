@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      # Host port 5433 so it does not collide with a native PostgreSQL on 5432.
-      - "5433:5432"
+      # Host port 5434: 5432 is often a native PostgreSQL and 5433 is used by our Labs 1-4 (TokTickIT) database.
+      - "5434:5432"
     volumes:
       - money_logger_pgdata:/var/lib/postgresql/data
     healthcheck:

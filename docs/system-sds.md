@@ -3,7 +3,7 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1, `docs/traceability.md` v0.1 |
-| Document version | 0.1 |
+| Document version | 0.2 |
 | Scope | Whole product (Sprints 1–3). Feature contracts in `docs/sprints/sprint-N/` give exact endpoints, fields and screens. |
 
 ---
@@ -267,8 +267,8 @@ Verification (SR-01): each protected endpoint has three API-DB tests — no sess
 ### 7.1 Environment variables
 | Variable | Used by | Example in `.env.example` | Secret |
 |---|---|---|---|
-| `DATABASE_URL` | server, Prisma | `postgresql://postgres:postgres@localhost:5433/money_logger` | yes in production |
-| `TEST_DATABASE_URL` | API-DB tests | `postgresql://postgres:postgres@localhost:5433/money_logger_test` | no (local only) |
+| `DATABASE_URL` | server, Prisma | `postgresql://postgres:postgres@localhost:5434/money_logger` | yes in production |
+| `TEST_DATABASE_URL` | API-DB tests | `postgresql://postgres:postgres@localhost:5434/money_logger_test` | no (local only) |
 | `JWT_SECRET` | server | `change-me-to-a-long-random-string` | yes |
 | `PORT` | server | `4000` | no |
 | `NODE_ENV` | server (cookie `Secure`, static files) | `development` | no |
@@ -279,7 +279,7 @@ Verification (SR-01): each protected endpoint has three API-DB tests — no sess
 Rules (NFR-09): only `.env.example` is committed (`.env` is git-ignored); the server refuses to start if `JWT_SECRET` or `DATABASE_URL` is missing; no secret is placed in client code (the SPA uses relative `/api` URLs, so it needs no environment values); the Lab 5 CI adds a secret scan.
 
 ### 7.2 Local setup (NFR-11)
-`docker compose up -d` (PostgreSQL 16 on host port 5433, named volume) → `npm ci` in `server/` and `client/` → `npx prisma migrate deploy && npx prisma db seed` → `npm run dev` in both (Vite proxies `/api` to port 4000). Exact commands are kept in the README and checked from a fresh clone per release.
+`docker compose up -d` (PostgreSQL 16 on host port 5434, named volume) → `npm ci` in `server/` and `client/` → `npx prisma migrate deploy && npx prisma db seed` → `npm run dev` in both (Vite proxies `/api` to port 4000). Exact commands are kept in the README and checked from a fresh clone per release.
 
 ### 7.3 GCP deployment plan (built in Lab 5)
 Chosen design: **one Compute Engine VM running docker compose**.
@@ -322,3 +322,4 @@ Open (decided in D1-S4): whether Sprint 1's `POST /api/transactions` already acc
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial System SDS | D1-S3 baseline |
+| 0.2 | 2026-11-07 | Local PostgreSQL host port 5433 → 5434 (5433 is taken by the Labs 1–4 database on developer machines) | D1-S5 |
