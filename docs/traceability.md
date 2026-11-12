@@ -98,11 +98,11 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F02-04 | Admin calls any financial endpoint → 403 | TEST-F02-04 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
 | AC-F02-05 | User calls any admin endpoint → 403 | TEST-F02-05 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
 | AC-F02-06 | Admin endpoints without a session → 401 | TEST-F02-06 | API-DB | | `server/tests/f02-admin.api.test.ts` | PASS | 1090928 |
-| AC-F03-01 | Set opening balance and date on seeded Bank → balance shows the amount | TEST-F03-01 | API-DB | | — | NOT RUN | — |
-| AC-F03-02 | Setting an opening balance creates no transaction/line row (summary-level check: AC-F06-03) | TEST-F03-02 | API-DB | TDD | — | NOT RUN | — |
-| AC-F03-03 | Negative, > 2 decimals or > 999,999,999.99 → 422, nothing stored | TEST-F03-03 | unit + API-DB | | — | NOT RUN | — |
-| AC-F03-04 | Opening balance on INCOME/EXPENSE account, or a second opening balance → rejected | TEST-F03-04 | API-DB | | — | NOT RUN | — |
-| AC-F03-05 | Opening balance on another user's account → 404, nothing stored | TEST-F03-05 | API-DB | | — | NOT RUN | — |
+| AC-F03-01 | Set opening balance and date on seeded Bank → balance shows the amount | TEST-F03-01 | API-DB | | `server/tests/f03-accounts.api.test.ts` | PASS | 3f3aae5 |
+| AC-F03-02 | Setting an opening balance creates no transaction/line row (summary-level check: AC-F06-03) | TEST-F03-02 | API-DB | TDD | `server/tests/f03-accounts.api.test.ts` | PASS | 3f3aae5 |
+| AC-F03-03 | Negative, > 2 decimals or > 999,999,999.99 → 422, nothing stored | TEST-F03-03 | unit + API-DB | | `server/tests/f03-accounts.api.test.ts`, `server/tests/f03-accounts.unit.test.ts` | PASS | 3f3aae5 |
+| AC-F03-04 | Opening balance on INCOME/EXPENSE account, or a second opening balance → rejected | TEST-F03-04 | API-DB | | `server/tests/f03-accounts.api.test.ts` | PASS | 3f3aae5 |
+| AC-F03-05 | Opening balance on another user's account → 404, nothing stored | TEST-F03-05 | API-DB | | `server/tests/f03-accounts.api.test.ts` | PASS | 3f3aae5 |
 | AC-F04-01 | RECEIPT Bank ← Salary → Bank +x, Salary period total +x, transaction stored with its line | TEST-F04-01 | API-DB | | — | NOT RUN | — |
 | AC-F04-02 | Line sum ≠ total → 422, nothing stored | TEST-F04-02 | unit + API-DB | TDD | — | NOT RUN | — |
 | AC-F04-03 | RECEIPT into a LOAN_TAKEN (credit card) account → 422 | TEST-F04-03 | unit + API-DB | TDD | — | NOT RUN | — |
@@ -147,3 +147,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial traceability for SRS v0.2 and features v0.1 | D1-S2 baseline |
 | 0.2 | 2026-11-07 | Aligned with Sprint 1 contracts: AC-F03-02 wording; Sprint 1 line-type gap resolved | D1-S4 |
+| 0.3 | 2026-11-12 | Record test results for F-03 (AC-F03-01..05) on commit 3f3aae5 | D1-S6a |
