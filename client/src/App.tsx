@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth'
 import Layout from './components/Layout'
 import LoginPage from './pages/LoginPage'
+import UsersPage from './pages/UsersPage'
 
 function Footer() {
   const [version, setVersion] = useState<string | null>(null)
@@ -26,8 +27,7 @@ export default function App() {
             <Route path="/overview" element={<h1 className="h4">Overview</h1>} />
           </Route>
           <Route element={<Layout role="ADMIN" />}>
-            {/* F-02 replaces this placeholder with the Users screen. */}
-            <Route path="/admin/users" element={<h1 className="h4">Users</h1>} />
+            <Route path="/admin/users" element={<UsersPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

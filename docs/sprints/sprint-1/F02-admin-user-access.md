@@ -1,5 +1,5 @@
 # F-02 Administrator user access — Sprint 1
-Linked: FR-04, FR-05, BR-12, BR-13, NFR-01, NFR-02   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-04, FR-05, BR-12, BR-13, NFR-01, NFR-02   Status: TESTED   Owner: Sxr1n
 Depends on: F-01. Design references: `docs/system-sds.md` §5, §6
 
 ## 1 Behavior & workflow
@@ -71,14 +71,15 @@ No change (uses `users.status` and `users.token_version` from F-01).
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F02-01 | — | NOT RUN | — |
-| AC-F02-02 | — | NOT RUN | — |
-| AC-F02-03 | — | NOT RUN | — |
-| AC-F02-04 | — | NOT RUN | — |
-| AC-F02-05 | — | NOT RUN | — |
-| AC-F02-06 | — | NOT RUN | — |
+| AC-F02-01 | `server/tests/f02-admin.api.test.ts::TEST-F02-01 admin lists all users with exactly the six non-financial fields` | PASS | 1090928 |
+| AC-F02-02 | `server/tests/f02-admin.api.test.ts::TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login` | PASS | 1090928 |
+| AC-F02-03 | `server/tests/f02-admin.api.test.ts::TEST-F02-03 admin cannot disable their own account; TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422` | PASS | 1090928 |
+| AC-F02-04 | `server/tests/f02-admin.api.test.ts::TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint` | PASS | 1090928 |
+| AC-F02-05 | `server/tests/f02-admin.api.test.ts::TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user` | PASS | 1090928 |
+| AC-F02-06 | `server/tests/f02-admin.api.test.ts::TEST-F02-06 admin endpoints return 401 without a session` | PASS | 1090928 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract | D1-S4 |
+| 0.2 | 2026-11-07 | Done evidence filled (red `50c09ff`: evidence/d1/F02-red.txt — TEST-F02-04..06 already passed because F-01 mounted the role guards; green `1090928`: evidence/d1/F02-green.txt). Added a second case under TEST-F02-03 for the §5 404/422 errors. No behaviour change. | D1-S5b |
