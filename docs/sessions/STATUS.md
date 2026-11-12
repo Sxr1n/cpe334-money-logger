@@ -4,7 +4,7 @@
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
 - Next session: Leviathan-c137 → review PRs, then D1-S6 (F-03–F-05) · Sxr1n → L5-S1 (Docker), L5-S2 (CI), L5-S3 (GCP), then F-06
 - Latest release on main: —
-- Active staging branch: `staging/sprint-1` (PRs #7 docs, #8 contracts, #9 scaffold awaiting teammate review)
+- Active staging branch: `staging/sprint-1` at `2770873` (#7–#12 merged 2026-11-12; integration run server 17/17, E2E 3/3 — evidence/d1/staging-integration-2770873.txt); open: #13 Docker, #14 CI, #15 E2E channel
 - Deployed URL / version: —
 
 ## Feature board
@@ -15,7 +15,7 @@
 | F-03 | Opening balance | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 | — |
 | F-04 | Receive money | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 | — |
 | F-05 | Make a payment or record a charge | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 | — |
-| F-06 | Overview, summary and history | 1 | SPECIFIED | Sxr1n | sprint-1/F06-overview-history.md | #6 | — |
+| F-06 | Overview, summary and history | 1 | IN PROGRESS | Sxr1n | sprint-1/F06-overview-history.md | #6 | month range: red `87b22b5`, green `59cbd08` |
 | F-07 | Account management | 2 | PLANNED | — | — | — | — |
 | F-08 | Opening balance management | 2 | PLANNED | — | — | — | — |
 | F-09 | Transfers | 2 | PLANNED | — | — | — | — |
@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-12 — Integration + F-06 (part) — Claude + Sxr1n
+- Done: #7–#12 merged (merge commits); #10 แสดง CONFLICTING ค้าง → `git merge-tree` สะอาด → merge staging เข้า F-01 (`729b1ce`) แล้ว GitHub คำนวณใหม่เป็น CLEAN; integration run บน staging `2770873`; E2E ในเครื่องถูก Windows Smart App Control บล็อก → เพิ่ม `PW_CHANNEL=chrome` (PR #15); F-06: `bangkokToday()` / `currentMonthRange()` ใน `server/src/lib/period.ts`
+- Evidence: `evidence/d1/staging-integration-2770873.txt` (server 17/17, client build, E2E 3/3); F-06 red `87b22b5` → `evidence/d1/F06-period-red.txt`, green `59cbd08` → `evidence/d1/F06-period-green.txt` (server 20/20)
+- Decisions: ไม่ปิด Smart App Control (ปิดแล้วเปิดคืนไม่ได้) — ใช้ Chrome ที่ติดตั้งแทน
+- Open issues: F-03 ยังไม่เริ่ม (ช้ากว่าแผน 3 วัน); #13/#14/#15 รอ review; ไฟล์แนบ Lab 5 (GCP) ยังไม่มี; branch protection (public vs Pro) ยังไม่ตัดสิน; AC-F06-04 ส่วน inclusion รอ F-04
+- Next session: F-06 API/UI หลัง F-04 merge · L5-S3 เมื่อได้ไฟล์แนบ Lab 5
+
 ### 2026-11-07 — D1-S5b (F-02) — Claude + Sxr1n
 - Done: F-02 ครบ AC-F02-01–06 — `GET /api/admin/users`, `PATCH /api/admin/users/:id` (disable เพิ่ม token_version, ห้าม disable ตัวเอง), หน้า Users
 - Evidence: red `50c09ff` → `evidence/d1/F02-red.txt` (4 fail, 3 pass เพราะ guard จาก F-01); green `1090928` → `evidence/d1/F02-green.txt` (server 17/17, client build OK, E2E 3/3 regression)

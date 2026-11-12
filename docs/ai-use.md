@@ -8,3 +8,4 @@
 | 2026-11-07 | Scaffold | Claude | Generated project skeleton (server/client/e2e, compose, README) from TokTickIT patterns | Pending: teammate review in PR #9 |
 | 2026-11-07 | D1-S5 (F-01) | Claude | Wrote F-01 tests first (red), then auth API, middleware, seed and Login UI; ran tests and saved red/green output | Sxr1n checks contract match and test assertions; pending: teammate PR review |
 | 2026-11-07 | D1-S5b (F-02) | Claude | Wrote F-02 tests first (red), then admin API and Users screen; ran tests and saved output | Sxr1n checks assertions and contract match; pending: teammate PR review |
+| 2026-11-12 | Integration + F-06 (part) | Claude | Diagnosed the stale PR conflict and the blocked E2E browser; wrote the Bangkok month-range test first, then the helper | Sxr1n checks merge order, evidence files and the month-boundary cases |

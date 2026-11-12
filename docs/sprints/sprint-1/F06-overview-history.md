@@ -1,5 +1,5 @@
 # F-06 Overview, summary and history — Sprint 1
-Linked: FR-06, FR-18, FR-24, FR-25, BR-06, BR-11, NFR-02, NFR-08   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-06, FR-18, FR-24, FR-25, BR-06, BR-11, NFR-02, NFR-08   Status: IN PROGRESS   Owner: Sxr1n
 Depends on: F-03, F-04, F-05. Design references: `docs/system-sds.md` §2.1 (dates), §2.4 (balances), §3, §4
 
 ## 1 Behavior & workflow
@@ -85,7 +85,7 @@ No change. Uses the index `transactions (user_id, txn_date DESC, id DESC)` from 
 | AC-F06-01 | — | NOT RUN | — |
 | AC-F06-02 | — | NOT RUN | — |
 | AC-F06-03 | — | NOT RUN | — |
-| AC-F06-04 | — | NOT RUN | — |
+| AC-F06-04 | `server/tests/f06-period.unit.test.ts::TEST-F06-04 (range)` ×3 — range part PASS; inclusion of 10-31/11-01/11-30 in the summary not yet tested (needs F-04 transactions) | INCOMPLETE | 59cbd08 |
 | AC-F06-05 | — | NOT RUN | — |
 | AC-F06-06 | — | NOT RUN | — |
 | AC-F06-07 | — | NOT RUN | — |
@@ -94,3 +94,4 @@ No change. Uses the index `transactions (user_id, txn_date DESC, id DESC)` from 
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract | D1-S4 |
+| 0.2 | 2026-11-12 | Started: Bangkok month-range helper (red `87b22b5`, green `59cbd08`, evidence/d1/F06-period-*.txt). AC-F06-04 split into range part (done) and summary-inclusion part (pending F-04). No behaviour change. | D1 F-06 |
