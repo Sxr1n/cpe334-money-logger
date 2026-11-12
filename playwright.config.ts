@@ -15,6 +15,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'retain-on-failure',
+    // PW_CHANNEL=chrome uses the installed Google Chrome, e.g. when Windows Smart App Control blocks Playwright's Chromium.
+    channel: process.env.PW_CHANNEL || undefined,
   },
   webServer: [
     {
