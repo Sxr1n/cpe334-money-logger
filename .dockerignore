@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+server/generated
+**/.env
+.git
+docs
+evidence
+submission
+test-results
+playwright-report
