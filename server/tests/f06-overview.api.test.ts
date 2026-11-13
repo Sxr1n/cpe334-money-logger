@@ -99,7 +99,7 @@ describe('F-06 Overview, summary and history', () => {
     expect(res.status).toBe(200)
     expect(res.body).toEqual({ from: '2026-11-01', to: '2026-11-30', income: 200, expense: 0, net: 200 })
 
-    for (const query of ['from=2026-11-30&to=2026-11-01', 'from=2026-02-30', 'to=yesterday']) {
+    for (const query of ['from=2026-11-30&to=2026-11-01', 'from=2026-02-30', 'from=2026-13-01', 'to=yesterday']) {
       const bad = await request(app).get(`/api/summary?${query}`).set('Cookie', cookie)
       expect(bad.status, query).toBe(422)
       expect(bad.body.error.code).toBe('VALIDATION_FAILED')

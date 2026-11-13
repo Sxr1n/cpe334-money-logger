@@ -3,9 +3,12 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth'
 import Layout from './components/Layout'
 import AccountsPage from './pages/AccountsPage'
+import HistoryPage from './pages/HistoryPage'
 import LoginPage from './pages/LoginPage'
+import OverviewPage from './pages/OverviewPage'
 import PayPage from './pages/PayPage'
 import ReceiveMoneyPage from './pages/ReceiveMoneyPage'
+import TransactionDetailPage from './pages/TransactionDetailPage'
 import UsersPage from './pages/UsersPage'
 
 function Footer() {
@@ -26,8 +29,9 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route element={<Layout role="USER" />}>
-            {/* F-06 replaces this placeholder with the Overview screen. */}
-            <Route path="/overview" element={<h1 className="h4">Overview</h1>} />
+            <Route path="/overview" element={<OverviewPage />} />
+            <Route path="/transactions" element={<HistoryPage />} />
+            <Route path="/transactions/:id" element={<TransactionDetailPage />} />
             <Route path="/accounts" element={<AccountsPage />} />
             <Route path="/receive" element={<ReceiveMoneyPage />} />
             <Route path="/pay" element={<PayPage />} />

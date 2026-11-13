@@ -1,6 +1,8 @@
 import { AccountType, type Account } from '../../generated/prisma/client'
 import { Router, type Request, type Response } from 'express'
 import { validateOpeningBalanceInput } from '../lib/openingBalance'
+import { parsePeriod, sendValidationFailed } from '../lib/query'
+import { periodTotalsByAccount } from '../lib/summary'
 import { prisma } from '../prisma'
 
 const router = Router()
@@ -24,17 +26,23 @@ function serializeAccount(acc: Account) {
   }
 }
 
-// GET /api/accounts (USER)
+// GET /api/accounts?from&to (USER) — F-06 adds periodTotal for INCOME/EXPENSE (FR-06)
 router.get('/', async (req: Request, res: Response) => {
-  const accounts = await prisma.account.findMany({
-    where: { userId: req.user!.id },
-    orderBy: { name: 'asc' },
-  })
+  const period = parsePeriod(req.query)
+  if ('error' in period) return sendValidationFailed(res, period.error)
+
+  const [accounts, totals] = await Promise.all([
+    prisma.account.findMany({ where: { userId: req.user!.id }, orderBy: { name: 'asc' } }),
+    periodTotalsByAccount(req.user!.id, period),
+  ])
 
   accounts.sort((a, b) => TYPE_ORDER[a.type] - TYPE_ORDER[b.type] || a.name.localeCompare(b.name))
 
   res.json({
-    items: accounts.map(serializeAccount),
+    items: accounts.map((acc) => ({
+      ...serializeAccount(acc),
+      periodTotal: acc.type === AccountType.INCOME || acc.type === AccountType.EXPENSE ? totals.get(acc.id) ?? 0 : null,
+    })),
   })
 })
 

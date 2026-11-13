@@ -10,6 +10,7 @@ export interface AccountItem {
   balance: number
   openingBalance: number | null
   openingDate: string | null
+  periodTotal: number | null // F-06: this month's total for INCOME/EXPENSE, null otherwise
 }
 
 const TYPE_SECTIONS: { type: AccountType; title: string }[] = [
@@ -213,6 +214,7 @@ export default function AccountsPage() {
                           <th>Account Name</th>
                           {isCashOrLoan && <th className="text-end">Balance</th>}
                           {isCashOrLoan && <th className="text-end">Opening Balance</th>}
+                          {!isCashOrLoan && <th className="text-end">This month</th>}
                           <th className="text-end" style={{ width: '180px' }}>Action</th>
                         </tr>
                       </thead>
@@ -226,6 +228,9 @@ export default function AccountsPage() {
                               <td className="text-end font-monospace">
                                 {formatTHB(acc.balance)}
                               </td>
+                            )}
+                            {!isCashOrLoan && (
+                              <td className="text-end font-monospace">{formatTHB(acc.periodTotal ?? 0)}</td>
                             )}
                             {isCashOrLoan && (
                               <td className="text-end text-muted small">

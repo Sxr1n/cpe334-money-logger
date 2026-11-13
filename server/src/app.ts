@@ -7,6 +7,7 @@ import accountsRouter from './routes/accounts'
 import adminRouter from './routes/admin'
 import authRouter from './routes/auth'
 import healthRouter from './routes/health'
+import overviewRouter from './routes/overview'
 import transactionsRouter from './routes/transactions'
 
 const app = express()
@@ -22,6 +23,7 @@ app.use('/api/admin', requireAuth, requireRole('ADMIN'), adminRouter)
 app.use(['/api/accounts', '/api/transactions', '/api/overview', '/api/summary'], requireAuth, requireRole('USER'))
 app.use('/api/accounts', accountsRouter)
 app.use('/api/transactions', transactionsRouter)
+app.use('/api', overviewRouter)
 
 // SDS §4.2: one error shape, no stack traces or SQL text in responses.
 app.use('/api', (_req, res) => {

@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { parsePaging, sendValidationFailed } from '../lib/query'
 import { prisma } from '../prisma'
 
 // Mounted at /api/admin behind requireAuth + requireRole('ADMIN') (see app.ts).
@@ -12,18 +13,14 @@ const validationFailed = (details: Record<string, string>) => ({
 })
 
 router.get('/users', async (req, res) => {
-  const page = req.query.page === undefined ? 1 : Number(req.query.page)
-  const pageSize = req.query.pageSize === undefined ? 50 : Number(req.query.pageSize)
-  if (!Number.isInteger(page) || page < 1) return res.status(422).json(validationFailed({ page: 'Must be 1 or more' }))
-  if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > 50) {
-    return res.status(422).json(validationFailed({ pageSize: 'Must be 1 to 50' }))
-  }
+  const paging = parsePaging(req.query)
+  if ('error' in paging) return sendValidationFailed(res, paging.error)
 
   const [items, total] = await Promise.all([
-    prisma.user.findMany({ select: userFields, orderBy: { username: 'asc' }, skip: (page - 1) * pageSize, take: pageSize }),
+    prisma.user.findMany({ select: userFields, orderBy: { username: 'asc' }, skip: paging.skip, take: paging.pageSize }),
     prisma.user.count(),
   ])
-  res.json({ items, page, pageSize, total })
+  res.json({ items, page: paging.page, pageSize: paging.pageSize, total })
 })
 
 router.patch('/users/:id', async (req, res) => {
