@@ -1,5 +1,6 @@
-# TEST-F05-01..07 green test run
+# TEST-F05-01..08 green test run
 # Tested on branch feature/F05-payment-charge
+# Commit: 6f52657 (local run at 02:06:01 predates commit 02:07:17; verified by CI run 43489199561)
 # Clean working tree verified
 # Date: 2026-11-14T02:06:01+07:00
 
