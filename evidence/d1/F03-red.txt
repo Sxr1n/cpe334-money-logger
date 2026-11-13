@@ -1,0 +1,122 @@
+# TEST-F03-01..05 + unit red test run
+# Tested on branch feature/F03-opening-balance before implementation
+# Date: 2026-11-12T16:33:20Z
+
+> server@0.0.0 test
+> vitest run
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ❯ tests/f03-accounts.api.test.ts (5 tests | 5 failed) 1537ms
+     × TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts 482ms
+     × TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines 265ms
+     × TEST-F03-03 rejects negative, non-integer, and excessive amounts; accepts 0 and max satang 267ms
+     × TEST-F03-04 rejects opening balance on Salary (INCOME) and duplicate on Bank 262ms
+     × TEST-F03-05 cross-user isolation: alice cannot set opening balance or view bob accounts 257ms
+ ✓ tests/f02-admin.api.test.ts (7 tests) 2353ms
+     ✓ TEST-F02-01 admin lists all users with exactly the six non-financial fields  477ms
+     ✓ TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login  468ms
+     ✓ TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint  312ms
+ ✓ tests/f01-auth.api.test.ts (6 tests) 1253ms
+     ✓ TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity  320ms
+     ✓ TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned  382ms
+ ❯ tests/f03-accounts.unit.test.ts (0 test)
+ ✓ tests/seed.api.test.ts (1 test) 707ms
+     ✓ re-running the seed keeps existing users unchanged, including an admin disable  704ms
+ ✓ tests/app.api.test.ts (3 tests) 42ms
+ ✓ tests/f01-session.unit.test.ts (1 test) 7ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f03-accounts.unit.test.ts [ tests/f03-accounts.unit.test.ts ]
+Error: Cannot find module '../src/lib/openingBalance' imported from C:/Users/admin/Desktop/Deliverable/server/tests/f03-accounts.unit.test.ts
+ ❯ tests/f03-accounts.unit.test.ts:2:1
+      1| import { describe, expect, it } from 'vitest'
+      2| import { validateOpeningBalanceInput } from '../src/lib/openingBalance'
+       | ^
+      3|
+      4| describe('F-03 Opening balance validator (unit)', () => {
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f03-accounts.api.test.ts:43:24
+     41|       .send({ amount: 500000, date: '2026-11-01' })
+     42|
+     43|     expect(res.status).toBe(200)
+       |                        ^
+     44|     expect(res.body).toMatchObject({
+     45|       id: aliceBankId,
+
+ FAIL  tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f03-accounts.api.test.ts:82:24
+     80|       .send({ amount: 500000, date: '2026-11-01' })
+     81|
+     82|     expect(res.status).toBe(200)
+       |                        ^
+
+ FAIL  tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-03 rejects negative, non-integer, and excessive amounts; accepts 0 and max satang
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f03-accounts.api.test.ts:101:23
+     99|       .set('Cookie', cookie)
+    100|       .send({ amount: -1, date: '2026-11-01' })
+    101|     expect(r1.status).toBe(422)
+       |                       ^
+
+ FAIL  tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-04 rejects opening balance on Salary (INCOME) and duplicate on Bank
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f03-accounts.api.test.ts:152:28
+    150|       .set('Cookie', cookie)
+    151|       .send({ amount: 500000, date: '2026-11-01' })
+    152|     expect(initRes.status).toBe(200)
+       |                            ^
+
+ FAIL  tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-05 cross-user isolation: alice cannot set opening balance or view bob accounts
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f03-accounts.api.test.ts:194:28
+    192|     // Alice GET /api/accounts contains none of bob's accounts
+    193|     const listRes = await request(app).get('/api/accounts').set('Cookie', aliceCookie)
+    194|     expect(listRes.status).toBe(200)
+       |                            ^
+
+ Test Files  2 failed | 5 passed (7)
+      Tests  5 failed | 18 passed (23)
+   Start at  23:33:01
+   Duration  18.81s (transform 428ms, setup 130ms, import 6.51s, tests 5.90s, environment 1ms)

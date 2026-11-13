@@ -9,7 +9,8 @@ const router = Router()
 const cookieOptions: CookieOptions = {
   httpOnly: true,
   sameSite: 'lax',
-  secure: process.env.NODE_ENV === 'production',
+  // Secure needs HTTPS; COOKIE_SECURE=false allows plain HTTP deployments until TLS is set up (SDS §7.3).
+  secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : process.env.NODE_ENV === 'production',
   path: '/',
 }
 

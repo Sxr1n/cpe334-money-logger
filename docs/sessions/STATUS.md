@@ -2,9 +2,9 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
-- Next session: Leviathan-c137 → review PRs, then D1-S6 (F-03–F-05) · Sxr1n → L5-S1 (Docker), L5-S2 (CI), L5-S3 (GCP), then F-06
+- Next session: Sxr1n → F-06 Overview, summary and history · Leviathan-c137 → review F-06 PR
 - Latest release on main: —
-- Active staging branch: `staging/sprint-1` at `2770873` (#7–#12 merged 2026-11-12; integration run server 17/17, E2E 3/3 — evidence/d1/staging-integration-2770873.txt); open: #13 Docker, #14 CI, #15 E2E channel
+- Active staging branch: `staging/sprint-1` (PRs #7–#18 merged)
 - Deployed URL / version: —
 
 ## Feature board
@@ -12,9 +12,9 @@
 |---|---|---|---|---|---|---|---|
 | F-01 | Authentication and session | 1 | TESTED | Sxr1n | sprint-1/F01-auth.md | #1 | red `e9f9653`, green `56ac71d` (evidence/d1/F01-*.txt) |
 | F-02 | Administrator user access | 1 | TESTED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | red `50c09ff`, green `1090928` (evidence/d1/F02-*.txt) |
-| F-03 | Opening balance | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 | — |
-| F-04 | Receive money | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 | — |
-| F-05 | Make a payment or record a charge | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 | — |
+| F-03 | Opening balance | 1 | TESTED | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 / PR #16 | red `0849955`, green `3f3aae5`, closed `b2a4f70` (evidence/d1/F03-*.txt) |
+| F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 / PR #17 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
+| F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | IN PROGRESS | Sxr1n | sprint-1/F06-overview-history.md | #6 | month range: red `87b22b5`, green `59cbd08` |
 | F-07 | Account management | 2 | PLANNED | — | — | — | — |
 | F-08 | Opening balance management | 2 | PLANNED | — | — | — | — |
@@ -46,12 +46,40 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — D1-S6c (F-05) — Claude + Leviathan-c137
+- Done: F-05 ครบ AC-F05-01–07 + E2E TEST-F05-08 — ฟังก์ชัน `calculateTxnEffects` บน shared ledger core (`server/src/lib/ledger.ts`), จัดการ transaction form `PAYMENT` ใน `POST /api/transactions` (atomic balance updates, BR-05 effects, BR-07 cash overspending check, BR-08 card overpayment check, check constraint backstop), หน้า Make a payment (`/pay`) พร้อม dynamic lines, spending/repayment categories, live footer comparison, inline field error mapping, Playwright E2E `e2e/f05-pay.spec.ts`
+- Evidence: red `f615c47` → `evidence/d1/F05-red.txt` (8 failed); green `6f52657` → `evidence/d1/F05-green.txt` (server 47/47 passed, client build OK, E2E 5/5 passed; CI run 43489199561)
+- Decisions: PAYMENT updates balance using `calculateTxnEffects` with locked rows; CASH balance cannot be negative (BR-07); repayments cannot exceed debt (BR-08); repayments do not affect expense sum (BR-06)
+- Open issues: —
+- Next session: Sxr1n รีวิว F-05 PR; Leviathan-c137 ตรวจสอบ F-06 และเตรียมรายงาน Lab 5
+
+### 2026-11-13 — D1-S6b (F-04) — Claude + Leviathan-c137
+- Done: F-04 ครบ AC-F04-01–07 — model Txn/TxnLine, migration `init_transactions`, shared ledger core (`server/src/lib/ledger.ts`), `POST /api/transactions` (atomic posting algorithm พร้อม SELECT FOR UPDATE, balance updates, validation BR-01..04, BR-09), หน้า Receive money (`/receive`) พร้อม live footer calculation, client-side validation และ field error mapping, E2E test `e2e/f04-receive.spec.ts`; unskipped และ verified PASS สำหรับ `TEST-F03-02`
+- Evidence: red `295c90b` → `evidence/d1/F04-red.txt` (5 failed API-DB); green `b2a4f70` → `evidence/d1/F04-green.txt` (server 34/34 passed, client build OK, E2E 4/4 passed)
+- Decisions: shared transaction engine ใช้ schema model `Txn` และตาราง `transactions` / `transaction_lines`; posting algorithm ล็อก accounts เรียงตาม id ascending ป้องกัน deadlock
+- Open issues: —
+- Next session: Sxr1n รีวิว F-04 PR; Leviathan-c137 เริ่ม F-05 Make a payment or record a charge
+
+### 2026-11-12 — D1-S6a (F-03) — Claude + Leviathan-c137
+- Done: F-03 ครบ AC-F03-01–05 — enum AccountType, model Account, migration `init_accounts`, seed default accounts, `GET /api/accounts`, `PUT /api/accounts/:id/opening-balance`, หน้า Accounts (`/accounts`) พร้อมแบบฟอร์มตั้งยอดเริ่มต้น
+- Evidence: red `0849955` → `evidence/d1/F03-red.txt` (5 failed API-DB, unit failed); green `3f3aae5` → `evidence/d1/F03-green.txt` (server 24/24 passed, client build OK, E2E 3/3 regression passed)
+- Decisions: opening balance เก็บ satang เป็น bigint บน accounts; validation เช็ก 400 -> 404 -> 422 -> 409
+- Open issues: —
+- Next session: Sxr1n รีวิว F-03 PR; Leviathan-c137 เริ่ม F-04 Receive money (transaction engine)
+
 ### 2026-11-12 — Integration + F-06 (part) — Claude + Sxr1n
 - Done: #7–#12 merged (merge commits); #10 แสดง CONFLICTING ค้าง → `git merge-tree` สะอาด → merge staging เข้า F-01 (`729b1ce`) แล้ว GitHub คำนวณใหม่เป็น CLEAN; integration run บน staging `2770873`; E2E ในเครื่องถูก Windows Smart App Control บล็อก → เพิ่ม `PW_CHANNEL=chrome` (PR #15); F-06: `bangkokToday()` / `currentMonthRange()` ใน `server/src/lib/period.ts`
 - Evidence: `evidence/d1/staging-integration-2770873.txt` (server 17/17, client build, E2E 3/3); F-06 red `87b22b5` → `evidence/d1/F06-period-red.txt`, green `59cbd08` → `evidence/d1/F06-period-green.txt` (server 20/20)
 - Decisions: ไม่ปิด Smart App Control (ปิดแล้วเปิดคืนไม่ได้) — ใช้ Chrome ที่ติดตั้งแทน
 - Open issues: F-03 ยังไม่เริ่ม (ช้ากว่าแผน 3 วัน); #13/#14/#15 รอ review; ไฟล์แนบ Lab 5 (GCP) ยังไม่มี; branch protection (public vs Pro) ยังไม่ตัดสิน; AC-F06-04 ส่วน inclusion รอ F-04
 - Next session: F-06 API/UI หลัง F-04 merge · L5-S3 เมื่อได้ไฟล์แนบ Lab 5
+
+### 2026-11-07 — L5-S1 (Docker + compose) — Claude + Sxr1n
+- Done: `Dockerfile` (multi-stage, image เดียว Express serve React — SD-05 Accepted), service `app` ใน compose (port 8080), `server/docker-entrypoint.sh` (migrate deploy + seed ถ้า `SEED_ON_START=true`), root `.env.example`, env `COOKIE_SECURE`/`CLIENT_DIST`; README มีหัวข้อ Docker; SDS v0.3
+- Defect ที่เจอระหว่างทำ: seed reset status ของ user ทุกครั้งที่ container start (admin disable หายหลัง restart) → red `7785f76` (`evidence/d1/seed-nondestructive-red.txt`) → fix `b5154a9` → green (server 18/18)
+- Evidence: `docs/labs/lab5/L5-S1-compose-check.txt` — fresh volume + `build --no-cache` → migration applied, seed, `/` และ `/overview` 200 HTML, `/api/accounts` 401, bob DISABLED คงอยู่หลัง restart และหลัง down/up; full suite server 18/18, E2E 3/3
+- Open issues: ยังไม่ได้อ่านไฟล์แนบ Lab 5 (วิธีเข้า GCP); HTTPS ยังไม่มี → ใช้ `COOKIE_SECURE=false`; image มี dev dependencies (shortcut ใน Dockerfile)
+- Next session: L5-S2 CI quality gate
 
 ### 2026-11-07 — D1-S5b (F-02) — Claude + Sxr1n
 - Done: F-02 ครบ AC-F02-01–06 — `GET /api/admin/users`, `PATCH /api/admin/users/:id` (disable เพิ่ม token_version, ห้าม disable ตัวเอง), หน้า Users

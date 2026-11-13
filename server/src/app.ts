@@ -1,10 +1,13 @@
 import cookieParser from 'cookie-parser'
 import express, { type NextFunction, type Request, type Response } from 'express'
+import path from 'node:path'
 import { requireAuth } from './middleware/requireAuth'
 import { requireRole } from './middleware/requireRole'
+import accountsRouter from './routes/accounts'
 import adminRouter from './routes/admin'
 import authRouter from './routes/auth'
 import healthRouter from './routes/health'
+import transactionsRouter from './routes/transactions'
 
 const app = express()
 
@@ -17,11 +20,20 @@ app.use('/api', authRouter)
 // SDS §5: guards are mounted per route group, so every endpoint added under these prefixes inherits them.
 app.use('/api/admin', requireAuth, requireRole('ADMIN'), adminRouter)
 app.use(['/api/accounts', '/api/transactions', '/api/overview', '/api/summary'], requireAuth, requireRole('USER'))
+app.use('/api/accounts', accountsRouter)
+app.use('/api/transactions', transactionsRouter)
 
 // SDS §4.2: one error shape, no stack traces or SQL text in responses.
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Not found.' } })
 })
+
+// SD-05: in the Docker image Express also serves the built React app, so UI and API share one origin.
+const clientDist = process.env.CLIENT_DIST
+if (clientDist) {
+  app.use(express.static(clientDist))
+  app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.resolve(clientDist, 'index.html')))
+}
 
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof SyntaxError && 'body' in err) {

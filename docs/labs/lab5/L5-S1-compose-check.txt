@@ -1,0 +1,37 @@
+# L5-S1 check — fresh volume, fresh image build, docker compose up runs migrate + seed; data survives restart and down/up
+# Branch chore/L5-docker at b5154a9 + uncommitted Docker files (committed next); date 2026-11-07T10:32:28Z
+# Commands: docker compose down -v; docker compose build --no-cache app; docker compose up -d   (.env: SEED_ON_START=true, COOKIE_SECURE=false)
+
+## Container start log
+1 migration found in prisma/migrations
+Applying migration `20261106235656_init_users`
+The following migration(s) have been applied:
+migrations/
+    └─ migration.sql
+All migrations have been successfully applied.
+Running seed command `tsx prisma/seed.ts` ...
+🌱  The seed command has been executed.
+Money Logger API listening on port 4000
+
+## GET / (React app served by Express, same origin)
+HTTP 200 text/html; charset=utf-8
+## GET /overview (SPA route fallback)
+HTTP 200 text/html; charset=utf-8
+## GET /api/health
+{"status":"ok","version":"dev"}
+## GET /api/accounts without session
+{"error":{"code":"UNAUTHENTICATED","message":"Please log in."}} HTTP 401
+
+## Login as admin and disable bob
+HTTP/1.1 200 OK
+Set-Cookie: ml_session=<redacted>; Max-Age=28800; Path=/; Expires=Sat, 07 Nov 2026 18:32:30 GMT; HttpOnly; SameSite=Lax
+{"id":2,"username":"bob","displayName":"Bob Example","role":"USER","status":"DISABLED","createdAt":"2026-11-07T10:32:26.835Z"}
+
+## docker compose restart app (seed runs again)
+ Container money-logger-app Started 
+bob after restart: DISABLED
+
+## docker compose down (volume kept) && docker compose up -d
+ Network cpe334_duo_pj_default Removed 
+ Container money-logger-app Started 
+bob after down/up: DISABLED

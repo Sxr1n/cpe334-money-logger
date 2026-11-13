@@ -1,0 +1,104 @@
+# TEST-F05-01..07 red test run
+# Tested on branch feature/F05-payment-charge
+# Head of branch before implementation
+# Date: 2026-11-14T02:01:04+07:00
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ❯ tests/f05-transactions.api.test.ts (7 tests | 4 failed) 2506ms
+     × TEST-F05-01 alice posts PAYMENT from Credit Card (debt 0) total 120000 lines Dining 70000 + Groceries 50000 (AC-F05-01) 633ms
+     × TEST-F05-02 alice repays card debt from Bank: Bank -= 120000, card debt becomes 0, expense sum unchanged (AC-F05-02) 359ms
+     ✓ TEST-F05-03 PAYMENT lines sum mismatch (1 satang more) -> 422 RULE_VIOLATION (AC-F05-03) 310ms
+     ✓ TEST-F05-04 invalid account combinations rejected with 422 RULE_VIOLATION (AC-F05-04) 324ms
+     × TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07) 295ms
+     × TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08) 292ms
+     ✓ TEST-F05-07 cross-user isolation: alice using bob Credit Card or bob Dining gets 404 (AC-F05-07, BR-11) 292ms
+ ✓ tests/f02-admin.api.test.ts (7 tests) 2569ms
+     ✓ TEST-F02-01 admin lists all users with exactly the six non-financial fields 523ms
+     ✓ TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login 502ms
+     ✓ TEST-F02-03 admin cannot disable their own account 323ms
+     ✓ TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422 314ms
+     ✓ TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 337ms
+     ✓ TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 319ms
+ ✓ tests/f04-transactions.api.test.ts (7 tests) 2390ms
+     ✓ TEST-F04-01 alice posts RECEIPT Bank <- Salary 3000000; Bank balance becomes 3500000 and status is POSTED 550ms
+     ✓ TEST-F04-04 rejects invalid satang amounts, future date, ancient date; accepts today (BR-02, BR-09) 335ms
+     ✓ TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06) 315ms
+ ✓ tests/f03-accounts.api.test.ts (6 tests) 1990ms
+     ✓ TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts 514ms
+     ✓ TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines 328ms
+     ✓ TEST-F03-03 rejects negative, non-integer, and excessive amounts; accepts 0 and max satang 319ms
+ ❯ tests/f05-ledger.unit.test.ts (5 tests | 4 failed) 7ms
+     × TEST-F05-01 unit: effects of PAYMENT from LOAN_TAKEN primary with EXPENSE lines (BR-05) 4ms
+     × TEST-F05-02 unit: effects of PAYMENT from CASH primary with LOAN_TAKEN repayment line (BR-05, BR-06) 1ms
+     ✓ TEST-F05-04 unit: validateAllowedAccountTypes enforces Sprint 1 allowed types table for PAYMENT (BR-03) 1ms
+     × TEST-F05-05 unit: CASH primary balance check enforces non-negative balance (BR-07) 0ms
+     × TEST-F05-06 unit: LOAN_TAKEN repayment line cannot exceed outstanding debt (BR-08) 0ms
+ ✓ tests/f01-auth.api.test.ts (6 tests) 1295ms
+     ✓ TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 326ms
+     ✓ TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 415ms
+ ✓ tests/seed.api.test.ts (1 test) 705ms
+     ✓ re-running the seed keeps existing users unchanged, including an admin disable 702ms
+ ✓ tests/app.api.test.ts (3 tests) 47ms
+ ✓ tests/f04-ledger.unit.test.ts (3 tests) 18ms
+ ✓ tests/f01-session.unit.test.ts (1 test) 6ms
+ ✓ tests/f03-accounts.unit.test.ts (1 test) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-01 unit: effects of PAYMENT from LOAN_TAKEN primary with EXPENSE lines (BR-05)
+Error: Not implemented
+ ❯ calculateTxnEffects src/lib/ledger.ts:203:9
+ ❯ tests/f05-ledger.unit.test.ts:14:20
+
+ FAIL  tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-02 unit: effects of PAYMENT from CASH primary with LOAN_TAKEN repayment line (BR-05, BR-06)
+Error: Not implemented
+ ❯ calculateTxnEffects src/lib/ledger.ts:203:9
+ ❯ tests/f05-ledger.unit.test.ts:34:20
+
+ FAIL  tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-05 unit: CASH primary balance check enforces non-negative balance (BR-07)
+Error: Not implemented
+ ❯ calculateTxnEffects src/lib/ledger.ts:203:9
+ ❯ tests/f05-ledger.unit.test.ts:95:23
+
+ FAIL  tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-06 unit: LOAN_TAKEN repayment line cannot exceed outstanding debt (BR-08)
+Error: Not implemented
+ ❯ calculateTxnEffects src/lib/ledger.ts:203:9
+ ❯ tests/f05-ledger.unit.test.ts:123:21
+
+ FAIL  tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-01 alice posts PAYMENT from Credit Card (debt 0) total 120000 lines Dining 70000 + Groceries 50000 (AC-F05-01)
+AssertionError: expected +0 to be 120000 // Object.is equality
+- Expected
++ Received
+- 120000
++ 0 
+ ❯ tests/f05-transactions.api.test.ts:78:35
+
+ FAIL  tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-02 alice repays card debt from Bank: Bank -= 120000, card debt becomes 0, expense sum unchanged (AC-F05-02)
+AssertionError: expected 3500000 to be 3380000 // Object.is equality
+- Expected
++ Received
+- 3380000
++ 3500000
+ ❯ tests/f05-transactions.api.test.ts:150:35
+
+ FAIL  tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07)
+AssertionError: expected 201 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 201
+ ❯ tests/f05-transactions.api.test.ts:302:30
+
+ FAIL  tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08)
+AssertionError: expected 201 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 201
+ ❯ tests/f05-transactions.api.test.ts:351:28
+
+ Test Files  2 failed | 9 passed (11)
+      Tests  8 failed | 39 passed (47)
+   Start at  02:00:32
+   Duration  32.65s (transform 541ms, setup 233ms, import 8.36s, tests 11.54s, environment 1ms)
