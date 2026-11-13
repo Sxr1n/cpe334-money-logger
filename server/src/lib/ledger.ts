@@ -39,6 +39,7 @@ export function validateAllowedAccountTypes(
     }
     lineTypes.forEach((type, idx) => {
       if (type !== AccountType.INCOME) {
+        details.lines = 'Receipt lines must be INCOME accounts'
         details[`lines[${idx}]`] = 'Receipt lines must be INCOME accounts'
       }
     })
