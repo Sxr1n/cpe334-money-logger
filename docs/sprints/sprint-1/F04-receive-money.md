@@ -111,16 +111,17 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F04-01 | — | NOT RUN | — |
-| AC-F04-02 | — | NOT RUN | — |
-| AC-F04-03 | — | NOT RUN | — |
-| AC-F04-04 | — | NOT RUN | — |
-| AC-F04-05 | — | NOT RUN | — |
-| AC-F04-06 | — | NOT RUN | — |
-| AC-F04-07 | — | NOT RUN | — |
+| AC-F04-01 | server/tests/f04-transactions.api.test.ts::TEST-F04-01 | PASS | b2a4f70 |
+| AC-F04-02 | server/tests/f04-transactions.api.test.ts::TEST-F04-02, server/tests/f04-ledger.unit.test.ts::TEST-F04-02 | PASS | b2a4f70 |
+| AC-F04-03 | server/tests/f04-transactions.api.test.ts::TEST-F04-03, server/tests/f04-ledger.unit.test.ts::TEST-F04-03 | PASS | b2a4f70 |
+| AC-F04-04 | server/tests/f04-transactions.api.test.ts::TEST-F04-04, server/tests/f04-ledger.unit.test.ts::TEST-F04-04 | PASS | b2a4f70 |
+| AC-F04-05 | server/tests/f04-transactions.api.test.ts::TEST-F04-05 | PASS | b2a4f70 |
+| AC-F04-06 | server/tests/f04-transactions.api.test.ts::TEST-F04-06 | PASS | b2a4f70 |
+| AC-F04-07 | e2e/f04-receive.spec.ts::TEST-F04-07 | PASS | b2a4f70 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract. Sprint 1 accepts only INCOME lines for RECEIPT (team decision D1-S4). | D1-S4 |
 | 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
+| 0.3 | 2026-11-13 | Record done evidence for AC-F04-01..07 after implementation | D1-S6b |

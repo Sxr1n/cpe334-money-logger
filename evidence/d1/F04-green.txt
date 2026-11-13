@@ -1,0 +1,57 @@
+# TEST-F04-01..07 green test run
+# Tested on branch feature/F04-receive-money
+# Commit: b2a4f70b18abad58bdbabfa24d9aabb49647abab
+# Clean working tree verified
+# Date: 2026-11-13T23:16:43+07:00
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-01 admin lists all users with exactly the six non-financial fields 831ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login 641ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 admin cannot disable their own account 416ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422 422ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 414ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 401ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-06 admin endpoints return 401 without a session 314ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-01 alice posts RECEIPT Bank <- Salary 3000000; Bank balance becomes 3500000 and status is POSTED 712ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-02 line sum mismatch or zero lines rejected with 422 RULE_VIOLATION (BR-01) 468ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-03 rejected if primary is not CASH or lines are not INCOME (BR-03) 486ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-04 rejects invalid satang amounts, future date, ancient date; accepts today (BR-02, BR-09) 694ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-05 cross-user isolation: alice using bob account gets 404 and bob accounts unchanged (BR-11) 456ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06) 395ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts 638ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-01b case-insensitive unique index rejects "bank" duplicate of "Bank" for same user 274ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines 425ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-03 rejects negative, non-integer, and excessive amounts; accepts 0 and max satang 527ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-04 rejects opening balance on Salary (INCOME) and duplicate on Bank 406ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-05 cross-user isolation: alice cannot set opening balance or view bob accounts 387ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 445ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie 231ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password 133ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected 239ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data 97ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 502ms
+ ✓ tests/seed.api.test.ts > seed (runs on every container start when SEED_ON_START=true) > re-running the seed keeps existing users unchanged, including an admin disable 879ms
+ ✓ tests/app.api.test.ts > app scaffold > GET /api/health returns status and version 31ms
+ ✓ tests/app.api.test.ts > app scaffold > unknown /api route returns the standard 404 error shape 5ms
+ ✓ tests/app.api.test.ts > app scaffold > malformed JSON returns 400 BAD_REQUEST without a stack trace 19ms
+ ✓ tests/f04-ledger.unit.test.ts > F-04 Ledger core & validator (unit) > TEST-F04-02 validateLines detects line sum mismatch and empty lines (BR-01) 19ms
+ ✓ tests/f04-ledger.unit.test.ts > F-04 Ledger core & validator (unit) > TEST-F04-03 validateAllowedAccountTypes enforces Sprint 1 allowed types table (BR-03) 0ms
+ ✓ tests/f04-ledger.unit.test.ts > F-04 Ledger core & validator (unit) > TEST-F04-04 satang and date boundary validation (BR-02, BR-09) 1ms
+ ✓ tests/f03-accounts.unit.test.ts > F-03 Opening balance validator (unit) > TEST-F03-03 validator cases: -1, 100.5, 1e11, 0, 99999999999 and date checks 2ms
+ ✓ tests/f01-session.unit.test.ts > F-01 session token > TEST-F01-07 a token past its 8-hour expiry is rejected 5ms
+
+ Test Files  9 passed (9)
+      Tests  34 passed (34)
+   Start at  23:16:43
+   Duration  25.27s (transform 457ms, setup 228ms, import 5.25s, tests 11.95s, environment 1ms)
+
+================================================================================
+E2E (Playwright) Suite
+================================================================================
+Running 4 tests using 1 worker
+  ok 1 [desktop] › e2e/f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (2.6s)
+  ok 2 [desktop] › e2e/f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (1.0s)
+  ok 3 [desktop] › e2e/f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (2.0s)
+  ok 4 [desktop] › e2e/smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (823ms)
+  4 passed (13.7s)
