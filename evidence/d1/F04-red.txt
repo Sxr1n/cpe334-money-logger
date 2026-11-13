@@ -1,0 +1,139 @@
+# TEST-F04-01..06 red test run (route not yet implemented)
+# Branch: feature/F04-receive-money
+# Date: 2026-11-13T23:08:43+07:00
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ❯ tests/f04-transactions.api.test.ts (6 tests | 5 failed) 2668ms
+     × TEST-F04-01 alice posts RECEIPT Bank <- Salary 3000000; Bank balance becomes 3500000 and status is POSTED 837ms
+     × TEST-F04-02 line sum mismatch or zero lines rejected with 422 RULE_VIOLATION (BR-01) 383ms
+     × TEST-F04-03 rejected if primary is not CASH or lines are not INCOME (BR-03) 423ms
+     × TEST-F04-04 rejects invalid satang amounts, future date, ancient date; accepts today (BR-02, BR-09) 384ms
+     ✓ TEST-F04-05 cross-user isolation: alice using bob account gets 404 and bob accounts unchanged (BR-11)  334ms
+     × TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06) 304ms
+ ✓ tests/f02-admin.api.test.ts (7 tests) 3573ms
+     ✓ TEST-F02-01 admin lists all users with exactly the six non-financial fields  704ms
+     ✓ TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login  798ms
+     ✓ TEST-F02-03 admin cannot disable their own account  494ms
+     ✓ TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422  419ms
+     ✓ TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint  452ms
+     ✓ TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user  398ms
+     ✓ TEST-F02-06 admin endpoints return 401 without a session  302ms
+ ✓ tests/f03-accounts.api.test.ts (6 tests | 1 skipped) 4147ms
+     ✓ TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts  1226ms
+     ✓ TEST-F03-01b case-insensitive unique index rejects "bank" duplicate of "Bank" for same user  615ms
+     ✓ TEST-F03-03 rejects negative, non-integer, and excessive amounts; accepts 0 and max satang  874ms
+     ✓ TEST-F03-04 rejects opening balance on Salary (INCOME) and duplicate on Bank  900ms
+     ✓ TEST-F03-05 cross-user isolation: alice cannot set opening balance or view bob accounts  522ms
+ ✓ tests/f01-auth.api.test.ts (6 tests) 2059ms
+     ✓ TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity  826ms
+     ✓ TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned  481ms
+ ✓ tests/seed.api.test.ts (1 test) 1048ms
+     ✓ re-running the seed keeps existing users unchanged, including an admin disable  1039ms
+ ✓ tests/app.api.test.ts (3 tests) 92ms
+ ✓ tests/f04-ledger.unit.test.ts (3 tests) 45ms
+ ✓ tests/f01-session.unit.test.ts (1 test) 15ms
+ ✓ tests/f03-accounts.unit.test.ts (1 test) 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-01 alice posts RECEIPT Bank <- Salary 3000000; Bank balance becomes 3500000 and status is POSTED
+AssertionError: expected 404 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 404
+
+ ❯ tests/f04-transactions.api.test.ts:62:24
+     60|       })
+     61|
+     62|     expect(res.status).toBe(201)
+       |                        ^
+     63|     expect(res.body).toMatchObject({
+     64|       form: 'RECEIPT',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-02 line sum mismatch or zero lines rejected with 422 RULE_VIOLATION (BR-01)
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f04-transactions.api.test.ts:104:32
+    102|       })
+    103|
+    104|     expect(mismatchRes.status).toBe(422)
+       |                                ^
+    105|     expect(mismatchRes.body.error?.code).toBe('RULE_VIOLATION')
+    106|     expect(mismatchRes.body.error?.details?.lines).toBeDefined()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-03 rejected if primary is not CASH or lines are not INCOME (BR-03)
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f04-transactions.api.test.ts:146:34
+    144|       })
+    145|
+    146|     expect(badPrimaryRes.status).toBe(422)
+       |                                  ^
+    147|     expect(badPrimaryRes.body.error?.code).toBe('RULE_VIOLATION')
+    148|     expect(badPrimaryRes.body.error?.details?.primaryAccountId).toBeDefined()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-04 rejects invalid satang amounts, future date, ancient date; accepts today (BR-02, BR-09)
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f04-transactions.api.test.ts:184:29
+    182|         lines: [{ accountId: aliceSalaryId, amount: 0 }],
+    183|       })
+    184|     expect(zeroLine.status).toBe(422)
+       |                             ^
+    185|     expect(zeroLine.body.error?.code).toBe('VALIDATION_FAILED')
+    186|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06)
+AssertionError: expected 404 to be 500 // Object.is equality
+
+- Expected
++ Received
+
+- 500
++ 404
+
+ ❯ tests/f04-transactions.api.test.ts:333:24
+    331|     updateSpy.mockRestore()
+    332|
+    333|     expect(res.status).toBe(500)
+       |                        ^
+    334|     expect(res.body.error?.code).toBe('INTERNAL')
+    335|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  5 failed | 28 passed | 1 skipped (34)
+   Start at  23:08:43
+   Duration  30.06s (transform 512ms, setup 289ms, import 6.27s, tests 13.66s, environment 1ms)
