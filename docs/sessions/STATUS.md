@@ -4,7 +4,7 @@
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
 - Next session: Leviathan-c137 → review F-06 PR · both → release `v0.1.0-sprint1` (staging → main) · Lab 5 L5-S3 GCP + protection demo · PDFs
 - Latest release on main: —
-- Active staging branch: `staging/sprint-1` (PRs #7–#17 merged)
+- Active staging branch: `staging/sprint-1` (PRs #7–#18 merged; CI green on `53cd180`)
 - Deployed URL / version: —
 
 ## Feature board
