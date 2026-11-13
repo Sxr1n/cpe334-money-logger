@@ -313,9 +313,9 @@ describe('F-04 Receive money', () => {
     const today = getTodayBangkok()
 
     // Spy on prisma.account.update to throw an error simulating failure after transaction insert
-    const updateSpy = vi.spyOn(prisma.account, 'update').mockImplementationOnce(async () => {
+    const updateSpy = vi.spyOn(prisma.account, 'update').mockImplementationOnce((async () => {
       throw new Error('Simulated balance update failure')
-    })
+    }) as any)
 
     const res = await request(app)
       .post('/api/transactions')
