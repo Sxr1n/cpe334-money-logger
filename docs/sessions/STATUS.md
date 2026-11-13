@@ -2,9 +2,9 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
-- Next session: Sxr1n → review F-03 PR · Leviathan-c137 → D1-S6b (F-04 Receive money)
+- Next session: Sxr1n → review F-04 PR · Leviathan-c137 → D1-S6c (F-05 Make a payment or record a charge)
 - Latest release on main: —
-- Active staging branch: `staging/sprint-1` (PRs #7–#15 merged)
+- Active staging branch: `staging/sprint-1` (PRs #7–#16 merged)
 - Deployed URL / version: —
 
 ## Feature board
@@ -12,8 +12,8 @@
 |---|---|---|---|---|---|---|---|
 | F-01 | Authentication and session | 1 | TESTED | Sxr1n | sprint-1/F01-auth.md | #1 | red `e9f9653`, green `56ac71d` (evidence/d1/F01-*.txt) |
 | F-02 | Administrator user access | 1 | TESTED | Sxr1n | sprint-1/F02-admin-user-access.md | #2 | red `50c09ff`, green `1090928` (evidence/d1/F02-*.txt) |
-| F-03 | Opening balance | 1 | TESTED (AC-F03-02 pending F-04) | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 / PR #16 | red `0849955`, green `3f3aae5` (evidence/d1/F03-*.txt) |
-| F-04 | Receive money | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 | — |
+| F-03 | Opening balance | 1 | TESTED | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 / PR #16 | red `0849955`, green `3f3aae5`, closed `b2a4f70` (evidence/d1/F03-*.txt) |
+| F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
 | F-05 | Make a payment or record a charge | 1 | SPECIFIED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 | — |
 | F-06 | Overview, summary and history | 1 | SPECIFIED | Sxr1n | sprint-1/F06-overview-history.md | #6 | — |
 | F-07 | Account management | 2 | PLANNED | — | — | — | — |
@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-13 — D1-S6b (F-04) — Claude + Leviathan-c137
+- Done: F-04 ครบ AC-F04-01–07 — model Txn/TxnLine, migration `init_transactions`, shared ledger core (`server/src/lib/ledger.ts`), `POST /api/transactions` (atomic posting algorithm พร้อม SELECT FOR UPDATE, balance updates, validation BR-01..04, BR-09), หน้า Receive money (`/receive`) พร้อม live footer calculation, client-side validation และ field error mapping, E2E test `e2e/f04-receive.spec.ts`; unskipped และ verified PASS สำหรับ `TEST-F03-02`
+- Evidence: red `295c90b` → `evidence/d1/F04-red.txt` (5 failed API-DB); green `b2a4f70` → `evidence/d1/F04-green.txt` (server 34/34 passed, client build OK, E2E 4/4 passed)
+- Decisions: shared transaction engine ใช้ schema model `Txn` และตาราง `transactions` / `transaction_lines`; posting algorithm ล็อก accounts เรียงตาม id ascending ป้องกัน deadlock
+- Open issues: —
+- Next session: Sxr1n รีวิว F-04 PR; Leviathan-c137 เริ่ม F-05 Make a payment or record a charge
+
 ### 2026-11-12 — D1-S6a (F-03) — Claude + Leviathan-c137
 - Done: F-03 ครบ AC-F03-01–05 — enum AccountType, model Account, migration `init_accounts`, seed default accounts, `GET /api/accounts`, `PUT /api/accounts/:id/opening-balance`, หน้า Accounts (`/accounts`) พร้อมแบบฟอร์มตั้งยอดเริ่มต้น
 - Evidence: red `0849955` → `evidence/d1/F03-red.txt` (5 failed API-DB, unit failed); green `3f3aae5` → `evidence/d1/F03-green.txt` (server 24/24 passed, client build OK, E2E 3/3 regression passed)

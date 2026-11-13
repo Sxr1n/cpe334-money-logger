@@ -75,7 +75,7 @@ describe('F-03 Opening balance', () => {
     ).rejects.toThrow()
   })
 
-  it.skip('TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines (pending F-04 tables)', async () => {
+  it('TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines', async () => {
     const cookie = await loginCookie('alice')
 
     // Count rows before (if tables exist)
