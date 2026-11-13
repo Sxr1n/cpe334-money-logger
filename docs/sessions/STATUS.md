@@ -2,8 +2,8 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
-- Next session: Leviathan-c137 → review F-06 PR · both → release `v0.1.0-sprint1` (staging → main) · Lab 5 L5-S3 GCP + protection demo · PDFs
-- Latest release on main: —
+- Next session: Leviathan-c137 → review release PRs · Sxr1n → tag `v0.1.0-sprint1` after main merge, then Lab 5 (L5-S3 GCP, protection demo) · both → PDFs
+- Latest release on main: `v0.1.0-sprint1` in progress — verified on staging `2f8dd76` (evidence/d1/release-v0.1.0-sprint1.txt); release PR staging → main next
 - Active staging branch: `staging/sprint-1` (PRs #7–#18 merged; CI green on `53cd180`)
 - Deployed URL / version: —
 
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — D1-S7 Release v0.1.0-sprint1 (prep) — Claude + Sxr1n
+- Done: #19 (F-06) merged by Leviathan-c137; F-01–F-06 TESTED (40/40 + AC-F05-08 PASS); release verification on staging `2f8dd76`
+- Evidence: `evidence/d1/release-v0.1.0-sprint1.txt` — tsc OK, server 13 files / 56 tests passed, client build OK, E2E 6 passed, Docker image build OK; 0 failed, 0 skipped; CI on `2f8dd76` success 5/5
+- Open issues: Issue #6 closes when the release reaches main; tag after main merge; Lab 5 L5-S3 + protection demo
+- Next session: release PR staging → main, tag
+
 ### 2026-11-14 — F-06 Overview, summary and history — Claude + Sxr1n
 - Done: `GET /api/overview`, `GET /api/summary?from&to`, `GET /api/transactions` (paged), `GET /api/transactions/:id`, `periodTotal` ใน `GET /api/accounts`; `lib/query.ts` (paging/period ใช้ร่วมกับ admin), `lib/summary.ts` (นับเฉพาะ INCOME/EXPENSE line ของ POSTED — BR-06); หน้า Overview, History, Transaction detail, nav Overview/History, คอลัมน์ This month ในหน้า Accounts; E2E global setup reset + seed DB dev
 - Evidence: red `c5848da` → `evidence/d1/F06-red.txt` (API 6 fail), `F06-e2e-red.txt` (journey ล้มที่หน้า Overview); green `7850d4e` → `evidence/d1/F06-green.txt` (server 56/56, tsc OK, client build OK, E2E 6/6)

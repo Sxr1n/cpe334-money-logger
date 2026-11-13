@@ -12,3 +12,4 @@
 | 2026-11-12 | D1-S6a (F-03) | Claude | Wrote F-03 tests first (red), then accounts API, opening balance transaction logic and Accounts UI; ran tests and saved output | Leviathan-c137 verified schema constraints, satang math and permission isolation; pending: teammate PR review |
 | 2026-11-12 | Integration + F-06 (part) | Claude | Diagnosed the stale PR conflict and the blocked E2E browser; wrote the Bangkok month-range test first, then the helper | Sxr1n checked merge order, evidence files and month-boundary cases |
 | 2026-11-14 | F-06 | Claude | Wrote F-06 API and E2E tests first (red), then overview/summary/history API and screens; ran the full suite and saved output | Sxr1n checks totals against the scenario and the contract revision; pending: teammate PR review |
+| 2026-11-14 | D1-S7 (release prep) | Claude | Ran the full release verification on staging and recorded it | Sxr1n checks counts and tested commit; teammate reviews the release PR |
