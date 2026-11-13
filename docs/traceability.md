@@ -118,13 +118,13 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
 | AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | 6f52657 |
 | AC-F05-08 | Payment form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F05-08 | E2E | | `e2e/f05-pay.spec.ts` | PASS | 6f52657 |
-| AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | — | NOT RUN | — |
-| AC-F06-02 | Overview shows each CASH balance, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN | TEST-F06-02 | API-DB | | — | NOT RUN | — |
-| AC-F06-03 | Month summary after the Sprint 1 scenario: income = salary, expense = 1,200, opening and card repayment excluded | TEST-F06-03 | API-DB | TDD | — | NOT RUN | — |
-| AC-F06-04 | Month boundary uses Asia/Bangkok (a transaction dated the 1st is in that month) | TEST-F06-04 | unit | | — | NOT RUN | — |
-| AC-F06-05 | History newest first, 50 per page; detail shows lines | TEST-F06-05 | API-DB | | — | NOT RUN | — |
-| AC-F06-06 | User A requests B's transaction → 404; admin requests overview/history → 403 | TEST-F06-06 | API-DB | | — | NOT RUN | — |
-| AC-F06-07 | Full Sprint 1 journey in the UI (login → opening balance → salary → card purchase → card repayment → overview), still shown after reload | TEST-F06-07 | E2E | | — | NOT RUN | — |
+| AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
+| AC-F06-02 | Overview shows each CASH balance, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN | TEST-F06-02 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
+| AC-F06-03 | Month summary after the Sprint 1 scenario: income = salary, expense = 1,200, opening and card repayment excluded | TEST-F06-03 | API-DB | TDD | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
+| AC-F06-04 | Month boundary uses Asia/Bangkok (a transaction dated the 1st is in that month) | TEST-F06-04 | unit | | `server/tests/f06-period.unit.test.ts, server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
+| AC-F06-05 | History newest first, 50 per page; detail shows lines | TEST-F06-05 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
+| AC-F06-06 | User A requests B's transaction → 404; admin requests overview/history → 403 | TEST-F06-06 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
+| AC-F06-07 | Full Sprint 1 journey in the UI (login → opening balance → salary → card purchase → card repayment → overview), still shown after reload | TEST-F06-07 | E2E | | `e2e/f06-journey.spec.ts` | PASS | 7850d4e |
 
 ## 3. Coverage gaps
 | Gap | Affects | Plan |
