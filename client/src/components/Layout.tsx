@@ -35,6 +35,11 @@ export default function Layout({ role }: { role: CurrentUser['role'] }) {
                   Receive money
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to="/pay" className="nav-link">
+                  Make a payment
+                </Link>
+              </li>
             </ul>
           )}
           <div className="d-flex align-items-center gap-2">

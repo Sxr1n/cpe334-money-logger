@@ -3,7 +3,7 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1 |
-| Document version | 0.2 |
+| Document version | 0.3 |
 | Tested release | — (no release yet; Sprint 1 results are per feature commit until v0.1.0-sprint1) |
 
 Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and results live in the Sprint 1 contracts (`docs/sprints/sprint-1/`). Sprint 2–3 requirements are allocated to a feature and sprint; their AC/TEST are written with the sprint's contracts. Test results use `PASS / FAIL / SKIPPED / NOT RUN / INCOMPLETE` with the commit SHA.
@@ -76,7 +76,7 @@ A rule shared by several features is verified in Sprint 1 where it first applies
 | NFR-07 | SR-03 | 2 (Lab 5) | planned | TEST-NFR07-01 (planned) |
 | NFR-08 | SR-04 | 3 | planned | TEST-NFR08-01 (planned) |
 | NFR-09 | SR-03 | 2 (Lab 5) | planned | TEST-NFR09-01 (planned) |
-| NFR-10 | F-04, F-05 (S1); F-07 (S2) | 1 / 2 | AC-F04-07 | TEST-F04-07 |
+| NFR-10 | F-04, F-05 (S1); F-07 (S2) | 1 / 2 | AC-F04-07, AC-F05-08 | TEST-F04-07, TEST-F05-08 |
 | NFR-11 | SR-03 | 1 / every release | Fresh-clone check (manual, recorded per release) | TEST-NFR11-01 |
 
 ## 2. Sprint 1 planned AC and tests
@@ -110,13 +110,14 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F04-05 | Primary or line account belongs to another user → 404, nothing stored | TEST-F04-05 | API-DB | | `server/tests/f04-transactions.api.test.ts` | PASS | b2a4f70 |
 | AC-F04-06 | Injected failure after first line insert → no transaction, lines or balance change | TEST-F04-06 | API-DB | | `server/tests/f04-transactions.api.test.ts` | PASS | b2a4f70 |
 | AC-F04-07 | Receive-money form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F04-07 | E2E | | `e2e/f04-receive.spec.ts` | PASS | b2a4f70 |
-| AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | unit + API-DB | | — | NOT RUN | — |
-| AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | unit + API-DB | TDD | — | NOT RUN | — |
-| AC-F05-03 | PAYMENT with line sum ≠ total → 422, nothing stored | TEST-F05-03 | API-DB | | — | NOT RUN | — |
-| AC-F05-04 | PAYMENT primary of type INCOME/EXPENSE/LOAN_GIVEN, line equal to primary, or same account in two lines → 422 | TEST-F05-04 | unit + API-DB | | — | NOT RUN | — |
-| AC-F05-05 | PAYMENT from Bank larger than Bank balance → 422 (BR-07) | TEST-F05-05 | unit + API-DB | TDD | — | NOT RUN | — |
-| AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | — | NOT RUN | — |
-| AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | — | NOT RUN | — |
+| AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | unit + API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
+| AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | unit + API-DB | TDD | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
+| AC-F05-03 | PAYMENT with line sum ≠ total → 422, nothing stored | TEST-F05-03 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | 6f52657 |
+| AC-F05-04 | PAYMENT primary of type INCOME/EXPENSE/LOAN_GIVEN, line equal to primary, or same account in two lines → 422 | TEST-F05-04 | unit + API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
+| AC-F05-05 | PAYMENT from Bank larger than Bank balance → 422 (BR-07) | TEST-F05-05 | unit + API-DB | TDD | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
+| AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
+| AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | 6f52657 |
+| AC-F05-08 | Payment form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F05-08 | E2E | | `e2e/f05-pay.spec.ts` | PASS | 6f52657 |
 | AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | — | NOT RUN | — |
 | AC-F06-02 | Overview shows each CASH balance, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN | TEST-F06-02 | API-DB | | — | NOT RUN | — |
 | AC-F06-03 | Month summary after the Sprint 1 scenario: income = salary, expense = 1,200, opening and card repayment excluded | TEST-F06-03 | API-DB | TDD | — | NOT RUN | — |
@@ -150,3 +151,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.3 | 2026-11-12 | Record test results for F-03 (AC-F03-01..05) on commit 3f3aae5 | D1-S6a |
 | 0.4 | 2026-11-13 | Mark AC-F03-02 INCOMPLETE pending F-04 tables per PR #16 review | Team review |
 | 0.5 | 2026-11-13 | Record test results for F-04 (AC-F04-01..07) and close AC-F03-02 as PASS | D1-S6b |
+| 0.6 | 2026-11-14 | Add AC-F05-08 / TEST-F05-08 to NFR-10 and Sprint 1 table; record commit 6f52657 for F-05 | PR #18 review |

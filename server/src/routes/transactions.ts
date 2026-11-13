@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from 'express'
 import { AccountType, TxnForm, TxnStatus } from '../../generated/prisma/client'
 import {
+  calculateTxnEffects,
   validateAllowedAccountTypes,
   validateTxnInput,
   type CreateTxnInput,
@@ -44,6 +45,9 @@ export const postingSteps = {
         balance: { increment: delta },
       },
     })
+  },
+  async updateAccountBalance(client: any, accountId: number, delta: bigint) {
+    return this.updatePrimaryBalance(client, accountId, delta)
   },
 }
 
@@ -105,12 +109,51 @@ router.post('/', async (req: Request, res: Response) => {
     const createdTxn = await prisma.$transaction(async (tx) => {
       // Lock accounts in ascending ID order to prevent deadlock
       const sortedIds = [...allAccountIds].sort((a, b) => a - b)
+      const lockedAccounts: any[] = []
       for (const accId of sortedIds) {
-        await tx.$queryRawUnsafe(
-          `SELECT id, balance, type FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE`,
+        const rows: any[] = await tx.$queryRawUnsafe(
+          `SELECT id, name, balance, type FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE`,
           accId,
           userId,
         )
+        if (rows.length > 0) {
+          lockedAccounts.push(rows[0])
+        }
+      }
+
+      const lockedAccountMap = new Map(lockedAccounts.map((a) => [a.id, a]))
+      const lockedPrimary = lockedAccountMap.get(body.primaryAccountId)!
+      const lockedLines = body.lines.map((l) => ({
+        account: lockedAccountMap.get(l.accountId)!,
+        amount: BigInt(l.amount),
+      }))
+
+      // Calculate balance effects and verify BR-07, BR-08 against locked account balances
+      const effectsResult = calculateTxnEffects(
+        body.form,
+        {
+          id: lockedPrimary.id,
+          name: lockedPrimary.name,
+          type: lockedPrimary.type as AccountType,
+          balance: BigInt(lockedPrimary.balance),
+        },
+        lockedLines.map((l) => ({
+          account: {
+            id: l.account.id,
+            name: l.account.name,
+            type: l.account.type as AccountType,
+            balance: BigInt(l.account.balance),
+          },
+          amount: l.amount,
+        })),
+        BigInt(body.total),
+      )
+
+      if (!effectsResult.valid) {
+        const err: any = new Error('RULE_VIOLATION')
+        err.code = 'RULE_VIOLATION'
+        err.details = effectsResult.details
+        throw err
       }
 
       // Insert transaction and lines
@@ -141,16 +184,35 @@ router.post('/', async (req: Request, res: Response) => {
         },
       })
 
-      // Update primary account balance (for RECEIPT: balance += total)
-      if (body.form === 'RECEIPT') {
-        await postingSteps.updatePrimaryBalance(tx, body.primaryAccountId, BigInt(body.total))
+      // Apply balance deltas
+      if (effectsResult.deltas) {
+        for (const d of effectsResult.deltas) {
+          await postingSteps.updateAccountBalance(tx, d.accountId, d.delta)
+        }
       }
 
       return txn
     })
 
     return res.status(201).json(serializeTransaction(createdTxn))
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.code === 'RULE_VIOLATION') {
+      return res.status(422).json({
+        error: { code: 'RULE_VIOLATION', message: 'Business rule violation.', details: err.details },
+      })
+    }
+
+    // Check constraint backstop (CHECK (balance >= 0))
+    if (err?.code === '23514' || (err?.message && /check constraint/i.test(err.message))) {
+      return res.status(422).json({
+        error: {
+          code: 'RULE_VIOLATION',
+          message: 'Balance cannot be negative.',
+          details: { total: 'Account balance cannot be negative' },
+        },
+      })
+    }
+
     console.error('Failed to post transaction:', err)
     return res.status(500).json({ error: { code: 'INTERNAL', message: 'Failed to post transaction.' } })
   }
