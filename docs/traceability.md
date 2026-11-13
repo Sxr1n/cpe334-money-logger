@@ -110,13 +110,13 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F04-05 | Primary or line account belongs to another user → 404, nothing stored | TEST-F04-05 | API-DB | | `server/tests/f04-transactions.api.test.ts` | PASS | b2a4f70 |
 | AC-F04-06 | Injected failure after first line insert → no transaction, lines or balance change | TEST-F04-06 | API-DB | | `server/tests/f04-transactions.api.test.ts` | PASS | b2a4f70 |
 | AC-F04-07 | Receive-money form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F04-07 | E2E | | `e2e/f04-receive.spec.ts` | PASS | b2a4f70 |
-| AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | unit + API-DB | | — | NOT RUN | — |
-| AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | unit + API-DB | TDD | — | NOT RUN | — |
-| AC-F05-03 | PAYMENT with line sum ≠ total → 422, nothing stored | TEST-F05-03 | API-DB | | — | NOT RUN | — |
-| AC-F05-04 | PAYMENT primary of type INCOME/EXPENSE/LOAN_GIVEN, line equal to primary, or same account in two lines → 422 | TEST-F05-04 | unit + API-DB | | — | NOT RUN | — |
-| AC-F05-05 | PAYMENT from Bank larger than Bank balance → 422 (BR-07) | TEST-F05-05 | unit + API-DB | TDD | — | NOT RUN | — |
-| AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | — | NOT RUN | — |
-| AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | — | NOT RUN | — |
+| AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | unit + API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | in PR #18 |
+| AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | unit + API-DB | TDD | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | in PR #18 |
+| AC-F05-03 | PAYMENT with line sum ≠ total → 422, nothing stored | TEST-F05-03 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | in PR #18 |
+| AC-F05-04 | PAYMENT primary of type INCOME/EXPENSE/LOAN_GIVEN, line equal to primary, or same account in two lines → 422 | TEST-F05-04 | unit + API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | in PR #18 |
+| AC-F05-05 | PAYMENT from Bank larger than Bank balance → 422 (BR-07) | TEST-F05-05 | unit + API-DB | TDD | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | in PR #18 |
+| AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | in PR #18 |
+| AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | in PR #18 |
 | AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | — | NOT RUN | — |
 | AC-F06-02 | Overview shows each CASH balance, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN | TEST-F06-02 | API-DB | | — | NOT RUN | — |
 | AC-F06-03 | Month summary after the Sprint 1 scenario: income = salary, expense = 1,200, opening and card repayment excluded | TEST-F06-03 | API-DB | TDD | — | NOT RUN | — |

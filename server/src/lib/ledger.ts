@@ -194,13 +194,68 @@ export interface TxnEffectsResult {
   deltas?: AccountDelta[]
 }
 
+export function formatBaht(satang: bigint | number): string {
+  const n = typeof satang === 'bigint' ? Number(satang) : satang
+  return (n / 100).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
 export function calculateTxnEffects(
-  _form: 'RECEIPT' | 'PAYMENT',
-  _primaryAccount: { id: number; name: string; type: AccountType; balance: bigint },
-  _lines: { account: { id: number; name: string; type: AccountType; balance: bigint }; amount: bigint }[],
-  _total: bigint,
+  form: 'RECEIPT' | 'PAYMENT',
+  primaryAccount: { id: number; name: string; type: AccountType; balance: bigint },
+  lines: { account: { id: number; name: string; type: AccountType; balance: bigint }; amount: bigint }[],
+  total: bigint,
 ): TxnEffectsResult {
-  throw new Error('Not implemented')
+  const deltas: AccountDelta[] = []
+
+  if (form === 'RECEIPT') {
+    if (primaryAccount.type === AccountType.CASH) {
+      deltas.push({ accountId: primaryAccount.id, delta: total })
+    }
+    // Lines: INCOME accounts don't store balance
+    return { valid: true, deltas }
+  }
+
+  if (form === 'PAYMENT') {
+    // BR-05 & BR-07: primary CASH balance -= total; primary LOAN_TAKEN balance += total
+    if (primaryAccount.type === AccountType.CASH) {
+      if (primaryAccount.balance < total) {
+        return {
+          valid: false,
+          errorType: 'RULE_VIOLATION',
+          details: {
+            total: `Not enough money in ${primaryAccount.name} (balance ฿${formatBaht(primaryAccount.balance)})`,
+          },
+        }
+      }
+      deltas.push({ accountId: primaryAccount.id, delta: -total })
+    } else if (primaryAccount.type === AccountType.LOAN_TAKEN) {
+      deltas.push({ accountId: primaryAccount.id, delta: total })
+    }
+
+    // Lines: BR-05 & BR-08: each LOAN_TAKEN line balance -= amount; EXPENSE lines no change
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+      if (line.account.type === AccountType.LOAN_TAKEN) {
+        if (line.amount > line.account.balance) {
+          return {
+            valid: false,
+            errorType: 'RULE_VIOLATION',
+            details: {
+              [`lines[${i}].amount`]: `More than the outstanding debt ฿${formatBaht(line.account.balance)}`,
+            },
+          }
+        }
+        deltas.push({ accountId: line.account.id, delta: -line.amount })
+      }
+    }
+
+    return { valid: true, deltas }
+  }
+
+  return { valid: false, errorType: 'RULE_VIOLATION' }
 }
 
 

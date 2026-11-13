@@ -94,17 +94,17 @@ describe('F-05 Payment/charge API', () => {
     const cookie = await loginCookie('alice')
     const today = getTodayBangkok()
 
-    // Precondition: Bank 3500000, card debt 120000
+    // Precondition: Bank 3500000, card debt 0
     await prisma.account.update({
       where: { id: aliceBankId },
       data: { balance: 3500000n },
     })
     await prisma.account.update({
       where: { id: aliceCreditId },
-      data: { balance: 120000n },
+      data: { balance: 0n },
     })
 
-    // Create a prior expense transaction so expense sum > 0
+    // Card purchase 120000 so card debt becomes 120000 and expense sum > 0
     await request(app)
       .post('/api/transactions')
       .set('Cookie', cookie)
