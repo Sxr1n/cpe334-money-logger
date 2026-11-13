@@ -1,0 +1,30 @@
+# F-06 RED run (TEST-F06-04 range part) — test written before implementation
+# Command: cd server && npx vitest run tests/f06-period.unit.test.ts
+# Base commit: 2770873 (+ uncommitted test file; committed next as test(F06): red)
+# Date: 2026-11-12T14:35:49Z
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f06-period.unit.test.ts [ tests/f06-period.unit.test.ts ]
+Error: Cannot find module '../src/lib/period' imported from C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/tests/f06-period.unit.test.ts
+ ❯ tests/f06-period.unit.test.ts:2:1
+      1| import { afterEach, describe, expect, it, vi } from 'vitest'
+      2| import { bangkokToday, currentMonthRange } from '../src/lib/period'
+       | ^
+      3|
+      4| afterEach(() => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_MODULE_NOT_FOUND' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  21:35:50
+   Duration  3.68s (transform 10ms, setup 17ms, import 0ms, tests 0ms, environment 0ms)
+

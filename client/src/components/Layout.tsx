@@ -26,6 +26,16 @@ export default function Layout({ role }: { role: CurrentUser['role'] }) {
           {user.role === 'USER' && (
             <ul className="navbar-nav me-auto">
               <li className="nav-item">
+                <Link to="/overview" className="nav-link">
+                  Overview
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/transactions" className="nav-link">
+                  History
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/accounts" className="nav-link">
                   Accounts
                 </Link>

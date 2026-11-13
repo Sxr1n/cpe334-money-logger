@@ -6,6 +6,7 @@ import {
   validateTxnInput,
   type CreateTxnInput,
 } from '../lib/ledger'
+import { parsePaging, sendValidationFailed } from '../lib/query'
 import { prisma } from '../prisma'
 
 const router = Router()
@@ -50,6 +51,37 @@ export const postingSteps = {
     return this.updatePrimaryBalance(client, accountId, delta)
   },
 }
+
+const withAccounts = { primaryAccount: true, lines: { include: { account: true }, orderBy: { id: 'asc' as const } } }
+
+// GET /api/transactions?page&pageSize (USER) — FR-18: own history, newest first
+router.get('/', async (req: Request, res: Response) => {
+  const paging = parsePaging(req.query)
+  if ('error' in paging) return sendValidationFailed(res, paging.error)
+
+  const where = { userId: req.user!.id }
+  const [items, total] = await Promise.all([
+    prisma.txn.findMany({
+      where,
+      include: withAccounts,
+      orderBy: [{ txnDate: 'desc' }, { id: 'desc' }],
+      skip: paging.skip,
+      take: paging.pageSize,
+    }),
+    prisma.txn.count({ where }),
+  ])
+  res.json({ items: items.map(serializeTransaction), page: paging.page, pageSize: paging.pageSize, total })
+})
+
+// GET /api/transactions/:id (USER) — BR-11: another user's id is "not found"
+router.get('/:id', async (req: Request, res: Response) => {
+  const id = Number(req.params.id)
+  const txn = Number.isInteger(id)
+    ? await prisma.txn.findFirst({ where: { id, userId: req.user!.id }, include: withAccounts })
+    : null
+  if (!txn) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Not found.' } })
+  res.json(serializeTransaction(txn))
+})
 
 // POST /api/transactions (USER)
 router.post('/', async (req: Request, res: Response) => {

@@ -2,9 +2,9 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
-- Next session: Sxr1n → review F-05 PR · Leviathan-c137 → review F-06 / prepare Lab 5
+- Next session: Leviathan-c137 → review F-06 PR · both → release `v0.1.0-sprint1` (staging → main) · Lab 5 L5-S3 GCP + protection demo · PDFs
 - Latest release on main: —
-- Active staging branch: `staging/sprint-1` (PRs #7–#17 merged)
+- Active staging branch: `staging/sprint-1` (PRs #7–#18 merged; CI green on `53cd180`)
 - Deployed URL / version: —
 
 ## Feature board
@@ -15,7 +15,7 @@
 | F-03 | Opening balance | 1 | TESTED | Leviathan-c137 | sprint-1/F03-opening-balance.md | #3 / PR #16 | red `0849955`, green `3f3aae5`, closed `b2a4f70` (evidence/d1/F03-*.txt) |
 | F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 / PR #17 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
-| F-06 | Overview, summary and history | 1 | SPECIFIED | Sxr1n | sprint-1/F06-overview-history.md | #6 | — |
+| F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
 | F-07 | Account management | 2 | PLANNED | — | — | — | — |
 | F-08 | Opening balance management | 2 | PLANNED | — | — | — | — |
 | F-09 | Transfers | 2 | PLANNED | — | — | — | — |
@@ -46,6 +46,17 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — F-06 Overview, summary and history — Claude + Sxr1n
+- Done: `GET /api/overview`, `GET /api/summary?from&to`, `GET /api/transactions` (paged), `GET /api/transactions/:id`, `periodTotal` ใน `GET /api/accounts`; `lib/query.ts` (paging/period ใช้ร่วมกับ admin), `lib/summary.ts` (นับเฉพาะ INCOME/EXPENSE line ของ POSTED — BR-06); หน้า Overview, History, Transaction detail, nav Overview/History, คอลัมน์ This month ในหน้า Accounts; E2E global setup reset + seed DB dev
+- Evidence: red `c5848da` → `evidence/d1/F06-red.txt` (API 6 fail), `F06-e2e-red.txt` (journey ล้มที่หน้า Overview); green `7850d4e` → `evidence/d1/F06-green.txt` (server 56/56, tsc OK, client build OK, E2E 6/6)
+- Decisions: journey E2E ใช้ bob (spec F-04/F-05 แก้ข้อมูลของ alice ในรอบเดียวกัน); ไม่ใส่ปุ่มซ้ำบน Overview (ชื่อลิงก์ซ้ำทำให้ selector ของ E2E F-04/F-05 พัง) — contract v0.3
+- Open issues: `getTodayBangkok` (ledger.ts) ซ้ำกับ `bangkokToday` (period.ts) และ `formatTHB` มี 4 ชุด → Parked; branch protection; L5-S3 GCP ยังไม่เริ่ม
+- Next session: release `v0.1.0-sprint1` และ Lab 5
+
+### 2026-11-12 — Integration + F-06 (part) — Claude + Sxr1n
+- Done: #7–#12 merged; #10 CONFLICTING ค้าง → `git merge-tree` สะอาด → merge staging เข้า F-01 (`729b1ce`); integration run staging `2770873`; E2E ในเครื่องโดน Windows Smart App Control → `PW_CHANNEL=chrome` (#15); F-06 helper ตัดรอบเดือน Bangkok
+- Evidence: `evidence/d1/staging-integration-2770873.txt` (server 17/17, E2E 3/3); F-06 range red `87b22b5` → green `59cbd08`
+
 ### 2026-11-14 — D1-S6c (F-05) — Claude + Leviathan-c137
 - Done: F-05 ครบ AC-F05-01–07 + E2E TEST-F05-08 — ฟังก์ชัน `calculateTxnEffects` บน shared ledger core (`server/src/lib/ledger.ts`), จัดการ transaction form `PAYMENT` ใน `POST /api/transactions` (atomic balance updates, BR-05 effects, BR-07 cash overspending check, BR-08 card overpayment check, check constraint backstop), หน้า Make a payment (`/pay`) พร้อม dynamic lines, spending/repayment categories, live footer comparison, inline field error mapping, Playwright E2E `e2e/f05-pay.spec.ts`
 - Evidence: red `f615c47` → `evidence/d1/F05-red.txt` (8 failed); green `6f52657` → `evidence/d1/F05-green.txt` (server 47/47 passed, client build OK, E2E 5/5 passed; CI run 43489199561)
@@ -129,4 +140,5 @@
 - Next session:
 
 ## Parked (เจอระหว่างทางแต่อยู่นอก scope)
+- รวม `getTodayBangkok()` (server/src/lib/ledger.ts) กับ `bangkokToday()` (server/src/lib/period.ts) และ `formatTHB` ใน AccountsPage/PayPage/ReceiveMoneyPage ให้ใช้ `client/src/format.ts`
 -

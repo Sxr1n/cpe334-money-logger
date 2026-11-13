@@ -1,5 +1,5 @@
 # F-06 Overview, summary and history — Sprint 1
-Linked: FR-06, FR-18, FR-24, FR-25, BR-06, BR-11, NFR-02, NFR-08   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-06, FR-18, FR-24, FR-25, BR-06, BR-11, NFR-02, NFR-08   Status: TESTED   Owner: Sxr1n
 Depends on: F-03, F-04, F-05. Design references: `docs/system-sds.md` §2.1 (dates), §2.4 (balances), §3, §4
 
 ## 1 Behavior & workflow
@@ -31,7 +31,7 @@ Depends on: F-03, F-04, F-05. Design references: `docs/system-sds.md` §2.1 (dat
 | `GET /api/transactions/:id` | ✔ own (other's → 404) | 403 | 401 |
 
 ## 4 UI
-- **Overview** (`/overview`, USER home): cards "Cash" (each CASH account + total), "Debts" (each LOAN_TAKEN + total, labelled "Credit card debt" for cards), "Owed to me" (each LOAN_GIVEN + total), "This month" (income, expense, net; month name). Buttons "Receive money" and "Make a payment".
+- **Overview** (`/overview`, USER home): cards "Cash" (each CASH account + total), "Debts" (each LOAN_TAKEN + total, labelled "Credit card debt" for cards), "Owed to me" (each LOAN_GIVEN + total), "This month" (income, expense, net; month name). The "Receive money" and "Make a payment" screens are reached from the navigation bar (Overview and History are also nav links).
 - **Accounts** (`/accounts`, from F-03): INCOME and EXPENSE rows now show "This month: ฿x".
 - **History** (`/transactions`): table Date, Form (Received / Paid), Account, Note, Total; Previous/Next paging; row click → detail.
 - **Transaction detail** (`/transactions/:id`): header fields + lines table (account, type, amount).
@@ -82,15 +82,17 @@ No change. Uses the index `transactions (user_id, txn_date DESC, id DESC)` from 
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F06-01 | — | NOT RUN | — |
-| AC-F06-02 | — | NOT RUN | — |
-| AC-F06-03 | — | NOT RUN | — |
-| AC-F06-04 | — | NOT RUN | — |
-| AC-F06-05 | — | NOT RUN | — |
-| AC-F06-06 | — | NOT RUN | — |
-| AC-F06-07 | — | NOT RUN | — |
+| AC-F06-01 | `server/tests/f06-overview.api.test.ts::TEST-F06-01` | PASS | 7850d4e |
+| AC-F06-02 | `server/tests/f06-overview.api.test.ts::TEST-F06-02` | PASS | 7850d4e |
+| AC-F06-03 | `server/tests/f06-overview.api.test.ts::TEST-F06-03` | PASS | 7850d4e |
+| AC-F06-04 | `server/tests/f06-period.unit.test.ts::TEST-F06-04 (range) ×3; server/tests/f06-overview.api.test.ts::TEST-F06-04 (inclusion)` | PASS | 7850d4e |
+| AC-F06-05 | `server/tests/f06-overview.api.test.ts::TEST-F06-05` | PASS | 7850d4e |
+| AC-F06-06 | `server/tests/f06-overview.api.test.ts::TEST-F06-06` | PASS | 7850d4e |
+| AC-F06-07 | `e2e/f06-journey.spec.ts::TEST-F06-07` | PASS | 7850d4e |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract | D1-S4 |
+| 0.2 | 2026-11-12 | Started: Bangkok month-range helper (red `87b22b5`, green `59cbd08`, evidence/d1/F06-period-*.txt). AC-F06-04 split into range part (done) and summary-inclusion part (pending F-04). No behaviour change. | D1 F-06 |
+| 0.3 | 2026-11-14 | Implemented and tested (red `c5848da`: evidence/d1/F06-red.txt, F06-e2e-red.txt; green `7850d4e`: evidence/d1/F06-green.txt). Changes from v0.1: (1) TEST-F06-07 runs the journey as **bob** because the F-04/F-05 E2E specs post transactions for alice earlier in the same run; (2) E2E global setup resets and re-seeds the dev database so the journey is repeatable; (3) Overview has no duplicate "Receive money"/"Make a payment" buttons — the nav links already exist and duplicate link names break the F-04/F-05 E2E selectors; (4) TEST-F06-04 inclusion part is an API-DB test on `GET /api/summary` (unit level cannot query lines) and adds an invalid-month case (2026-13-01 → 422). No requirement changed. | D1 F-06 |
