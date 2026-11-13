@@ -68,3 +68,19 @@ Running 5 tests using 1 worker
   ok 4 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (1.4s)
   ok 5 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (671ms)
   5 passed (12.6s)
+
+
+================================================================================
+GitHub Actions CI Run Summary
+================================================================================
+Run ID: 43489199561
+Commit: 6f52657 (feature/F05-payment-charge)
+URL: https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43489199561
+Status: All 5 jobs succeeded (conclusion: success)
+
+Jobs:
+✓ Client build in 15s (ID 132105553354)
+✓ Docker image build in 50s (ID 132105553317)
+✓ E2E (Playwright) in 1m16s (ID 132105553274)
+✓ Secret scan (NFR-09) in 7s (ID 132105553319)
+✓ Server typecheck + unit/API-DB tests in 45s (ID 132105552845)
