@@ -11,7 +11,7 @@ Node.js 24 (tested with v24.19.0), npm, Docker Desktop.
 
 ## Local setup
 ```bash
-docker compose up -d                       # PostgreSQL 16 on localhost:5434
+docker compose up -d postgres              # PostgreSQL 16 on localhost:5434
 cp server/.env.example server/.env         # then set JWT_SECRET and seed passwords
 cd server && npm install                   # also runs prisma generate
 npx prisma migrate deploy                  # apply migrations to the dev database
@@ -28,7 +28,16 @@ cd server && npm test                      # unit + API-DB tests on TEST_DATABAS
 cd client && npm run build                 # type-check + production build
 npm install && npx playwright install chromium   # once, at repo root
 npx playwright test                        # E2E on the seeded dev database (starts server and client)
+PW_CHANNEL=chrome npx playwright test      # Windows with Smart App Control: use the installed Google Chrome
 ```
+
+## Run with Docker (app + database)
+```bash
+cp .env.example .env                       # set JWT_SECRET and seed passwords; SEED_ON_START=true seeds missing demo users
+docker compose up -d --build               # builds the app image, runs migrations (and seed) on start
+# open http://localhost:8080  ·  health: http://localhost:8080/api/health
+```
+For local development only the database is needed: `docker compose up -d postgres`.
 
 ## Configuration
 All settings come from environment variables; `server/.env.example` lists every variable. Never commit `.env` or real secrets.

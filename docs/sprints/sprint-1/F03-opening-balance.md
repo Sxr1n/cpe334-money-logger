@@ -1,5 +1,5 @@
 # F-03 Opening balance — Sprint 1
-Linked: FR-07, BR-02, BR-06, BR-10, BR-11, NFR-02, NFR-05   Status: SPECIFIED   Owner: Leviathan-c137
+Linked: FR-07, BR-02, BR-06, BR-10, BR-11, NFR-02, NFR-05   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-01. Design references: `docs/system-sds.md` §2.4 (balances, SD-02), §4
 
 This feature also delivers the basic account list (`GET /api/accounts`) because the opening-balance form and the transaction forms of F-04/F-05 need it to pick accounts. F-06 extends the same endpoint with INCOME/EXPENSE period totals (FR-06).
@@ -85,14 +85,17 @@ Seed per user: Bank (CASH), Credit Card (LOAN_TAKEN), Salary (INCOME), Dining, G
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F03-01 | — | NOT RUN | — |
-| AC-F03-02 | — | NOT RUN | — |
-| AC-F03-03 | — | NOT RUN | — |
-| AC-F03-04 | — | NOT RUN | — |
-| AC-F03-05 | — | NOT RUN | — |
+| AC-F03-01 | server/tests/f03-accounts.api.test.ts::TEST-F03-01 | PASS | 3f3aae5 |
+| AC-F03-02 | server/tests/f03-accounts.api.test.ts::TEST-F03-02 | PASS | b2a4f70 |
+| AC-F03-03 | server/tests/f03-accounts.api.test.ts::TEST-F03-03, server/tests/f03-accounts.unit.test.ts | PASS | 3f3aae5 |
+| AC-F03-04 | server/tests/f03-accounts.api.test.ts::TEST-F03-04 | PASS | 3f3aae5 |
+| AC-F03-05 | server/tests/f03-accounts.api.test.ts::TEST-F03-05 | PASS | 3f3aae5 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract. AC-F03-02 verified at DB level (no transaction rows); the summary-level check is AC-F06-03. | D1-S4 |
 | 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
+| 0.3 | 2026-11-12 | Record done evidence for AC-F03-01..05 after implementation. | D1-S6a |
+| 0.4 | 2026-11-13 | Mark AC-F03-02 as INCOMPLETE pending F-04; add case-insensitive unique test (PR #16 review) | Team review |
+| 0.5 | 2026-11-13 | Re-enable TEST-F03-02 and verify PASS now that F-04 tables exist | D1-S6b |

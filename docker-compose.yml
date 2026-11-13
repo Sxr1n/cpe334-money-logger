@@ -18,5 +18,26 @@ services:
       timeout: 5s
       retries: 10
 
+  app:
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+    image: money-logger-app:${APP_VERSION:-dev}
+    container_name: money-logger-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/money_logger
+      JWT_SECRET: ${JWT_SECRET:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SEED_ON_START: ${SEED_ON_START:-false}
+      SEED_USER_PASSWORD: ${SEED_USER_PASSWORD:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+    ports:
+      - "8080:4000"
+
 volumes:
   money_logger_pgdata:

@@ -16,9 +16,9 @@ export const TEST_PASSWORD = 'Test-pass-123'
 
 export async function createUser(
   username: string,
-  options: { role?: 'USER' | 'ADMIN'; status?: 'ACTIVE' | 'DISABLED'; password?: string } = {},
+  options: { role?: 'USER' | 'ADMIN'; status?: 'ACTIVE' | 'DISABLED'; password?: string; seedAccounts?: boolean } = {},
 ) {
-  return prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       username,
       displayName: `${username[0].toUpperCase()}${username.slice(1)} Example`,
@@ -27,6 +27,29 @@ export async function createUser(
       status: options.status ?? 'ACTIVE',
     },
   })
+
+  if (options.seedAccounts && user.role === 'USER') {
+    const DEFAULT_ACCOUNTS = [
+      { name: 'Bank', type: 'CASH' as const },
+      { name: 'Credit Card', type: 'LOAN_TAKEN' as const },
+      { name: 'Salary', type: 'INCOME' as const },
+      { name: 'Dining', type: 'EXPENSE' as const },
+      { name: 'Groceries', type: 'EXPENSE' as const },
+      { name: 'Electricity', type: 'EXPENSE' as const },
+      { name: 'Telecom', type: 'EXPENSE' as const },
+    ]
+    for (const acc of DEFAULT_ACCOUNTS) {
+      await prisma.account.create({
+        data: {
+          userId: user.id,
+          name: acc.name,
+          type: acc.type,
+        },
+      })
+    }
+  }
+
+  return user
 }
 
 // Logs in through the real endpoint and returns the Cookie header value for later requests.

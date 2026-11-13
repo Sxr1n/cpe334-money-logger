@@ -1,5 +1,5 @@
 # F-05 Make a payment or record a charge — Sprint 1
-Linked: FR-12, FR-13, BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
+Linked: FR-12, FR-13, BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-04 (transaction engine). Design references: `docs/system-sds.md` §2.4, F-04 contract §2 and §5
 
 ## 1 Behavior & workflow
@@ -64,6 +64,7 @@ No change (uses tables from F-03 and F-04).
 | AC-F05-05 | Given Bank 1000000, a PAYMENT from Bank of 1000001 → 422 `RULE_VIOLATION` and Bank stays 1000000; a PAYMENT of exactly 1000000 → 201 and Bank = 0. |
 | AC-F05-06 | Given card debt 120000, a repayment line of 120001 → 422 `RULE_VIOLATION`, nothing changes; a repayment of exactly 120000 → 201 and debt = 0. |
 | AC-F05-07 | A PAYMENT by alice using bob's Credit Card as primary, or bob's Dining as a line → 404; nothing stored; bob's balances unchanged. |
+| AC-F05-08 | In the browser on `/pay`, when total and line amount do not match the form shows "Lines must add up to the total" and Save is disabled; after a server 422 (e.g. overspending balance) the field message is shown and all entered values remain; on valid submission the payment is saved and a success alert is shown. |
 
 ## 8 STS
 | TEST ID | AC | Level | Precondition / Input | Action | Expected |
@@ -75,20 +76,24 @@ No change (uses tables from F-03 and F-04).
 | TEST-F05-05 | AC-F05-05 | unit + API-DB (TDD) | Bank balance 1000000 | Post 1000001; post 1000000 | 422 then 201; Bank 1000000 then 0 |
 | TEST-F05-06 | AC-F05-06 | API-DB | Card debt 120000 | Post repayment 120001; post 120000 | 422 then 201; debt 120000 then 0 |
 | TEST-F05-07 | AC-F05-07 | API-DB | alice cookie; bob's ids | Post with bob's card as primary; with bob's Dining as line | Both 404; nothing stored; bob unchanged |
+| TEST-F05-08 | AC-F05-08 | E2E | alice logged in; Credit Card debt 0 | Fill total 1200.00, line 1000.00; check Save; fix line to 1200.00; intercept POST with 422 overspend; submit; clear intercept; switch primary to Credit Card and submit | Mismatch message + Save disabled; after 422 error shown and values kept; success alert shown on submit |
 
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F05-01 | — | NOT RUN | — |
-| AC-F05-02 | — | NOT RUN | — |
-| AC-F05-03 | — | NOT RUN | — |
-| AC-F05-04 | — | NOT RUN | — |
-| AC-F05-05 | — | NOT RUN | — |
-| AC-F05-06 | — | NOT RUN | — |
-| AC-F05-07 | — | NOT RUN | — |
+| AC-F05-01 | `server/tests/f05-transactions.api.test.ts::TEST-F05-01`, `server/tests/f05-ledger.unit.test.ts::TEST-F05-01` | PASS | 6f52657 |
+| AC-F05-02 | `server/tests/f05-transactions.api.test.ts::TEST-F05-02`, `server/tests/f05-ledger.unit.test.ts::TEST-F05-02` | PASS | 6f52657 |
+| AC-F05-03 | `server/tests/f05-transactions.api.test.ts::TEST-F05-03` | PASS | 6f52657 |
+| AC-F05-04 | `server/tests/f05-transactions.api.test.ts::TEST-F05-04`, `server/tests/f05-ledger.unit.test.ts::TEST-F05-04` | PASS | 6f52657 |
+| AC-F05-05 | `server/tests/f05-transactions.api.test.ts::TEST-F05-05`, `server/tests/f05-ledger.unit.test.ts::TEST-F05-05` | PASS | 6f52657 |
+| AC-F05-06 | `server/tests/f05-transactions.api.test.ts::TEST-F05-06`, `server/tests/f05-ledger.unit.test.ts::TEST-F05-06` | PASS | 6f52657 |
+| AC-F05-07 | `server/tests/f05-transactions.api.test.ts::TEST-F05-07` | PASS | 6f52657 |
+| AC-F05-08 | `e2e/f05-pay.spec.ts::TEST-F05-08` | PASS | 6f52657 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial contract. Sprint 1 PAYMENT lines limited to EXPENSE and LOAN_TAKEN (team decision D1-S4). BR-07 per D-03, TA confirmation pending (Q-01). | D1-S4 |
 | 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
+| 0.3 | 2026-11-14 | Completed implementation and verified tests (TEST-F05-01..07 + E2E TEST-F05-08). Status -> TESTED. | F-05 |
+| 0.4 | 2026-11-14 | Address PR #18 review: add AC-F05-08 + TEST-F05-08 to contract, record commit SHA 6f52657 in §9. | PR #18 review |
