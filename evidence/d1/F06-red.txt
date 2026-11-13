@@ -1,0 +1,185 @@
+# F-06 RED run — API tests written before implementation
+# Command: cd server && npx vitest run tests/f06-overview.api.test.ts --reporter=verbose
+# Base commit: 21121f7 (+ uncommitted test file; committed next as test(F06): red)
+# Date: 2026-11-13T20:40:09Z
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ × tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-01 accounts are grouped by type with balances and this month's INCOME/EXPENSE totals 554ms
+   → expected [ …(7) ] to deeply equal [ …(7) ]
+ × tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-02 overview shows cash balances, card debt, loans given and the month summary 304ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-03 month summary counts salary and spending only, not the opening balance or card repayment 284ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-04 (inclusion) a period includes its first and last day and excludes the day before 269ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-05 history is newest first, 50 per page, and the detail includes lines 666ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-06 another user's transaction is 404 and the admin gets 403 on overview, summary and history 964ms
+   → Cannot read properties of undefined (reading 'map')
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-01 accounts are grouped by type with balances and this month's INCOME/EXPENSE totals
+AssertionError: expected [ …(7) ] to deeply equal [ …(7) ]
+
+- Expected
++ Received
+
+  [
+    [
+      "Bank",
+      "CASH",
+      3380000,
+-     null,
++     undefined,
+    ],
+    [
+      "Credit Card",
+      "LOAN_TAKEN",
+      0,
+-     null,
++     undefined,
+    ],
+    [
+      "Salary",
+      "INCOME",
+      0,
+-     3000000,
++     undefined,
+    ],
+    [
+      "Dining",
+      "EXPENSE",
+      0,
+-     70000,
++     undefined,
+    ],
+    [
+      "Electricity",
+      "EXPENSE",
+      0,
+-     0,
++     undefined,
+    ],
+    [
+      "Groceries",
+      "EXPENSE",
+      0,
+-     50000,
++     undefined,
+    ],
+    [
+      "Telecom",
+      "EXPENSE",
+      0,
+-     0,
++     undefined,
+    ],
+  ]
+
+ ❯ tests/f06-overview.api.test.ts:58:18
+     56|     expect(res.status).toBe(200)
+     57|     const view = res.body.items.map((a: { name: string; type: string; …
+     58|     expect(view).toEqual([
+       |                  ^
+     59|       ['Bank', 'CASH', 3380000, null],
+     60|       ['Credit Card', 'LOAN_TAKEN', 0, null],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-02 overview shows cash balances, card debt, loans given and the month summary
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f06-overview.api.test.ts:75:24
+     73|     const res = await request(app).get('/api/overview').set('Cookie', …
+     74|
+     75|     expect(res.status).toBe(200)
+       |                        ^
+     76|     expect(res.body).toEqual({
+     77|       cash: { items: [{ id: ids.Bank, name: 'Bank', balance: 3380000 }…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-03 month summary counts salary and spending only, not the opening balance or card repayment
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f06-overview.api.test.ts:90:24
+     88|     const res = await request(app).get('/api/summary').set('Cookie', c…
+     89|
+     90|     expect(res.status).toBe(200)
+       |                        ^
+     91|     expect(res.body).toEqual({ ...currentMonthRange(), income: 3000000…
+     92|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-04 (inclusion) a period includes its first and last day and excludes the day before
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f06-overview.api.test.ts:99:24
+     97|
+     98|     const res = await request(app).get('/api/summary?from=2026-11-01&t…
+     99|     expect(res.status).toBe(200)
+       |                        ^
+    100|     expect(res.body).toEqual({ from: '2026-11-01', to: '2026-11-30', i…
+    101|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-05 history is newest first, 50 per page, and the detail includes lines
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f06-overview.api.test.ts:119:26
+    117|     const page2 = await request(app).get('/api/transactions?page=2').s…
+    118|
+    119|     expect(page1.status).toBe(200)
+       |                          ^
+    120|     expect(page1.body).toMatchObject({ page: 1, pageSize: 50, total: 5…
+    121|     expect(page1.body.items).toHaveLength(50)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-06 another user's transaction is 404 and the admin gets 403 on overview, summary and history
+TypeError: Cannot read properties of undefined (reading 'map')
+ ❯ tests/f06-overview.api.test.ts:150:28
+    148|
+    149|     const list = await request(app).get('/api/transactions').set('Cook…
+    150|     expect(list.body.items.map((t: { id: number }) => t.id)).toEqual([…
+       |                            ^
+    151|
+    152|     const admin = await loginCookie('admin')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  03:40:10
+   Duration  8.95s (transform 743ms, setup 131ms, import 1.10s, tests 3.05s, environment 0ms)
+
