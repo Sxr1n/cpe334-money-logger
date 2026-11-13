@@ -182,3 +182,25 @@ export function validateTxnInput(body: unknown, now?: Date): ValidationResult {
   return { valid: true }
 }
 
+export interface AccountDelta {
+  accountId: number
+  delta: bigint
+}
+
+export interface TxnEffectsResult {
+  valid: boolean
+  errorType?: 'RULE_VIOLATION'
+  details?: Record<string, string>
+  deltas?: AccountDelta[]
+}
+
+export function calculateTxnEffects(
+  _form: 'RECEIPT' | 'PAYMENT',
+  _primaryAccount: { id: number; name: string; type: AccountType; balance: bigint },
+  _lines: { account: { id: number; name: string; type: AccountType; balance: bigint }; amount: bigint }[],
+  _total: bigint,
+): TxnEffectsResult {
+  throw new Error('Not implemented')
+}
+
+
