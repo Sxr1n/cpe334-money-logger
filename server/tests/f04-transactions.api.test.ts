@@ -3,6 +3,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import app from '../src/app'
 import { getTodayBangkok } from '../src/lib/ledger'
 import { prisma } from '../src/prisma'
+import { postingSteps } from '../src/routes/transactions'
 import { createUser, loginCookie, resetDb } from './helpers/db'
 
 let aliceId: number
@@ -308,14 +309,59 @@ describe('F-04 Receive money', () => {
     expect(await prisma.txn.count()).toBe(0)
   })
 
+  it('TEST-F04-05b archived account referenced as primary or line returns 404 NOT_FOUND (BR-04)', async () => {
+    const cookie = await loginCookie('alice')
+    const today = getTodayBangkok()
+
+    // Archive alice's salary account
+    await prisma.account.update({
+      where: { id: aliceSalaryId },
+      data: { archivedAt: new Date() },
+    })
+
+    // Try posting RECEIPT with archived line account
+    const archivedLineRes = await request(app)
+      .post('/api/transactions')
+      .set('Cookie', cookie)
+      .send({
+        form: 'RECEIPT',
+        primaryAccountId: aliceBankId,
+        date: today,
+        total: 100000,
+        lines: [{ accountId: aliceSalaryId, amount: 100000 }],
+      })
+    expect(archivedLineRes.status).toBe(404)
+    expect(archivedLineRes.body.error?.code).toBe('NOT_FOUND')
+
+    // Try posting RECEIPT with archived primary account
+    await prisma.account.update({
+      where: { id: aliceBankId },
+      data: { archivedAt: new Date() },
+    })
+    const archivedPrimaryRes = await request(app)
+      .post('/api/transactions')
+      .set('Cookie', cookie)
+      .send({
+        form: 'RECEIPT',
+        primaryAccountId: aliceBankId,
+        date: today,
+        total: 100000,
+        lines: [{ accountId: aliceDiningId, amount: 100000 }],
+      })
+    expect(archivedPrimaryRes.status).toBe(404)
+    expect(archivedPrimaryRes.body.error?.code).toBe('NOT_FOUND')
+
+    expect(await prisma.txn.count()).toBe(0)
+  })
+
   it('TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06)', async () => {
     const cookie = await loginCookie('alice')
     const today = getTodayBangkok()
 
-    // Spy on prisma.account.update to throw an error simulating failure after transaction insert
-    const updateSpy = vi.spyOn(prisma.account, 'update').mockImplementationOnce((async () => {
-      throw new Error('Simulated balance update failure')
-    }) as any)
+    // Spy on postingSteps.updatePrimaryBalance to throw an error simulating failure after transaction insert
+    const updateSpy = vi
+      .spyOn(postingSteps, 'updatePrimaryBalance')
+      .mockRejectedValueOnce(new Error('Simulated balance update failure'))
 
     const res = await request(app)
       .post('/api/transactions')

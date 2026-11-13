@@ -1,5 +1,5 @@
 # F-04 Receive money — Sprint 1
-Linked: FR-11, BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
+Linked: FR-11, BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11, NFR-02, NFR-05, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-01, F-03 (account list). Design references: `docs/system-sds.md` §1.3, §2.4 (posting algorithm), §4
 
 This feature builds the **shared transaction engine** (`POST /api/transactions`, ledger core, posting service). F-05 adds the PAYMENT form to the same engine.

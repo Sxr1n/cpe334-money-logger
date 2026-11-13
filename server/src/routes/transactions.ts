@@ -60,11 +60,12 @@ router.post('/', async (req: Request, res: Response) => {
   const body = req.body as CreateTxnInput
   const allAccountIds = Array.from(new Set([body.primaryAccountId, ...body.lines.map((l) => l.accountId)]))
 
-  // 2. Load all referenced accounts with userId = session user (404 NOT_FOUND, BR-11)
+  // 2. Load all referenced accounts with userId = session user and not archived (404 NOT_FOUND, BR-04, BR-11)
   const userAccounts = await prisma.account.findMany({
     where: {
       id: { in: allAccountIds },
       userId,
+      archivedAt: null,
     },
   })
 
@@ -142,13 +143,6 @@ router.post('/', async (req: Request, res: Response) => {
 
       // Update primary account balance (for RECEIPT: balance += total)
       if (body.form === 'RECEIPT') {
-        // Also call through prisma.account.update or postingSteps if mocked
-        if (typeof (prisma.account.update as any).mock !== 'undefined') {
-          await (prisma.account.update as any)({
-            where: { id: body.primaryAccountId },
-            data: { balance: { increment: BigInt(body.total) } },
-          })
-        }
         await postingSteps.updatePrimaryBalance(tx, body.primaryAccountId, BigInt(body.total))
       }
 
@@ -163,3 +157,4 @@ router.post('/', async (req: Request, res: Response) => {
 })
 
 export default router
+
