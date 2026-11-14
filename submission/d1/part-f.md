@@ -92,7 +92,7 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 #### Demonstration 1: Unauthenticated access redirected (AC-F01-01, AC-F01-08)
 - **Action:** A browser client without an active session cookie visits protected routes (`/overview`, `/accounts`, `/transactions`, `/receive`, `/pay`).
 - **Expected:** Client router detects absence of authenticated user state and redirects to `/login`. Direct API calls to `/api/accounts`, `/api/transactions`, `/api/overview`, or `/api/summary` return HTTP 401 `UNAUTHENTICATED`.
-- **Actual:** Verified in `e2e/f01-auth.spec.ts` (TEST-F01-08) and `server/tests/f01-auth.api.test.ts` (TEST-F01-01).
+- **Actual:** Verified in `e2e/f01-auth.spec.ts` (TEST-F01-08) (UI redirect) and `server/tests/f02-admin.api.test.ts` (TEST-F02-06, 401 without a session) / `server/tests/f06-overview.api.test.ts` (TEST-F06-06).
 
 #### Demonstration 2: Disabled user rejected on login and existing session revoked (AC-F01-04, AC-F02-02, BR-13)
 - **Action:** Administrator disables user `bob` via `PATCH /api/admin/users/:id` (`status: "DISABLED"`).
@@ -117,7 +117,7 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 ## F.2 Build and automated test results
 
 ### Automated test summary on release commit `e1747cb`
-- **Environment:** Node.js v24.19.0, npm v10.8.2, Docker v27.x, PostgreSQL 16.
+- **Environment:** Node.js v24.19.0 on Windows with `PW_CHANNEL=chrome` (recorded in the evidence file), PostgreSQL 16 in Docker; CI runs on GitHub-hosted Ubuntu.
 - **Evidence Reference:** `evidence/d1/release-v0.1.0-sprint1.txt` recorded at sprint freeze on staging commit `2f8dd76` (56 server tests across 13 files + 6 E2E tests = 62 total tests).
 - **Release Verification on `main` (`e1747cb`):** PR #22 introduced Cloud Run deployment readiness probes (`/api/ready`), adding 2 tests to `server/tests/app.api.test.ts` for a final total of 58 server tests + 6 E2E tests = 64 total tests, verified green by GitHub Actions CI run [43583936948](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43583936948) on staging (PR #32) and [43585303434](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43585303434) on main (`e1747cb`).
 
@@ -342,8 +342,8 @@ Work was divided equally according to the team agreement registered in `docs/ses
 
 | Student | Main Implementation Scope | Code Reviews & Verification Conducted |
 |---|---|---|
-| **Sarin CH**<br>(`Sxr1n`) | • F-01 Authentication and Session<br>• F-02 Administrator User Access<br>• F-06 Overview, Summary and History<br>• Docker Multi-stage Build & Compose (Lab 5)<br>• CI Pipeline Quality Gates (Lab 5)<br>• D1 Automated PDF Generator (`build_pdf.py`) | • PR #16 (F-03 Opening Balance)<br>• PR #17 (F-04 Receive Money)<br>• PR #18 (F-05 Payment & Charge) |
-| **Tantiyawat Chansiri**<br>(`Leviathan-c137`) | • F-03 Opening Balance & Validations<br>• F-04 Receive Money & Shared Ledger Core<br>• F-05 Payment, Charge & Repayment Logic<br>• D1 Part F Verification Document & Evidence<br>• E2E Global DB Reset Harness (`reset-e2e.ts`) | • PR #10 (F-01 Authentication)<br>• PR #11 (F-02 Administrator)<br>• PR #19 (F-06 Overview & History)<br>• PR #20 (Release Verification Evidence)<br>• PR #21 (PDF Builder & Public Repo Prep)<br>• PR #22 (Cloud Run Deployment Pipeline)<br>• PR #31 (Deploy Guard Workflow)<br>• PR #32 (Sprint 1 Release `v0.1.0-sprint1`) |
+| **Sarin CH**<br>(`Sxr1n`) | • F-01 Authentication and Session<br>• F-02 Administrator User Access<br>• F-06 Overview, Summary and History<br>• Docker Multi-stage Build & Compose (Lab 5)<br>• CI Pipeline Quality Gates (Lab 5)<br>• E2E Global DB Reset Harness (`reset-e2e.ts`, `c5848da`)<br>• D1 Automated PDF Generator (`build_pdf.py`) | • PR #16 (F-03 Opening Balance)<br>• PR #17 (F-04 Receive Money)<br>• PR #18 (F-05 Payment & Charge) |
+| **Tantiyawat Chansiri**<br>(`Leviathan-c137`) | • F-03 Opening Balance & Validations<br>• F-04 Receive Money & Shared Ledger Core<br>• F-05 Payment, Charge & Repayment Logic<br>• D1 Part F Verification Document & Evidence | • PR #10 (F-01 Authentication)<br>• PR #11 (F-02 Administrator)<br>• PR #19 (F-06 Overview & History)<br>• PR #20 (Release Verification Evidence)<br>• PR #21 (PDF Builder & Public Repo Prep)<br>• PR #22 (Cloud Run Deployment Pipeline)<br>• PR #31 (Deploy Guard Workflow)<br>• PR #32 (Sprint 1 Release `v0.1.0-sprint1`) |
 
 ---
 
@@ -354,7 +354,7 @@ Summary of AI collaboration recorded in `docs/ai-use.md`:
 2. **Context & Prompts:** Used to accelerate drafting initial test scaffolds, boilerplate React components, and complex database grouping queries. Prompts strictly supplied course requirements (`group_work_specs_v1.pdf`, `project_deliverable_1_v1.pdf`), System SDS architecture, and engineering contracts.
 3. **Engineering Oversight & Quality Control:**
    - **TDD Enforcement:** Tests were always authored, run, and recorded failing (`red`) before implementation code was written.
-   - **Human Code Review:** Every AI-generated line was examined by the peer reviewer before PR approval. Real defects (such as missing JWT secret deletion in teardown scripts and button selector strictness collisions in E2E tests) were caught and corrected by the human developers.
+   - **Human Code Review:** Every AI-generated line was examined by the peer reviewer before PR approval. Real defects were caught this way, e.g. the teardown script not deleting the JWT secret (found in the PR #22 review, fixed in `4bb1a30`); others were caught by the test suites, e.g. duplicate link names on the Overview page breaking the F-04/F-05 E2E selectors (found by the E2E run during F-06, recorded in contract F-06 v0.3).
    - **Privacy Protection:** Ensured student identification numbers were scrubbed from repository files prior to making the repository public (Lab 5 R-12).
 
 ---
