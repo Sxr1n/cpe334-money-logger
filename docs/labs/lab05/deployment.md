@@ -72,7 +72,7 @@ python3 deploy/smoke_test.py "$(gcloud run services describe money-logger --regi
 ## 5. Release procedure
 1. Every change: Issue → branch from `staging/sprint-N` → PR into staging → CI green → teammate review (specific comment) → merge.
 2. Release: PR `staging/sprint-N → main` → CI green → teammate approval → merge (ruleset `protect-main` blocks merging otherwise).
-3. The merge to `main` starts **Deploy demo** (`.github/workflows/deploy.yml`): CI again → build image tagged with the full commit SHA → `deploy/release.sh` (resolve digest → migration job → update service → 100% traffic) → smoke test (also checks `/api/health` version = commit) → run summary.
+3. The merge to `main` starts **Deploy demo** (its deploy job runs only when the repository variable `DEPLOY_ENABLED` is `true`; until the GCP project exists it is skipped, not failed) (`.github/workflows/deploy.yml`): CI again → build image tagged with the full commit SHA → `deploy/release.sh` (resolve digest → migration job → update service → 100% traffic) → smoke test (also checks `/api/health` version = commit) → run summary.
 4. **Which commit is running:** open `<URL>/api/health` (`version` = full commit SHA), the UI footer, the Deploy demo run summary (commit tag + digest), or Cloud Run → `money-logger` → Revisions (image digest).
 5. **Rollback:** Actions → Deploy demo → Run workflow on `main` with `image_tag` = full SHA of an earlier release (tests, build and migration are skipped); roll forward the same way with the newer SHA. Migrations are additive only, so an older image still works.
 6. **Cost:** pause between labs (Student Guide Ep. 9): stop Cloud SQL and close public access; do not merge to `main` while paused.
@@ -81,3 +81,4 @@ python3 deploy/smoke_test.py "$(gcloud run services describe money-logger --regi
 | Ver | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-14 | Initial version: kit adapted to Money Logger, before the first cloud deployment |
+| 0.2 | 2026-11-14 | Deploy job gated by repository variable `DEPLOY_ENABLED` (Lab 5 paused by the instructor's announcement; releases to `main` must not fail while GCP is not set up) |
