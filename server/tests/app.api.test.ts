@@ -1,12 +1,27 @@
 import request from 'supertest'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import app from '../src/app'
+import { prisma } from '../src/prisma'
 
 describe('app scaffold', () => {
   it('GET /api/health returns status and version', async () => {
     const res = await request(app).get('/api/health')
     expect(res.status).toBe(200)
     expect(res.body).toEqual({ status: 'ok', version: process.env.APP_VERSION ?? 'dev' })
+  })
+
+  it('GET /api/ready reports the database as connected (smoke test after each deploy)', async () => {
+    const res = await request(app).get('/api/ready')
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({ status: 'ready', db: 'connected' })
+  })
+
+  it('GET /api/ready returns 503 when the database cannot be reached', async () => {
+    const spy = vi.spyOn(prisma, '$queryRaw').mockRejectedValueOnce(new Error('connection refused'))
+    const res = await request(app).get('/api/ready')
+    spy.mockRestore()
+    expect(res.status).toBe(503)
+    expect(res.body).toEqual({ status: 'not_ready' })
   })
 
   it('unknown /api route returns the standard 404 error shape', async () => {

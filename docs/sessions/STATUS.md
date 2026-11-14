@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — Lab 5: starter kit adapted for Cloud Run — Claude + Sxr1n
+- Done: `deploy/deploy.sh`, `release.sh`, `teardown.sh`, `smoke_test.py`, `.github/workflows/deploy.yml` จาก starter kit ปรับเป็นชื่อ `money-logger*`, secret (DB URL, JWT, seed admin/user), migration job `prisma migrate deploy && prisma db seed`, service port 4000 + `COOKIE_SECURE=true` + `RUN_MIGRATIONS=false`; `ci.yml` เพิ่ม `workflow_call`; `/api/ready` (+2 test); entrypoint ข้าม migrate ได้; `docs/labs/lab05/deployment.md`; SDS v0.4 (SD-03 → Cloud Run)
+- Evidence: `/api/ready` red (2 fail, 404) → green: server 58/58, tsc OK; smoke test กับ container ในเครื่อง PASS ทั้ง 4 check และล้มเมื่อ version ไม่ตรง; `bash -n` ผ่านทั้ง 3 script
+- Decisions: ตัด login smoke check ของ kit (kit ใช้ bearer token, เราใช้ cookie); ไม่ใส่ `deploy/tests/` ของ kit
+- Open issues: งานที่ต้องให้คนทำ — GCP Free Trial + project + IAM + budget (Sxr1n), รัน `deploy.sh` ใน Cloud Shell, WIF + environment `demo`, เปิด repo เป็น public + ruleset `protect-main`, สาธิต PR ที่ CI fail; ยังไม่เคยรันกับ GCP จริง
+- Next session: Ep. 5 first deploy (Cloud Shell) → Ep. 6 → release v0.1.0-sprint1 ผ่าน pipeline
+
 ### 2026-11-14 — D1-S7 Release v0.1.0-sprint1 (prep) — Claude + Sxr1n
 - Done: #19 (F-06) merged by Leviathan-c137; F-01–F-06 TESTED (40/40 + AC-F05-08 PASS); release verification on staging `2f8dd76`
 - Evidence: `evidence/d1/release-v0.1.0-sprint1.txt` — tsc OK, server 13 files / 56 tests passed, client build OK, E2E 6 passed, Docker image build OK; 0 failed, 0 skipped; CI on `2f8dd76` success 5/5
