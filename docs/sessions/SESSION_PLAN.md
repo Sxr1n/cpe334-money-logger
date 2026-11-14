@@ -47,7 +47,7 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
 
 ---
 
-## Phase 1 — Deliverable 1 (ส่ง 8 Nov 23:59)
+## Phase 1 — Deliverable 1 (ส่ง 15 Nov 23:59)
 
 | ID | เป้าหมาย | Inputs | Outputs | Done เมื่อ |
 |---|---|---|---|---|
@@ -82,7 +82,7 @@ Session ที่มีเครื่องหมาย ∥ ทำพร้อ�
   - User เรียก API ของ admin → 403
 - Sprint 2 และ 3 (ตาม "Later sprints" ในสเปก): สร้าง/จัดการ account ครบ 5 ชนิด, ยืมและให้ยืมพร้อมการชำระคืน, transfer, จัดการ opening balance, แก้ไขรายการ, search/filter, favorite + duplicate, สรุปการใช้จ่ายตามหมวด และ reports
 
-## Phase 2 — Lab 5 (ส่ง 15 Nov) Docker / CI/CD / GCP
+## Phase 2 — Lab 5 (ส่ง 15 Nov พร้อม D1) Docker / CI/CD / GCP
 ใช้ release ของ Sprint 1 เป็นตั้งต้น และเก็บหลักฐานไว้ที่ `docs/labs/lab5/`
 
 | ID | เป้าหมาย | Done เมื่อ |

@@ -1,0 +1,109 @@
+// Models are added by feature migrations (F-01 users, F-03 accounts, F-04 transactions).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum AccountType {
+  CASH
+  LOAN_TAKEN
+  LOAN_GIVEN
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  username     String     @unique @db.VarChar(30)
+  displayName  String     @map("display_name") @db.VarChar(60)
+  passwordHash String     @map("password_hash") @db.VarChar(100)
+  role         Role
+  status       UserStatus @default(ACTIVE)
+  tokenVersion Int        @default(0) @map("token_version")
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  accounts     Account[]
+  transactions Txn[]
+
+  @@map("users")
+}
+
+model Account {
+  id             Int         @id @default(autoincrement())
+  userId         Int         @map("user_id")
+  name           String      @db.VarChar(50)
+  type           AccountType
+  balance        BigInt      @default(0)
+  openingBalance BigInt?     @map("opening_balance")
+  openingDate    DateTime?   @map("opening_date") @db.Date
+  archivedAt     DateTime?   @map("archived_at") @db.Timestamptz(6)
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user           User        @relation(fields: [userId], references: [id])
+  primaryTransactions Txn[]     @relation("PrimaryAccountTxns")
+  lineTransactions    TxnLine[] @relation("LineAccountTxns")
+
+  @@unique([userId, type, name])
+  @@index([userId])
+  @@map("accounts")
+}
+
+enum TxnForm {
+  PAYMENT
+  RECEIPT
+}
+
+enum TxnStatus {
+  POSTED
+  VOID
+}
+
+model Txn {
+  id               Int       @id @default(autoincrement())
+  userId           Int       @map("user_id")
+  form             TxnForm
+  primaryAccountId Int       @map("primary_account_id")
+  txnDate          DateTime  @map("txn_date") @db.Date
+  total            BigInt
+  note             String?   @db.VarChar(200)
+  status           TxnStatus @default(POSTED)
+  isFavorite       Boolean   @default(false) @map("is_favorite")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user             User      @relation(fields: [userId], references: [id])
+  primaryAccount   Account   @relation("PrimaryAccountTxns", fields: [primaryAccountId], references: [id])
+  lines            TxnLine[]
+
+  @@index([userId, txnDate(sort: Desc), id(sort: Desc)])
+  @@map("transactions")
+}
+
+model TxnLine {
+  id        Int     @id @default(autoincrement())
+  txnId     Int     @map("txn_id")
+  accountId Int     @map("account_id")
+  amount    BigInt
+
+  txn       Txn     @relation(fields: [txnId], references: [id], onDelete: Cascade)
+  account   Account @relation("LineAccountTxns", fields: [accountId], references: [id])
+
+  @@unique([txnId, accountId])
+  @@index([accountId])
+  @@map("transaction_lines")
+}

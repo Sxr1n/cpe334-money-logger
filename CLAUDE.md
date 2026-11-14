@@ -9,10 +9,10 @@
 เอกสารของวิชาอยู่ที่ `docs/course/` (group_work_specs_v1.pdf และ handout ของแต่ละ checkpoint) ให้อ่านเมื่อต้องเช็กเกณฑ์
 
 ## 1. บริบท
-- วิชา CPE334 ภาคเรียน 1/2026 งานกลุ่ม 2 คน: `<ชื่อ–รหัส นศ. A>`, `<ชื่อ–รหัส นศ. B>`
+- วิชา CPE334 ภาคเรียน 1/2026 งานกลุ่ม 2 คน: นายศารินทร์ ไชยารัตน์ (GitHub `Sxr1n`), นายตันติยวัตร จันทร์ศิริ (GitHub `Leviathan-c137`) — รหัสนักศึกษาใส่เฉพาะใน PDF ที่ส่ง LEB2 เพราะ repo เป็น public (Lab 5 R-12)
 - ธีม/บริบท: **Personal Money and Expense Logging System** (ระบบบันทึกรายรับ-รายจ่ายส่วนตัว)
-- Repo: `<GitHub URL>`
-- Stack: `<frontend>` / `<backend>` / `<database + migration tool>` / tests: `<unit>`, `<API/integration>`, `<E2E>`
+- Repo: https://github.com/Sxr1n/cpe334-money-logger
+- Stack (reused from TokTickIT): React 19 + Vite + TypeScript + Bootstrap / Express 5 + TypeScript + Prisma 7 / PostgreSQL 16 (docker compose) / auth: bcryptjs + JWT in cookie, session and user status checked on the server every request / tests: Vitest (unit), Vitest + Supertest (API/integration), Playwright (E2E)
 - Source of truth ของ scope: `group_work_specs_v1.pdf` (§5 ข้อกำหนดร่วม, §6 ข้อ 7 ธีมของเรา, §8 workflow, §10 labs) + CHG ที่อนุมัติแล้วใน `docs/changes.md`
 - เกณฑ์ของแต่ละ checkpoint: `project_deliverable_1_v1.pdf`, `project_deliverable_2_v1.pdf`, `project_final_delivery_v1.pdf`
 - ภาษา: คุยกับผู้ใช้เป็นภาษาไทย แต่ทุกอย่างที่ส่งอาจารย์ (docs/, PDF, Issue, PR, commit message) ให้เขียนเป็นภาษาอังกฤษ
@@ -20,14 +20,14 @@
 ## 2. Checkpoints
 | Checkpoint | ส่ง (23:59) | คะแนน | แก่นของงาน |
 |---|---|---|---|
-| D1 | 8 Nov | 80 | SRS, features/traceability, System SDS, แผน 3 sprint, contracts ของ Sprint 1 และ Sprint 1 ที่ทำงานได้จริงบน `main` |
-| Lab 5 | 15 Nov | 100 lab | Docker, CI ที่เป็น quality gate (ต้องสาธิต check ที่ fail แล้วบล็อกได้), CD → GCP, ข้อมูลยังอยู่หลัง redeploy |
+| D1 | 15 Nov | 80 | SRS, features/traceability, System SDS, แผน 3 sprint, contracts ของ Sprint 1 และ Sprint 1 ที่ทำงานได้จริงบน `main` |
+| Lab 5 | ไม่มีกำหนด (ประกาศอาจารย์ 14 Nov: รอแก้ปัญหาการเข้า GCP, ส่งช้าไม่หักคะแนน) | 100 lab | Docker, CI ที่เป็น quality gate (ต้องสาธิต check ที่ fail แล้วบล็อกได้), CD → GCP, ข้อมูลยังอยู่หลัง redeploy |
 | Lab 6 | 22 Nov | 100 lab | UAT ข้ามทีม (อย่างน้อย 4 case), triage, แก้ defect และให้ partner re-test |
 | Lab 7 | 29 Nov | 100 lab | change ที่ TA อนุมัติ (TDD + regression), metrics 5 ตัว, release readiness และ retrospective |
 | D2 | 29 Nov | 70 | Sprint 2 ครบ, contracts ของ Sprint 3 ทุกตัว, มีงาน Sprint 3 ที่ทำงานได้จริงอย่างน้อย 1 workflow และ RC ที่ deploy บน GCP |
 | Final | 13 Dec | 100 | product ครบ, regression + UAT re-test, traceability ฉบับสุดท้าย, DoD review และวิดีโอ |
 
-ช่วง 1–11 Dec เป็นช่วงสอบ ดังนั้น product ต้อง**เกือบเสร็จภายใน 29 Nov** และห้ามทิ้ง workflow หลักไว้ทำ 2 วันสุดท้าย
+วันส่งตาม LEB2 (ตรวจ 2026-11-07): D1 เลื่อนจาก 8 เป็น 15 Nov และส่งวันเดียวกับ Lab 5; D2 และ Final ไม่เลื่อน; Lab 6/7 ยังไม่ได้ตรวจใน LEB2 จึงใช้วันเดิม ช่วง 1–11 Dec เป็นช่วงสอบ ดังนั้น product ต้อง**เกือบเสร็จภายใน 29 Nov** และห้ามทิ้ง workflow หลักไว้ทำ 2 วันสุดท้าย
 
 ## 3. Session protocol
 ทำงานเป็น session สั้นๆ ที่มีขอบเขตชัด ตามรายการใน `docs/sessions/SESSION_PLAN.md` และ**ไม่มีความจำข้าม session** ทุกอย่างที่ต้องส่งต่อจึงต้องอยู่ใน repo
@@ -63,6 +63,7 @@
 - Requirements: `FR-01`, `BR-01`, `NFR-01` (ใช้ ID เดิมตลอด ห้ามเรียงเลขใหม่)
 - Features: `F-01` · AC: `AC-F01-01` · Tests: `TEST-F01-01` · NFR checks: `TEST-NFR01-01`
 - Changes: `CHG-01` · Defects: `DEF-01` · UAT: `UAT-01`
+- System responsibilities (cross-cutting NFR/BR): `SR-01`
 - Branches: `staging/sprint-N`, `feature/F01-<slug>`, `fix/DEF03-<slug>`
 - Release tags: `v0.1.0-sprint1`, `v0.2.0-sprint2`, `v0.3.0-rc1`, `v1.0.0`
 - สถานะของ feature/AC: `PLANNED → SPECIFIED → IN PROGRESS → IMPLEMENTED → TESTED → ACCEPTED` (ถ้าไม่ครบใช้ `INCOMPLETE`)

@@ -1,0 +1,81 @@
+# F-01 E2E RED run — before implementation
+# Command: npx playwright test e2e/f01-auth.spec.ts
+# Base commit: 519d9f3 (+ uncommitted tests)
+# Date: 2026-11-06T23:58:30Z
+
+[WebServer] (node:44536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:49024) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:47852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:47968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (30.0s)
+(node:23040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (30.0s)
+
+
+  1) [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Username')
+
+
+       6 | test('TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login', async ({ page }) => {
+       7 |   await page.goto('/login')
+    >  8 |   await page.getByLabel('Username').fill('alice')
+         |                                     ^
+       9 |   await page.getByLabel('Password').fill(password)
+      10 |   await page.getByRole('button', { name: 'Log in' }).click()
+      11 |
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f01-auth.spec.ts:8:37
+
+    Error Context: test-results\f01-auth-TEST-F01-08-user--6e051-ted-pages-redirect-to-Login-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f01-auth-TEST-F01-08-user--6e051-ted-pages-redirect-to-Login-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f01-auth-TEST-F01-08-user--6e051-ted-pages-redirect-to-Login-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Username')
+
+
+      23 | test('TEST-F01-08 (login error) wrong password shows the generic error and keeps the username', async ({ page }) => {
+      24 |   await page.goto('/login')
+    > 25 |   await page.getByLabel('Username').fill('alice')
+         |                                     ^
+      26 |   await page.getByLabel('Password').fill('wrong-password')
+      27 |   await page.getByRole('button', { name: 'Log in' }).click()
+      28 |
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f01-auth.spec.ts:25:37
+
+    Error Context: test-results\f01-auth-TEST-F01-08-login-6200e-rror-and-keeps-the-username-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f01-auth-TEST-F01-08-login-6200e-rror-and-keeps-the-username-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f01-auth-TEST-F01-08-login-6200e-rror-and-keeps-the-username-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login 
+    [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username 

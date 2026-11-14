@@ -1,0 +1,46 @@
+# Seed regression — RED on the original seed (HEAD cab94dc), found during L5-S1 compose check
+# Command: cd server && npx vitest run tests/seed.api.test.ts
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ❯ tests/seed.api.test.ts (1 test | 1 failed) 1611ms
+     × re-running the seed keeps existing users unchanged, including an admin disable 1605ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/seed.api.test.ts > seed (runs on every container start when SEED_ON_START=true) > re-running the seed keeps existing users unchanged, including an admin disable
+AssertionError: expected { id: 2, username: 'bob', …(6) } to deeply equal { id: 2, username: 'bob', …(6) }
+
+- Expected
++ Received
+
+  {
+    "createdAt": 2026-11-07T10:29:50.332Z,
+    "displayName": "Bob Example",
+    "id": 2,
+-   "passwordHash": "$2b$10$TmReJdGW3dkKgM21CorP..J8ib1NebcFHSjMZ7AEzttzwa5o6I/oq",
++   "passwordHash": "$2b$10$PosrNXZu2PUHcLOgKH6E.e8H8ZgbyDkfi8/reKG/xPasv35kJ8KDy",
+    "role": "USER",
+-   "status": "DISABLED",
++   "status": "ACTIVE",
+    "tokenVersion": 5,
+    "username": "bob",
+  }
+
+ ❯ tests/seed.api.test.ts:25:19
+     23|
+     24|     const after = await prisma.user.findUniqueOrThrow({ where: { usern…
+     25|     expect(after).toEqual(before)
+       |                   ^
+     26|     expect(await prisma.user.count()).toBe(3)
+     27|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  17:29:40
+   Duration  10.80s (transform 815ms, setup 54ms, import 1.47s, tests 1.61s, environment 0ms)
+

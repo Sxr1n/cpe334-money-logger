@@ -1,0 +1,112 @@
+# F-06 GREEN run
+# Tested commit: 7850d4e (clean working tree); date 2026-11-13T20:48:39Z
+
+## cd server && npx tsc --noEmit && npx vitest run --reporter=verbose
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-01 accounts are grouped by type with balances and this month's INCOME/EXPENSE totals 508ms
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-02 overview shows cash balances, card debt, loans given and the month summary 309ms
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-03 month summary counts salary and spending only, not the opening balance or card repayment 292ms
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-04 (inclusion) a period includes its first and last day and excludes the day before 273ms
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-05 history is newest first, 50 per page, and the detail includes lines 452ms
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-06 another user's transaction is 404 and the admin gets 403 on overview, summary and history 329ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-01 admin lists all users with exactly the six non-financial fields 370ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login 396ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 admin cannot disable their own account 230ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422 248ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 258ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 231ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-06 admin endpoints return 401 without a session 197ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-01 alice posts PAYMENT from Credit Card (debt 0) total 120000 lines Dining 70000 + Groceries 50000 (AC-F05-01) 360ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-02 alice repays card debt from Bank: Bank -= 120000, card debt becomes 0, expense sum unchanged (AC-F05-02) 243ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-03 PAYMENT lines sum mismatch (1 satang more) -> 422 RULE_VIOLATION (AC-F05-03) 204ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-04 invalid account combinations rejected with 422 RULE_VIOLATION (AC-F05-04) 223ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07) 227ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08) 215ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-07 cross-user isolation: alice using bob Credit Card or bob Dining gets 404 (AC-F05-07, BR-11) 201ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-01 alice posts RECEIPT Bank <- Salary 3000000; Bank balance becomes 3500000 and status is POSTED 406ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-02 line sum mismatch or zero lines rejected with 422 RULE_VIOLATION (BR-01) 199ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-03 rejected if primary is not CASH or lines are not INCOME (BR-03) 213ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-04 rejects invalid satang amounts, future date, ancient date; accepts today (BR-02, BR-09) 255ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-05 cross-user isolation: alice using bob account gets 404 and bob accounts unchanged (BR-11) 205ms
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-05b archived account referenced as primary or line returns 404 NOT_FOUND (BR-04) 213ms
+stderr | tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06)
+Failed to post transaction: Error: Simulated balance update failure
+    at C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/tests/f04-transactions.api.test.ts:364:30
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+ ✓ tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06) 204ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts 379ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-01b case-insensitive unique index rejects "bank" duplicate of "Bank" for same user 149ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-02 setting opening balance creates no row in transactions or transaction_lines 201ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-03 rejects negative, non-integer, and excessive amounts; accepts 0 and max satang 231ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-04 rejects opening balance on Salary (INCOME) and duplicate on Bank 209ms
+ ✓ tests/f03-accounts.api.test.ts > F-03 Opening balance > TEST-F03-05 cross-user isolation: alice cannot set opening balance or view bob accounts 213ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 251ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie 171ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password 70ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected 126ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data 28ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 281ms
+ ✓ tests/seed.api.test.ts > seed (runs on every container start when SEED_ON_START=true) > re-running the seed keeps existing users unchanged, including an admin disable 486ms
+ ✓ tests/app.api.test.ts > app scaffold > GET /api/health returns status and version 14ms
+ ✓ tests/app.api.test.ts > app scaffold > unknown /api route returns the standard 404 error shape 3ms
+ ✓ tests/app.api.test.ts > app scaffold > malformed JSON returns 400 BAD_REQUEST without a stack trace 10ms
+ ✓ tests/f04-ledger.unit.test.ts > F-04 Ledger core & validator (unit) > TEST-F04-02 validateLines detects line sum mismatch and empty lines (BR-01) 12ms
+ ✓ tests/f04-ledger.unit.test.ts > F-04 Ledger core & validator (unit) > TEST-F04-03 validateAllowedAccountTypes enforces Sprint 1 allowed types table (BR-03) 0ms
+ ✓ tests/f04-ledger.unit.test.ts > F-04 Ledger core & validator (unit) > TEST-F04-04 satang and date boundary validation (BR-02, BR-09) 1ms
+ ✓ tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-01 unit: effects of PAYMENT from LOAN_TAKEN primary with EXPENSE lines (BR-05) 1ms
+ ✓ tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-02 unit: effects of PAYMENT from CASH primary with LOAN_TAKEN repayment line (BR-05, BR-06) 0ms
+ ✓ tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-04 unit: validateAllowedAccountTypes enforces Sprint 1 allowed types table for PAYMENT (BR-03) 0ms
+ ✓ tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-05 unit: CASH primary balance check enforces non-negative balance (BR-07) 10ms
+ ✓ tests/f05-ledger.unit.test.ts > F-05 Ledger core & validator (unit) > TEST-F05-06 unit: LOAN_TAKEN repayment line cannot exceed outstanding debt (BR-08) 0ms
+ ✓ tests/f01-session.unit.test.ts > F-01 session token > TEST-F01-07 a token past its 8-hour expiry is rejected 4ms
+ ✓ tests/f06-period.unit.test.ts > F-06 Asia/Bangkok month boundaries > TEST-F06-04 (range) at 2026-11-30 23:30 Bangkok the default period is still November 2ms
+ ✓ tests/f06-period.unit.test.ts > F-06 Asia/Bangkok month boundaries > TEST-F06-04 (range) at 2026-12-01 00:10 Bangkok the default period is December, though UTC is still 30 Nov 0ms
+ ✓ tests/f06-period.unit.test.ts > F-06 Asia/Bangkok month boundaries > TEST-F06-04 (range) month length follows the calendar, including leap February 0ms
+ ✓ tests/f03-accounts.unit.test.ts > F-03 Opening balance validator (unit) > TEST-F03-03 validator cases: -1, 100.5, 1e11, 0, 99999999999 and date checks 1ms
+
+ Test Files  13 passed (13)
+      Tests  56 passed (56)
+   Start at  03:48:41
+   Duration  18.21s (transform 520ms, setup 167ms, import 2.66s, tests 10.34s, environment 1ms)
+
+
+## cd client && npm run build
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.6 building client environment for production...
+transforming...
+✓ 35 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-C1yFTenS.js   296.16 kB │ gzip: 89.89 kB
+
+✓ built in 186ms
+
+## PW_CHANNEL=chrome npx playwright test
+[WebServer] (node:43972) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:41976) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:38700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:40908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (1.6s)
+  ok 2 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (607ms)
+  ok 3 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (1.6s)
+  ok 4 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (1.6s)
+  ok 5 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (5.4s)
+  ok 6 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (573ms)
+
+  6 passed (16.1s)

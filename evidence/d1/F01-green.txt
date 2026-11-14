@@ -1,0 +1,58 @@
+# F-01 GREEN run — after implementation
+# Tested commit: 56ac71d (clean working tree)
+# Date: 2026-11-07T00:01:38Z
+
+## cd server && npx vitest run --reporter=verbose
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 250ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie 132ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password 63ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected 125ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data 20ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 239ms
+ ✓ tests/app.api.test.ts > app scaffold > GET /api/health returns status and version 17ms
+ ✓ tests/app.api.test.ts > app scaffold > unknown /api route returns the standard 404 error shape 4ms
+ ✓ tests/app.api.test.ts > app scaffold > malformed JSON returns 400 BAD_REQUEST without a stack trace 11ms
+ ✓ tests/f01-session.unit.test.ts > F-01 session token > TEST-F01-07 a token past its 8-hour expiry is rejected 4ms
+
+ Test Files  3 passed (3)
+      Tests  10 passed (10)
+   Start at  07:01:39
+   Duration  3.59s (transform 92ms, setup 38ms, import 651ms, tests 868ms, environment 0ms)
+
+
+## cd client && npm run build
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.6 building client environment for production...
+transforming...
+✓ 27 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-B0sUtzgR.js   262.94 kB │ gzip: 83.57 kB
+
+✓ built in 213ms
+
+## npx playwright test
+[WebServer] (node:6292) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:49196) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:47300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:13620) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (942ms)
+  ok 2 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (408ms)
+  ok 3 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (280ms)
+
+  3 passed (5.1s)

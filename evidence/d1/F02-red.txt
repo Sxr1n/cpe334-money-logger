@@ -1,0 +1,104 @@
+# F-02 RED run — tests written before implementation
+# Command: cd server && npx vitest run tests/f02-admin.api.test.ts --reporter=verbose
+# Base commit: 88314d6 (+ uncommitted test file; committed next as test(F02): red)
+# Date: 2026-11-07T00:06:06Z
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ × tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-01 admin lists all users with exactly the six non-financial fields 376ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login 291ms
+   → expected 404 to be 200 // Object.is equality
+ × tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 admin cannot disable their own account 244ms
+   → expected 404 to be 403 // Object.is equality
+ × tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422 241ms
+   → expected 404 to be 422 // Object.is equality
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 242ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 234ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-06 admin endpoints return 401 without a session 168ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-01 admin lists all users with exactly the six non-financial fields
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f02-admin.api.test.ts:30:24
+     28|     const res = await request(app).get('/api/admin/users').set('Cookie…
+     29|
+     30|     expect(res.status).toBe(200)
+       |                        ^
+     31|     expect(res.body.total).toBe(3)
+     32|     expect(res.body.page).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f02-admin.api.test.ts:46:28
+     44|
+     45|     const disable = await request(app).patch(`/api/admin/users/${alice…
+     46|     expect(disable.status).toBe(200)
+       |                            ^
+     47|     expect(disable.body).toMatchObject({ id: aliceId, status: 'DISABLE…
+     48|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 admin cannot disable their own account
+AssertionError: expected 404 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 404
+
+ ❯ tests/f02-admin.api.test.ts:65:24
+     63|     const res = await request(app).patch(`/api/admin/users/${adminId}`…
+     64|
+     65|     expect(res.status).toBe(403)
+       |                        ^
+     66|     expect(res.body.error.code).toBe('FORBIDDEN')
+     67|     expect((await request(app).get('/api/auth/me').set('Cookie', cooki…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f02-admin.api.test.ts:79:28
+     77|
+     78|     const invalid = await request(app).patch(`/api/admin/users/${bobId…
+     79|     expect(invalid.status).toBe(422)
+       |                            ^
+     80|     expect(invalid.body.error.code).toBe('VALIDATION_FAILED')
+     81|     expect((await prisma.user.findUniqueOrThrow({ where: { id: bobId }…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 3 passed (7)
+   Start at  07:06:07
+   Duration  3.88s (transform 85ms, setup 19ms, import 324ms, tests 1.80s, environment 0ms)
+

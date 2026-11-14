@@ -1,0 +1,65 @@
+# F-02 GREEN run — after implementation
+# Tested commit: 1090928 (clean working tree)
+# Date: 2026-11-07T00:07:11Z
+
+## cd server && npx vitest run --reporter=verbose
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-01 admin lists all users with exactly the six non-financial fields 397ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login 379ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 admin cannot disable their own account 228ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422 251ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 261ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 243ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-06 admin endpoints return 401 without a session 178ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity 236ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie 130ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-03 a DISABLED user cannot log in with the correct password 66ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-04 after logout the old session cookie is rejected 132ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-05 every protected Sprint 1 endpoint returns 401 without a session and no private data 22ms
+ ✓ tests/f01-auth.api.test.ts > F-01 Authentication and session > TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned 243ms
+ ✓ tests/app.api.test.ts > app scaffold > GET /api/health returns status and version 16ms
+ ✓ tests/app.api.test.ts > app scaffold > unknown /api route returns the standard 404 error shape 4ms
+ ✓ tests/app.api.test.ts > app scaffold > malformed JSON returns 400 BAD_REQUEST without a stack trace 12ms
+ ✓ tests/f01-session.unit.test.ts > F-01 session token > TEST-F01-07 a token past its 8-hour expiry is rejected 4ms
+
+ Test Files  4 passed (4)
+      Tests  17 passed (17)
+   Start at  07:07:12
+   Duration  5.99s (transform 126ms, setup 50ms, import 994ms, tests 2.81s, environment 0ms)
+
+
+## cd client && npm run build
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.6 building client environment for production...
+transforming...
+✓ 28 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-Drc9bddR.js   265.07 kB │ gzip: 84.09 kB
+
+✓ built in 207ms
+
+## npx playwright test (regression)
+[WebServer] (node:29864) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:48608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:46132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:40052) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (913ms)
+  ok 2 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (444ms)
+  ok 3 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (293ms)
+
+  3 passed (5.1s)
