@@ -6,3 +6,7 @@ generated/
 test-results/
 playwright-report/
 blob-report/
+submission/*/build/
+
+# Course handouts stay local (repository is public, Lab 5 R-12)
+docs/course/
