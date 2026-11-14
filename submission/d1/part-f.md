@@ -61,6 +61,32 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 | 6 | Overview Screen | Summary Card | Cash ฿33.8k, Debt ฿0, Inc ฿30k, Exp ฿1.2k, Net ฿28.8k | Explicit DOM assertions: `cash-total` ฿33,800.00, `debt-total` ฿0.00, `month-income` ฿30,000.00, `month-expense` ฿1,200.00, `month-net` ฿28,800.00 (`:20–25, 72`) | PASS |
 | 7 | Reload & Re-login | Overview & History | Survives reload & re-login; exactly 3 history rows | Overview metrics asserted identical after page reload (`:74`) and re-login (`:78`); `tbody tr` row count = 3 (`:81`) | PASS |
 
+#### Screenshots (user `bob`)
+
+Screenshots were captured on 2026-11-14 from the running app (local dev servers, PostgreSQL 16 in Docker, database reset and seeded by `e2e/global-setup.ts`). The application code is identical to tag `v0.1.0-sprint1` (`git diff v0.1.0-sprint1` touches only docs and `.gitignore`); the footer shows `API version: dev` because `APP_VERSION` is set only in the Docker build. No request was mocked.
+
+![Figure F-1. Overview after first login: all totals ฿0.00 (starting condition).](img/f1-01-overview-empty.png)
+*Figure F-1. Overview after first login: all totals ฿0.00 (starting condition).*
+
+![Figure F-2. Accounts: opening balance ฿5,000.00 on Bank (AC-F03-01).](img/f1-02-opening-balance-form.png)
+*Figure F-2. Accounts: opening balance ฿5,000.00 on Bank (AC-F03-01).*
+
+![Figure F-3. Receive money: ฿30,000.00 into Bank from Salary (AC-F04-01).](img/f1-03-receive-salary-form.png)
+*Figure F-3. Receive money: ฿30,000.00 into Bank from Salary (AC-F04-01).*
+
+![Figure F-4. Make a payment: ฿1,200.00 on Credit Card split into Dining ฿700.00 + Groceries ฿500.00 (AC-F05-01).](img/f1-04-card-purchase-form.png)
+*Figure F-4. Make a payment: ฿1,200.00 on Credit Card split into Dining ฿700.00 + Groceries ฿500.00 (AC-F05-01).*
+
+![Figure F-5. Persisted result after the ฿1,200.00 card repayment, logout and login: Cash ฿33,800.00, Debt ฿0.00, Income ฿30,000.00, Expense ฿1,200.00, Net ฿28,800.00 — opening balance and repayment not counted (AC-F06-02, AC-F06-03, BR-06).](img/f1-05-overview-after-relogin.png)
+*Figure F-5. Persisted result after the ฿1,200.00 card repayment, logout and login: Cash ฿33,800.00, Debt ฿0.00, Income ฿30,000.00, Expense ฿1,200.00, Net ฿28,800.00 — opening balance and repayment not counted (AC-F06-02, AC-F06-03, BR-06).*
+
+![Figure F-6. History: the 3 saved transactions, newest first (F-06 History; paging and detail are tested in TEST-F06-05).](img/f1-06-history.png)
+*Figure F-6. History: the 3 saved transactions, newest first (F-06 History; paging and detail are tested in TEST-F06-05).*
+
+![Figure F-7. Transaction detail opened from History (retrieval of a saved record).](img/f1-07-transaction-detail.png)
+*Figure F-7. Transaction detail opened from History (retrieval of a saved record).*
+
+
 ---
 
 ### F.1.2 Business-rule rejection
@@ -85,6 +111,15 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 - **Expected:** In `server/src/routes/transactions.ts:100-111`, the server queries accounts with `WHERE id IN (...) AND userId = req.user.id AND archivedAt IS NULL`. When account count does not match all referenced IDs, returns HTTP 404 `NOT_FOUND` with message `"One or more accounts not found."`. No foreign account information is disclosed.
 - **Actual:** Verified in `server/tests/f04-transactions.api.test.ts` (TEST-F04-05, TEST-F04-05b) and `server/tests/f05-transactions.api.test.ts` (TEST-F05-07). Returns 404 with standard error envelope.
 
+#### Screenshots
+
+![Figure F-8. Lines ฿900.00 ≠ total ฿1,000.00: the form shows "Lines must add up to the total" and Save is disabled (BR-01 client-side check; the server-side 422 is TEST-F05-03 / AC-F05-03).](img/f2-01-line-sum-mismatch.png)
+*Figure F-8. Lines ฿900.00 ≠ total ฿1,000.00: the form shows "Lines must add up to the total" and Save is disabled (BR-01 client-side check; the server-side 422 is TEST-F05-03 / AC-F05-03).*
+
+![Figure F-9. Paying ฿50,000.00 from Bank (balance ฿33,800.00): the server rejects with 422 and the form keeps the input (BR-07, AC-F05-05).](img/f2-02-cash-overspend-rejected.png)
+*Figure F-9. Paying ฿50,000.00 from Bank (balance ฿33,800.00): the server rejects with 422 and the form keeps the input (BR-07, AC-F05-05).*
+
+
 ---
 
 ### F.1.3 Login/logout and forbidden operations
@@ -92,7 +127,7 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 #### Demonstration 1: Unauthenticated access redirected (AC-F01-01, AC-F01-08)
 - **Action:** A browser client without an active session cookie visits protected routes (`/overview`, `/accounts`, `/transactions`, `/receive`, `/pay`).
 - **Expected:** Client router detects absence of authenticated user state and redirects to `/login`. Direct API calls to `/api/accounts`, `/api/transactions`, `/api/overview`, or `/api/summary` return HTTP 401 `UNAUTHENTICATED`.
-- **Actual:** Verified in `e2e/f01-auth.spec.ts` (TEST-F01-08) and `server/tests/f01-auth.api.test.ts` (TEST-F01-01).
+- **Actual:** Verified in `e2e/f01-auth.spec.ts` (TEST-F01-08) (UI redirect) and `server/tests/f02-admin.api.test.ts` (TEST-F02-06, 401 without a session) / `server/tests/f06-overview.api.test.ts` (TEST-F06-06).
 
 #### Demonstration 2: Disabled user rejected on login and existing session revoked (AC-F01-04, AC-F02-02, BR-13)
 - **Action:** Administrator disables user `bob` via `PATCH /api/admin/users/:id` (`status: "DISABLED"`).
@@ -104,7 +139,7 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 
 #### Demonstration 3: Administrator role forbidden from financial data (AC-F02-04, BR-12, NFR-02)
 - **Action:** User authenticated with role `ADMIN` accesses financial endpoints (`/api/accounts`, `/api/transactions`, `/api/overview`, `/api/summary`, `/api/transactions/:id`).
-- **Expected:** In `server/src/app.ts`, financial routes are protected by middleware `requireAuth, requireRole('USER')`. An `ADMIN` user receives HTTP 403 `FORBIDDEN` with body `{"error": {"code": "FORBIDDEN", "message": "Forbidden."}}` and zero financial data is returned.
+- **Expected:** In `server/src/app.ts`, financial routes are protected by middleware `requireAuth, requireRole('USER')`. An `ADMIN` user receives HTTP 403 `FORBIDDEN` with body `{"error": {"code": "FORBIDDEN", "message": "You do not have access to this resource."}}` and zero financial data is returned.
 - **Actual:** Verified across all financial endpoints in `server/tests/f02-admin.api.test.ts` (TEST-F02-04) and `server/tests/f06-overview.api.test.ts` (TEST-F06-06).
 
 #### Demonstration 4: Regular user forbidden from admin endpoints (AC-F02-05)
@@ -112,12 +147,21 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 - **Expected:** Guard middleware `requireRole('ADMIN')` rejects the request with HTTP 403 `FORBIDDEN`.
 - **Actual:** Verified in `server/tests/f02-admin.api.test.ts` (TEST-F02-05).
 
+#### Screenshots
+
+![Figure F-10. Administrator sees only the Users page; no financial navigation (F-02 UI; the server-side block is Figure F-11).](img/f3-01-admin-users-page.png)
+*Figure F-10. Administrator sees only the Users page; no financial navigation (F-02 UI; the server-side block is Figure F-11).*
+
+![Figure F-11. Real API responses from the running app: no session → 401; admin → 403 on overview and on a transaction; alice → 404 on bob's transaction; alice → 403 on admin users (AC-F02-06, AC-F02-04, AC-F06-06, AC-F02-05). Hiding a button is not the control — the server returns these codes.](img/f3-02-api-access-restrictions.png)
+*Figure F-11. Real API responses from the running app: no session → 401; admin → 403 on overview and on a transaction; alice → 404 on bob's transaction; alice → 403 on admin users (AC-F02-06, AC-F02-04, AC-F06-06, AC-F02-05). Hiding a button is not the control — the server returns these codes.*
+
+
 ---
 
 ## F.2 Build and automated test results
 
 ### Automated test summary on release commit `e1747cb`
-- **Environment:** Node.js v24.19.0, npm v10.8.2, Docker v27.x, PostgreSQL 16.
+- **Environment:** Node.js v24.19.0 on Windows with `PW_CHANNEL=chrome` (recorded in the evidence file), PostgreSQL 16 in Docker; CI runs on GitHub-hosted Ubuntu.
 - **Evidence Reference:** `evidence/d1/release-v0.1.0-sprint1.txt` recorded at sprint freeze on staging commit `2f8dd76` (56 server tests across 13 files + 6 E2E tests = 62 total tests).
 - **Release Verification on `main` (`e1747cb`):** PR #22 introduced Cloud Run deployment readiness probes (`/api/ready`), adding 2 tests to `server/tests/app.api.test.ts` for a final total of 58 server tests + 6 E2E tests = 64 total tests, verified green by GitHub Actions CI run [43583936948](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43583936948) on staging (PR #32) and [43585303434](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43585303434) on main (`e1747cb`).
 
@@ -342,8 +386,8 @@ Work was divided equally according to the team agreement registered in `docs/ses
 
 | Student | Main Implementation Scope | Code Reviews & Verification Conducted |
 |---|---|---|
-| **Sarin CH**<br>(`Sxr1n`) | • F-01 Authentication and Session<br>• F-02 Administrator User Access<br>• F-06 Overview, Summary and History<br>• Docker Multi-stage Build & Compose (Lab 5)<br>• CI Pipeline Quality Gates (Lab 5)<br>• D1 Automated PDF Generator (`build_pdf.py`) | • PR #16 (F-03 Opening Balance)<br>• PR #17 (F-04 Receive Money)<br>• PR #18 (F-05 Payment & Charge) |
-| **Tantiyawat Chansiri**<br>(`Leviathan-c137`) | • F-03 Opening Balance & Validations<br>• F-04 Receive Money & Shared Ledger Core<br>• F-05 Payment, Charge & Repayment Logic<br>• D1 Part F Verification Document & Evidence<br>• E2E Global DB Reset Harness (`reset-e2e.ts`) | • PR #10 (F-01 Authentication)<br>• PR #11 (F-02 Administrator)<br>• PR #19 (F-06 Overview & History)<br>• PR #20 (Release Verification Evidence)<br>• PR #21 (PDF Builder & Public Repo Prep)<br>• PR #22 (Cloud Run Deployment Pipeline)<br>• PR #31 (Deploy Guard Workflow)<br>• PR #32 (Sprint 1 Release `v0.1.0-sprint1`) |
+| **Sarin CH**<br>(`Sxr1n`) | • F-01 Authentication and Session<br>• F-02 Administrator User Access<br>• F-06 Overview, Summary and History<br>• Docker Multi-stage Build & Compose (Lab 5)<br>• CI Pipeline Quality Gates (Lab 5)<br>• E2E Global DB Reset Harness (`reset-e2e.ts`, `c5848da`)<br>• D1 Automated PDF Generator (`build_pdf.py`) | • PR #16 (F-03 Opening Balance)<br>• PR #17 (F-04 Receive Money)<br>• PR #18 (F-05 Payment & Charge) |
+| **Tantiyawat Chansiri**<br>(`Leviathan-c137`) | • F-03 Opening Balance & Validations<br>• F-04 Receive Money & Shared Ledger Core<br>• F-05 Payment, Charge & Repayment Logic<br>• D1 Part F Verification Document & Evidence | • PR #10 (F-01 Authentication)<br>• PR #11 (F-02 Administrator)<br>• PR #19 (F-06 Overview & History)<br>• PR #20 (Release Verification Evidence)<br>• PR #21 (PDF Builder & Public Repo Prep)<br>• PR #22 (Cloud Run Deployment Pipeline)<br>• PR #31 (Deploy Guard Workflow)<br>• PR #32 (Sprint 1 Release `v0.1.0-sprint1`) |
 
 ---
 
@@ -354,7 +398,7 @@ Summary of AI collaboration recorded in `docs/ai-use.md`:
 2. **Context & Prompts:** Used to accelerate drafting initial test scaffolds, boilerplate React components, and complex database grouping queries. Prompts strictly supplied course requirements (`group_work_specs_v1.pdf`, `project_deliverable_1_v1.pdf`), System SDS architecture, and engineering contracts.
 3. **Engineering Oversight & Quality Control:**
    - **TDD Enforcement:** Tests were always authored, run, and recorded failing (`red`) before implementation code was written.
-   - **Human Code Review:** Every AI-generated line was examined by the peer reviewer before PR approval. Real defects (such as missing JWT secret deletion in teardown scripts and button selector strictness collisions in E2E tests) were caught and corrected by the human developers.
+   - **Human Code Review:** Every AI-generated line was examined by the peer reviewer before PR approval. Real defects were caught this way, e.g. the teardown script not deleting the JWT secret (found in the PR #22 review, fixed in `4bb1a30`); others were caught by the test suites, e.g. duplicate link names on the Overview page breaking the F-04/F-05 E2E selectors (found by the E2E run during F-06, recorded in contract F-06 v0.3).
    - **Privacy Protection:** Ensured student identification numbers were scrubbed from repository files prior to making the repository public (Lab 5 R-12).
 
 ---
