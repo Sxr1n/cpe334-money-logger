@@ -75,7 +75,7 @@ echo "  - Cloud Run Service : ${SERVICE_NAME}"
 echo "  - Cloud Run Job     : ${MIGRATE_JOB_NAME}"
 echo "  - Cloud SQL Instance: ${SQL_INSTANCE} (ALL DATABASE DATA WILL BE LOST)"
 echo "  - Artifact Registry : ${REPO_NAME}"
-echo "  - Secrets           : ${SECRET_DB_URL}, ${SECRET_ADMIN_PASS}, ${SECRET_DEMO_PASS}"
+echo "  - Secrets           : ${SECRET_DB_URL}, ${SECRET_ADMIN_PASS}, ${SECRET_DEMO_PASS}, ${SECRET_JWT}"
 echo "  - Service Account   : ${SA_EMAIL}"
 echo "=================================================================="
 
@@ -100,6 +100,7 @@ run_cmd gcloud artifacts repositories delete "$REPO_NAME" --location "$REGION" -
 run_cmd gcloud secrets delete "$SECRET_DB_URL" --project "$PROJECT_ID" --quiet || true
 run_cmd gcloud secrets delete "$SECRET_ADMIN_PASS" --project "$PROJECT_ID" --quiet || true
 run_cmd gcloud secrets delete "$SECRET_DEMO_PASS" --project "$PROJECT_ID" --quiet || true
+run_cmd gcloud secrets delete "$SECRET_JWT" --project "$PROJECT_ID" --quiet || true
 run_cmd gcloud iam service-accounts delete "$SA_EMAIL" --project "$PROJECT_ID" --quiet || true
 
 echo "Teardown completed."
