@@ -2,9 +2,9 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — **D1 due 15 Nov 23:59**. Lab 5 has no deadline for now (instructor announcement 2026-11-14: GCP access issue; late not penalized). D2 29 Nov, Final 13 Dec unchanged
-- Next session: Leviathan-c137 → review release PRs · Sxr1n → tag `v0.1.0-sprint1` after main merge, then Lab 5 (L5-S3 GCP, protection demo) · both → PDFs
-- Latest release on main: `v0.1.0-sprint1` in progress — verified on staging `2f8dd76` (evidence/d1/release-v0.1.0-sprint1.txt); release PR staging → main next
-- Active staging branch: `staging/sprint-1` (PRs #7–#18 merged; CI green on `53cd180`)
+- Next session: Final PDF review & submission to LEB2 (D1) · Lab 5 upon GCP access resolution
+- Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
+- Active staging branch: `staging/sprint-1` (PRs #7–#31 merged; release PR #32 merged to main)
 - Deployed URL / version: —
 
 ## Feature board
@@ -46,6 +46,11 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — D1-S8b (Part F & PDF) — Claude + Leviathan-c137
+- Done: เติมเนื้อหา `submission/d1/part-f.md` (Working Sprint 1 and verification) ครบทุกหัวข้อตามข้อกำหนด D1 §4.2 — Program demonstrations (normal journey, rule rejections, role/forbidden ops), Automated test results (41/41 ACs PASS), Test excerpts (BR-07/BR-08 และ BR-11/BR-12), Workflow history (PR #17 F-04 และ PR #19 F-06), Contributions split, AI-use declaration, Known limitations; ประกอบเล่ม PDF ด้วย `submission/d1/build_pdf.py` ได้เอกสารสมบูรณ์ 65 หน้า
+- Evidence: `submission/d1/part-f.md`, `submission/d1/D1-v0.1.0-sprint1.pdf` (65 pages = cover 1 + parts [8, 10, 9, 4, 23, 10])
+- Next session: Sxr1n ตรวจสอบเล่ม PDF D1 และเตรียมส่ง LEB2
+
 ### 2026-11-14 — Lab 5 paused + deploy guard — Claude + Sxr1n
 - Done: บันทึกประกาศอาจารย์ (Lab 5 ไม่มีกำหนดส่ง, D1 ยังส่ง 15 Nov); job `deploy` ใน `deploy.yml` รันเฉพาะเมื่อ repo variable `DEPLOY_ENABLED == 'true'` เพื่อไม่ให้ release เข้า main ล้มขณะยังไม่มี GCP; repo เป็น public + secret scanning/push protection เปิดแล้ว (ตรวจผ่าน API)
 - Decisions: ใช้ repo variable แทน `vars.GCP_PROJECT_ID` เพราะตัวแปรระดับ environment ใช้ใน job-level `if` ไม่ได้
