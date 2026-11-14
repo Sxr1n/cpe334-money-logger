@@ -10,7 +10,7 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 ### F.1.1 Normal domain journey and persisted result
 - **Features & AC:** F-03 (AC-F03-01), F-04 (AC-F04-01), F-05 (AC-F05-01, AC-F05-02), F-06 (AC-F06-01, AC-F06-02, AC-F06-03, AC-F06-07).
 - **Role:** Regular user (`bob` or `alice`, role `USER`).
-- **Starting conditions:** Synthetic test database seeded via `server/prisma/seed.ts`. User `bob` possesses initial zero-balance accounts: `Bank`, `Cash` (CASH), `Credit Card` (LOAN_TAKEN), `Salary` (INCOME), `Dining`, `Groceries`, `Electricity`, `Telecom` (EXPENSE). No prior transactions exist for `bob`.
+- **Starting conditions:** Synthetic test database seeded via `server/prisma/seed.ts`. User `bob` possesses initial zero-balance accounts: `Bank` (CASH), `Credit Card` (LOAN_TAKEN), `Salary` (INCOME), `Dining`, `Groceries`, `Electricity`, `Telecom` (EXPENSE). No prior transactions exist for `bob`.
 
 #### Demonstration steps
 1. **User Login (`/login`):**  
@@ -51,15 +51,15 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
    - `05 Nov 2026` | Received | Bank | "November Salary" | `฿30,000.00`  
    Clicking any transaction row opens `/transactions/:id` displaying detailed line breakdowns.
 
-| Step | Operation | Account Affected | Expected Balance / Total | Actual Observed | Result |
+| Step | Operation | Account Affected | Expected Balance / Total | Actual Observed (E2E TEST-F06-07) | Result |
 |---|---|---|---|---|---|
-| 1 | Login `bob` | Session cookie | Valid JWT cookie set | Cookie set, redirect `/overview` | PASS |
-| 2 | Set Opening Balance | Bank (CASH) | Balance ฿5,000.00 | Balance ฿5,000.00 | PASS |
-| 3 | Receive Salary | Bank, Salary | Bank ฿35,000.00, Salary ฿30,000.00 | Bank ฿35,000.00, Salary ฿30,000.00 | PASS |
-| 4 | Card Purchase | Credit Card, Dining, Groceries | Debt ฿1,200.00, Exp ฿1,200.00 | Debt ฿1,200.00, Exp ฿1,200.00 | PASS |
-| 5 | Card Repayment | Bank, Credit Card | Bank ฿33,800.00, Debt ฿0.00 | Bank ฿33,800.00, Debt ฿0.00 | PASS |
-| 6 | Overview Screen | Summary Card | Inc ฿30k, Exp ฿1.2k, Net ฿28.8k | Inc ฿30k, Exp ฿1.2k, Net ฿28.8k | PASS |
-| 7 | Reload & Re-login | Overview & History | 3 rows, values unchanged | 3 rows, values unchanged | PASS |
+| 1 | Login `bob` | Session cookie | Valid JWT cookie set, redirect `/overview` | Valid `httpOnly` cookie set; redirected to `/overview` (`e2e/f06-journey.spec.ts:16`) | PASS |
+| 2 | Set Opening Balance | Bank (CASH) | Balance ฿5,000.00, button hidden (BR-10) | Bank balance ฿5,000.00; "Set opening balance" button removed from DOM (`:38`) | PASS |
+| 3 | Receive Salary | Bank, Salary | Bank ฿35,000.00, Salary ฿30,000.00 | Modal heading "Saved" visible; Bank balance ฿35,000.00 (`:46`) | PASS |
+| 4 | Card Purchase | Credit Card, Dining, Groceries | Debt ฿1,200.00, Exp ฿1,200.00 | Banner "Payment recorded successfully!" visible; Debt ฿1,200.00 (`:59`) | PASS |
+| 5 | Card Repayment | Bank, Credit Card | Bank ฿33,800.00, Debt ฿0.00 | Banner "Payment recorded successfully!" visible; Bank ฿33,800.00, Debt ฿0.00 (`:68`) | PASS |
+| 6 | Overview Screen | Summary Card | Cash ฿33.8k, Debt ฿0, Inc ฿30k, Exp ฿1.2k, Net ฿28.8k | `cash-total` ฿33,800.00, `debt-total` ฿0.00, `month-income` ฿30,000.00, `month-expense` ฿1,200.00, `month-net` ฿28,800.00 (`:20-25, 72`) | PASS |
+| 7 | Reload & Re-login | Overview & History | Survives reload and re-login; exactly 3 history rows | Overview metrics unchanged after reload & re-login; `tbody tr` count exactly 3 (`:74, 78, 81`) | PASS |
 
 ---
 
@@ -67,23 +67,23 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 
 #### Demonstration 1: Line sum mismatch rejection (BR-01 / AC-F04-02 / AC-F05-03)
 - **Input:** On the Make a payment form (`/pay`), user enters Total `฿1,000.00`, but specifies lines summing to `฿900.00` (Difference: `฿100.00`).
-- **Expected:** The client live footer displays a real-time warning: *"Total mismatch: lines sum to ฿900.00 (difference: ฿100.00)"* and disables submission. If submitted directly via API, the server returns HTTP 422 with error code `RULE_VIOLATION` and message `"Line amounts must sum to total amount."`. Form values are preserved without loss.
+- **Expected:** The client live footer displays a real-time warning: *"Total mismatch: lines sum to ฿900.00 (difference: ฿100.00)"* and disables submission. If submitted directly via API, the server returns HTTP 422 with error code `RULE_VIOLATION` and field error detail `{"lines": "Lines must add up to the total"}` (`server/src/lib/ledger.ts:163`). Form values are preserved without loss.
 - **Actual:** Verified in automated E2E test `e2e/f05-pay.spec.ts` (TEST-F05-08) and API test `server/tests/f05-transactions.api.test.ts` (TEST-F05-03). HTTP 422 returned, database untouched.
 
 #### Demonstration 2: CASH account balance cannot go negative (BR-07 / AC-F05-05)
 - **Input:** User attempts to spend `฿50,000.00` from `Bank` when the current balance is `฿33,800.00`.
-- **Expected:** In `server/src/lib/ledger.ts`, `calculateTxnEffects` checks the row-locked balance (`SELECT ... FOR UPDATE`). Since `currentBalance + delta < 0` (3380000 - 5000000 = -1620000), the transaction is rejected before execution with HTTP 422 `RULE_VIOLATION`: *"Cash account balance cannot go negative."*. Furthermore, the PostgreSQL column check constraint `CHECK (balance >= 0)` on CASH accounts provides database-level defense in depth.
+- **Expected:** In `server/src/lib/ledger.ts`, `calculateTxnEffects` checks the row-locked balance (`SELECT ... FOR UPDATE`). Since `primaryAccount.balance < total` (3,380,000 < 5,000,000 satang), the transaction is rejected before execution with HTTP 422 `RULE_VIOLATION` and detail `{"total": "Not enough money in Bank (balance ฿33,800.00)"}` (`server/src/lib/ledger.ts:229`). Furthermore, the PostgreSQL column check constraint `CHECK (balance >= 0)` on the `accounts` table provides database-level defense in depth across all accounts.
 - **Actual:** Verified in `server/tests/f05-transactions.api.test.ts` (TEST-F05-05). Request rejected with 422, zero balance mutation.
 
 #### Demonstration 3: Card repayment exceeding debt rejected (BR-08 / AC-F05-06)
 - **Input:** User attempts to repay `฿2,000.00` towards Credit Card debt when outstanding debt is `฿1,200.00`.
-- **Expected:** `calculateTxnEffects` evaluates `repaymentAmount > currentDebt` and throws an invariant error. Server responds with HTTP 422 `RULE_VIOLATION`: *"Repayment amount exceeds outstanding debt."*.
+- **Expected:** In `server/src/lib/ledger.ts`, `calculateTxnEffects` evaluates `line.amount > line.account.balance` for `LOAN_TAKEN` repayment lines. Since 2,000.00 > 1,200.00, the server rejects the request with HTTP 422 `RULE_VIOLATION` and detail `{"lines[0].amount": "More than the outstanding debt ฿1,200.00"}` (`server/src/lib/ledger.ts:247`).
 - **Actual:** Verified in `server/tests/f05-transactions.api.test.ts` (TEST-F05-06). Rejection confirmed, exact debt repayment (฿1,200.00) accepted.
 
 #### Demonstration 4: Account not owned by user or archived (BR-04, BR-11 / AC-F04-05, AC-F05-07)
-- **Input:** User `alice` submits a transaction referencing an account ID belonging to user `bob`.
-- **Expected:** Server queries accounts with `WHERE id IN (...) AND user_id = req.user.id AND NOT archived`. When account counts do not match, returns HTTP 404 `NOT_FOUND`: *"Account not found."*. No foreign account information is disclosed.
-- **Actual:** Verified in `server/tests/f04-transactions.api.test.ts` (TEST-F04-05) and `server/tests/f05-transactions.api.test.ts` (TEST-F05-07). Returns 404 with standard error envelope.
+- **Input:** User `alice` submits a transaction referencing an account ID belonging to user `bob`, or referencing an archived account.
+- **Expected:** In `server/src/routes/transactions.ts:100-111`, the server queries accounts with `WHERE id IN (...) AND userId = req.user.id AND archivedAt IS NULL`. When account count does not match all referenced IDs, returns HTTP 404 `NOT_FOUND` with message `"One or more accounts not found."`. No foreign account information is disclosed.
+- **Actual:** Verified in `server/tests/f04-transactions.api.test.ts` (TEST-F04-05, TEST-F04-05b) and `server/tests/f05-transactions.api.test.ts` (TEST-F05-07). Returns 404 with standard error envelope.
 
 ---
 
@@ -97,10 +97,10 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 #### Demonstration 2: Disabled user rejected on login and existing session revoked (AC-F01-04, AC-F02-02, BR-13)
 - **Action:** Administrator disables user `bob` via `PATCH /api/admin/users/:id` (`status: "DISABLED"`).
 - **Expected:**
-  1. Any existing active session cookie held by `bob` is rejected on its next request with HTTP 403 `FORBIDDEN` because `requireAuth` queries the current user record on every authenticated call (SDS §4.3).
-  2. New login attempts with valid password fail with HTTP 403 `FORBIDDEN`: *"User account is disabled."*.
+  1. Any existing active session cookie held by `bob` is rejected on its next request with HTTP 401 `UNAUTHENTICATED` (`"Please log in."`) because `requireAuth` queries the current user record on every authenticated call and rejects if `user.status !== 'ACTIVE'` or `tokenVersion` was bumped (`server/src/middleware/requireAuth.ts:29`, SDS §4.3).
+  2. New login attempts with valid password fail with HTTP 401 `INVALID_CREDENTIALS`: `"Invalid username or password."` (`server/src/routes/auth.ts:27`). Per BR-13 and TEST-F01-03, disabled users receive the same generic 401 response as an unknown username or incorrect password to prevent user enumeration.
   3. When re-enabled by admin (`status: "ACTIVE"`), `bob` can immediately log in again.
-- **Actual:** Verified in `server/tests/f02-admin.api.test.ts` (TEST-F02-02) and `server/tests/f01-auth.api.test.ts` (TEST-F01-04).
+- **Actual:** Verified in `server/tests/f02-admin.api.test.ts` (TEST-F02-02) and `server/tests/f01-auth.api.test.ts` (TEST-F01-03, TEST-F01-04).
 
 #### Demonstration 3: Administrator role forbidden from financial data (AC-F02-04, BR-12, NFR-02)
 - **Action:** User authenticated with role `ADMIN` accesses financial endpoints (`/api/accounts`, `/api/transactions`, `/api/overview`, `/api/summary`, `/api/transactions/:id`).
@@ -118,7 +118,8 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 
 ### Automated test summary on release commit `e1747cb`
 - **Environment:** Node.js v24.19.0, npm v10.8.2, Docker v27.x, PostgreSQL 16.
-- **Evidence Reference:** `evidence/d1/release-v0.1.0-sprint1.txt` (recorded on staging `2f8dd76` and verified on main `e1747cb`).
+- **Evidence Reference:** `evidence/d1/release-v0.1.0-sprint1.txt` recorded at sprint freeze on staging commit `2f8dd76` (56 server tests across 13 files + 6 E2E tests = 62 total tests).
+- **Release Verification on `main` (`e1747cb`):** PR #22 introduced Cloud Run deployment readiness probes (`/api/ready`), adding 2 tests to `server/tests/app.api.test.ts` for a final total of 58 server tests + 6 E2E tests = 64 total tests, verified green by GitHub Actions CI run [43580989944](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43580989944) on staging and [43583936948](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/43583936948) on main.
 
 ```
 ================================================================================
@@ -126,11 +127,12 @@ Test Suite Summary — Release v0.1.0-sprint1 (Commit e1747cb)
 ================================================================================
 Server Typecheck (tsc --noEmit) : PASS (0 errors)
 Server Unit & API-DB (Vitest)    : 13 test files passed, 58 tests passed (0 failed, 0 skipped)
+                                  [Baseline evidence at 2f8dd76: 56 server tests; +2 ready tests in PR #22]
 Client Build (tsc -b && vite)   : PASS (35 modules transformed, dist/ built cleanly)
 E2E Suite (Playwright)          : 6 spec files passed, 6 tests passed (0 failed, 0 skipped)
 Docker Unified Image Build      : PASS (multi-stage image built cleanly)
 GitHub Actions CI Quality Gates : 5/5 jobs passed (Client, Docker, E2E, Secret scan, Server)
-Total Automated Test Cases      : 64 passed (100%), 0 failed, 0 skipped
+Total Automated Test Cases      : 64 passed (100%), 0 failed, 0 skipped (62 on 2f8dd76 baseline)
 ================================================================================
 ```
 
@@ -186,37 +188,75 @@ Total Automated Test Cases      : 64 passed (100%), 0 failed, 0 skipped
 
 ### F.2.1 Test excerpt — Domain rule (TDD Red → Green)
 - **Domain Rule:** BR-07 (CASH balance cannot go negative) and BR-08 (Repayment line cannot exceed card debt).
-- **Implementation Location:** `server/src/lib/ledger.ts`:
+- **Implementation Location:** `server/src/lib/ledger.ts` (lines 221–256 in `calculateTxnEffects`):
 ```typescript
-// BR-07 & BR-08 enforcement inside calculateTxnEffects
-if (primary.type === AccountType.CASH) {
-  if (primary.balance + primaryDelta < 0n) {
-    throw new LedgerRuleError('Cash account balance cannot go negative.')
-  }
-}
-for (const line of lines) {
-  if (primary.type === AccountType.CASH && line.account.type === AccountType.LOAN_TAKEN) {
-    if (line.amount > line.account.balance) {
-      throw new LedgerRuleError('Repayment amount exceeds outstanding debt.')
+  if (form === 'PAYMENT') {
+    // BR-05 & BR-07: primary CASH balance -= total; primary LOAN_TAKEN balance += total
+    if (primaryAccount.type === AccountType.CASH) {
+      if (primaryAccount.balance < total) {
+        return {
+          valid: false,
+          errorType: 'RULE_VIOLATION',
+          details: {
+            total: `Not enough money in ${primaryAccount.name} (balance ฿${formatBaht(primaryAccount.balance)})`,
+          },
+        }
+      }
+      deltas.push({ accountId: primaryAccount.id, delta: -total })
+    } else if (primaryAccount.type === AccountType.LOAN_TAKEN) {
+      deltas.push({ accountId: primaryAccount.id, delta: total })
     }
+
+    // Lines: BR-05 & BR-08: each LOAN_TAKEN line balance -= amount; EXPENSE lines no change
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+      if (line.account.type === AccountType.LOAN_TAKEN) {
+        if (line.amount > line.account.balance) {
+          return {
+            valid: false,
+            errorType: 'RULE_VIOLATION',
+            details: {
+              [`lines[${i}].amount`]: `More than the outstanding debt ฿${formatBaht(line.account.balance)}`,
+            },
+          }
+        }
+        deltas.push({ accountId: line.account.id, delta: -line.amount })
+      }
+    }
+
+    return { valid: true, deltas }
   }
-}
 ```
 
 - **Red Phase Evidence (`evidence/d1/F05-red.txt` — Commit `f615c47`):**
 ```
-FAIL tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-05 overspending CASH balance rejected with 422
-AssertionError: expected 404 to be 422
-  - Expected: 422
-  + Received: 404
-Tests: 8 failed, 39 passed (47 total)
+ FAIL  tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07)
+AssertionError: expected 201 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 201
+ ❯ tests/f05-transactions.api.test.ts:302:30
+
+ FAIL  tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08)
+AssertionError: expected 201 to be 422 // Object.is equality
+- Expected
++ Received
+- 422
++ 201
+ ❯ tests/f05-transactions.api.test.ts:351:28
+
+ Test Files  2 failed | 9 passed (11)
+      Tests  8 failed | 39 passed (47)
 ```
 
 - **Green Phase Evidence (`evidence/d1/F05-green.txt` — Commit `6f52657`):**
 ```
-✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07) 313ms
-✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08) 329ms
-Test Files: 12 passed (12) | Tests: 47 passed (47)
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07) 612ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08) 560ms
+
+ Test Files  11 passed (11)
+      Tests  47 passed (47)
 ```
 
 ---
@@ -236,15 +276,13 @@ const txn = await prisma.txn.findFirst({
 if (!txn) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Not found.' } })
 ```
 
-- **Test Log (`evidence/d1/F06-green.txt`):**
+- **Test Log (`evidence/d1/F06-green.txt` — verbatim output):**
 ```
-✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-06 another user's transaction is 404 and the admin gets 403 on overview, summary and history (479ms)
-  - Alice requesting Bob transaction -> 404 Not Found (body keys: ["error"])
-  - Alice requesting transaction list -> contains only Alice transactions
-  - Admin requesting GET /api/overview -> 403 Forbidden
-  - Admin requesting GET /api/summary -> 403 Forbidden
-  - Admin requesting GET /api/transactions -> 403 Forbidden
-  - Admin requesting GET /api/transactions/:id -> 403 Forbidden
+ ✓ tests/f06-overview.api.test.ts > F-06 Overview, summary and history > TEST-F06-06 another user's transaction is 404 and the admin gets 403 on overview, summary and history 329ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint 258ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user 231ms
+ ✓ tests/f02-admin.api.test.ts > F-02 Administrator user access > TEST-F02-06 admin endpoints return 401 without a session 197ms
+ ✓ tests/f05-transactions.api.test.ts > F-05 Payment/charge API > TEST-F05-07 cross-user isolation: alice using bob Credit Card or bob Dining gets 404 (AC-F05-07, BR-11) 201ms
 ```
 
 ---
@@ -258,9 +296,13 @@ if (!txn) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'No
 - **Branch:** `feature/F04-receive-money`
 - **Author:** Tantiyawat Chansiri (`Leviathan-c137`)
 - **Reviewer:** Sarin CH (`Sxr1n`)
-- **Work Summary:** Built shared ledger core (`server/src/lib/ledger.ts`), atomic database posting algorithm (`POST /api/transactions` for RECEIPT form), row locking mechanism, transaction line sum validations, and the Receive money UI form (`client/src/pages/ReceiveMoneyPage.tsx`).
-- **Substantive Review:** The reviewer verified that database rollbacks leave zero orphaned records on balance failures. Reviewer requested clarifying the error response shape when line amount is zero or negative and ensuring client form input values are preserved upon 422 responses. Author addressed comments in commit `b2a4f70`, adding test `TEST-F04-07`.
-- **Merge Sequence:** Approved by `@Sxr1n`, merged into `staging/sprint-1` on 2026-11-13 (commit `53cd180`), and released to `main` in PR #32.
+- **Work Summary:** Built shared ledger core (`server/src/lib/ledger.ts`), atomic database posting algorithm (`POST /api/transactions` for RECEIPT form), row locking mechanism, transaction line sum validations, and the Receive money UI form (`client/src/pages/ReceiveMoneyPage.tsx`). Pre-review green implementation completed in commit `b2a4f70`.
+- **Substantive Review:** Reviewer `@Sxr1n` reviewed the PR and requested three concrete corrections:
+  1. Remove the test spy `.mock` internal check in `postingSteps` to maintain test cleanliness and decouple from implementation internals.
+  2. Enforce `archivedAt: null` (BR-04) explicitly on all account lookups during transaction validation.
+  3. Update the engineering contract status in `docs/sprints/sprint-1/F04-receive-money.md`.
+  Author addressed all review comments in commit `bee70c4` (`fix(F04): address PR review on test spy, BR-04 archived accounts, and status`) and refreshed green test evidence with CI run 43482356555 in commit `b1bbf9b`.
+- **Merge Sequence:** Approved by `@Sxr1n`, merged into `staging/sprint-1` on 2026-11-14 via merge commit `edf597b`, and released to `main` in PR #32 (`e1747cb`).
 
 #### 2. Issue #6 (Feature F-06: Overview, summary and history) → Pull Request #19
 - **Contract:** `docs/sprints/sprint-1/F06-overview-history.md` (v0.3)
@@ -279,9 +321,9 @@ Every Sprint 1 feature strictly adhered to the test-first engineering protocol:
 | Feature | Engineering Contract | Red Commit (Test Failure) | Green Commit (Working Feature) | Review & Docs Commit |
 |---|---|---|---|---|
 | **F-01** Authentication | `7dbc7ec` (07 Nov) | `e9f9653` (07 Nov) | `56ac71d` (07 Nov) | `PR #10` (Merged) |
-| **F-02** Admin Access | `7dbc7ec` (07 Nov) | `50c09ff` (07 Nov) | `1090928` (08 Nov) | `PR #11` (Merged) |
-| **F-03** Opening Balance | `7dbc7ec` (07 Nov) | `0849955` (12 Nov) | `3f3aae5` (12 Nov) | `b2a4f70` (PR #16) |
-| **F-04** Receive Money | `7dbc7ec` (07 Nov) | `295c90b` (13 Nov) | `b2a4f70` (13 Nov) | `PR #17` (Merged) |
+| **F-02** Admin Access | `7dbc7ec` (07 Nov) | `50c09ff` (07 Nov) | `1090928` (07 Nov) | `PR #11` (Merged) |
+| **F-03** Opening Balance | `7dbc7ec` (07 Nov) | `0849955` (12 Nov) | `3f3aae5` (12 Nov) | `1919c3f`, `6e85f7b`, `e208d10` (PR #16) |
+| **F-04** Receive Money | `7dbc7ec` (07 Nov) | `295c90b` (13 Nov) | `b2a4f70` (13 Nov) | `bee70c4`, `b1bbf9b` (PR #17) |
 | **F-05** Payment & Charge | `7dbc7ec` (07 Nov) | `f615c47` (14 Nov) | `6f52657` (14 Nov) | `4fa38f5` (PR #18) |
 | **F-06** Overview & History | `7dbc7ec` (07 Nov) | `c5848da` (14 Nov) | `7850d4e` (14 Nov) | `2dd588a` (PR #19) |
 
@@ -300,8 +342,8 @@ Work was divided equally according to the team agreement registered in `docs/ses
 
 | Student | Main Implementation Scope | Code Reviews & Verification Conducted |
 |---|---|---|
-| **Sarin CH**<br>(`Sxr1n`, 67070505207) | • F-01 Authentication and Session<br>• F-02 Administrator User Access<br>• F-06 Overview, Summary and History<br>• Docker Multi-stage Build & Compose (Lab 5)<br>• CI Pipeline Quality Gates (Lab 5)<br>• D1 Automated PDF Generator (`build_pdf.py`) | • PR #16 (F-03 Opening Balance)<br>• PR #17 (F-04 Receive Money)<br>• PR #18 (F-05 Payment & Charge) |
-| **Tantiyawat Chansiri**<br>(`Leviathan-c137`, 67070505216) | • F-03 Opening Balance & Validations<br>• F-04 Receive Money & Shared Ledger Core<br>• F-05 Payment, Charge & Repayment Logic<br>• D1 Part F Verification Document & Evidence<br>• E2E Global DB Reset Harness (`reset-e2e.ts`) | • PR #10 (F-01 Authentication)<br>• PR #11 (F-02 Administrator)<br>• PR #19 (F-06 Overview & History)<br>• PR #20 (Release Verification Evidence)<br>• PR #21 (PDF Builder & Public Repo Prep)<br>• PR #22 (Cloud Run Deployment Pipeline)<br>• PR #31 (Deploy Guard Workflow)<br>• PR #32 (Sprint 1 Release `v0.1.0-sprint1`) |
+| **Sarin CH**<br>(`Sxr1n`) | • F-01 Authentication and Session<br>• F-02 Administrator User Access<br>• F-06 Overview, Summary and History<br>• Docker Multi-stage Build & Compose (Lab 5)<br>• CI Pipeline Quality Gates (Lab 5)<br>• D1 Automated PDF Generator (`build_pdf.py`) | • PR #16 (F-03 Opening Balance)<br>• PR #17 (F-04 Receive Money)<br>• PR #18 (F-05 Payment & Charge) |
+| **Tantiyawat Chansiri**<br>(`Leviathan-c137`) | • F-03 Opening Balance & Validations<br>• F-04 Receive Money & Shared Ledger Core<br>• F-05 Payment, Charge & Repayment Logic<br>• D1 Part F Verification Document & Evidence<br>• E2E Global DB Reset Harness (`reset-e2e.ts`) | • PR #10 (F-01 Authentication)<br>• PR #11 (F-02 Administrator)<br>• PR #19 (F-06 Overview & History)<br>• PR #20 (Release Verification Evidence)<br>• PR #21 (PDF Builder & Public Repo Prep)<br>• PR #22 (Cloud Run Deployment Pipeline)<br>• PR #31 (Deploy Guard Workflow)<br>• PR #32 (Sprint 1 Release `v0.1.0-sprint1`) |
 
 ---
 
