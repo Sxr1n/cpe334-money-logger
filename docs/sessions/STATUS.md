@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — D1-S8 PDF builder — Claude + Sxr1n
+- Done: `submission/d1/build_pdf.py` — สร้าง PDF ของ D1 จากเอกสารใน `docs/` โดยตรง (Part A–E) + `submission/d1/part-f.md` (โครง Part F ตาม D1 §4.2 ให้ Leviathan-c137 เติม); ปก + สารบัญ + navigation table พร้อมช่วงหน้า; Chrome headless render Markdown/mermaid, `pypdf` รวมไฟล์
+- Evidence: build ในเครื่องได้ 57 หน้า (ปก 1 + A 8, B 10, C 9, D 4, E 23, F 2); ตรวจด้วย pdftotext ว่าแต่ละ Part เริ่มหน้าตรงกับตาราง; ตรวจภาพหน้าปก (ชื่อไทยแสดงถูก) และ ER/flowchart diagram
+- Decisions: ไม่ใช้ poppler ใน script (Smart App Control บล็อก exe ของ poppler เมื่อเรียกจาก Python) → นับหน้าจาก PDF เอง + `pypdf`
+- Open issues: ต้อง build ใหม่หลังสร้าง tag `v0.1.0-sprint1` (หน้าปกแสดง commit ของ tag) และหลังเพื่อนเติม Part F + ภาพหน้าจอ
+- Next session: Part F (Leviathan-c137) · release PR · Lab 5
+
 ### 2026-11-14 — F-06 Overview, summary and history — Claude + Sxr1n
 - Done: `GET /api/overview`, `GET /api/summary?from&to`, `GET /api/transactions` (paged), `GET /api/transactions/:id`, `periodTotal` ใน `GET /api/accounts`; `lib/query.ts` (paging/period ใช้ร่วมกับ admin), `lib/summary.ts` (นับเฉพาะ INCOME/EXPENSE line ของ POSTED — BR-06); หน้า Overview, History, Transaction detail, nav Overview/History, คอลัมน์ This month ในหน้า Accounts; E2E global setup reset + seed DB dev
 - Evidence: red `c5848da` → `evidence/d1/F06-red.txt` (API 6 fail), `F06-e2e-red.txt` (journey ล้มที่หน้า Overview); green `7850d4e` → `evidence/d1/F06-green.txt` (server 56/56, tsc OK, client build OK, E2E 6/6)
