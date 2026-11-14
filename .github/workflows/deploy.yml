@@ -95,8 +95,11 @@ jobs:
   # ----------------------------------------------------------------------------
   deploy:
     needs: test
+    # Money Logger: skipped (not failed) until the repository variable DEPLOY_ENABLED is set to 'true'
+    # (Settings -> Secrets and variables -> Actions -> Variables) once the GCP project exists.
+    # Environment-level variables such as GCP_PROJECT_ID are not available to a job-level `if`.
     if: >-
-      always() && !cancelled() && github.ref == 'refs/heads/main' &&
+      always() && !cancelled() && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true' &&
       (needs.test.result == 'success' ||
        (github.event_name == 'workflow_dispatch' && inputs.image_tag != '' && needs.test.result == 'skipped'))
     runs-on: ubuntu-latest

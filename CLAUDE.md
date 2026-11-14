@@ -21,7 +21,7 @@
 | Checkpoint | ส่ง (23:59) | คะแนน | แก่นของงาน |
 |---|---|---|---|
 | D1 | 15 Nov | 80 | SRS, features/traceability, System SDS, แผน 3 sprint, contracts ของ Sprint 1 และ Sprint 1 ที่ทำงานได้จริงบน `main` |
-| Lab 5 | 15 Nov | 100 lab | Docker, CI ที่เป็น quality gate (ต้องสาธิต check ที่ fail แล้วบล็อกได้), CD → GCP, ข้อมูลยังอยู่หลัง redeploy |
+| Lab 5 | ไม่มีกำหนด (ประกาศอาจารย์ 14 Nov: รอแก้ปัญหาการเข้า GCP, ส่งช้าไม่หักคะแนน) | 100 lab | Docker, CI ที่เป็น quality gate (ต้องสาธิต check ที่ fail แล้วบล็อกได้), CD → GCP, ข้อมูลยังอยู่หลัง redeploy |
 | Lab 6 | 22 Nov | 100 lab | UAT ข้ามทีม (อย่างน้อย 4 case), triage, แก้ defect และให้ partner re-test |
 | Lab 7 | 29 Nov | 100 lab | change ที่ TA อนุมัติ (TDD + regression), metrics 5 ตัว, release readiness และ retrospective |
 | D2 | 29 Nov | 70 | Sprint 2 ครบ, contracts ของ Sprint 3 ทุกตัว, มีงาน Sprint 3 ที่ทำงานได้จริงอย่างน้อย 1 workflow และ RC ที่ deploy บน GCP |

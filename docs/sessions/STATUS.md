@@ -1,7 +1,7 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: Phase 1 — D1 **and Lab 5** both due 15 Nov 23:59 (LEB2, checked 2026-11-07); D2 29 Nov, Final 13 Dec unchanged
+- Phase / next checkpoint: Phase 1 — **D1 due 15 Nov 23:59**. Lab 5 has no deadline for now (instructor announcement 2026-11-14: GCP access issue; late not penalized). D2 29 Nov, Final 13 Dec unchanged
 - Next session: Leviathan-c137 → review release PRs · Sxr1n → tag `v0.1.0-sprint1` after main merge, then Lab 5 (L5-S3 GCP, protection demo) · both → PDFs
 - Latest release on main: `v0.1.0-sprint1` in progress — verified on staging `2f8dd76` (evidence/d1/release-v0.1.0-sprint1.txt); release PR staging → main next
 - Active staging branch: `staging/sprint-1` (PRs #7–#18 merged; CI green on `53cd180`)
@@ -46,6 +46,11 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — Lab 5 paused + deploy guard — Claude + Sxr1n
+- Done: บันทึกประกาศอาจารย์ (Lab 5 ไม่มีกำหนดส่ง, D1 ยังส่ง 15 Nov); job `deploy` ใน `deploy.yml` รันเฉพาะเมื่อ repo variable `DEPLOY_ENABLED == 'true'` เพื่อไม่ให้ release เข้า main ล้มขณะยังไม่มี GCP; repo เป็น public + secret scanning/push protection เปิดแล้ว (ตรวจผ่าน API)
+- Decisions: ใช้ repo variable แทน `vars.GCP_PROJECT_ID` เพราะตัวแปรระดับ environment ใช้ใน job-level `if` ไม่ได้
+- Next session: release PR staging → main → tag `v0.1.0-sprint1` → Part F + PDF
+
 ### 2026-11-14 — Lab 5: starter kit adapted for Cloud Run — Claude + Sxr1n
 - Done: `deploy/deploy.sh`, `release.sh`, `teardown.sh`, `smoke_test.py`, `.github/workflows/deploy.yml` จาก starter kit ปรับเป็นชื่อ `money-logger*`, secret (DB URL, JWT, seed admin/user), migration job `prisma migrate deploy && prisma db seed`, service port 4000 + `COOKIE_SECURE=true` + `RUN_MIGRATIONS=false`; `ci.yml` เพิ่ม `workflow_call`; `/api/ready` (+2 test); entrypoint ข้าม migrate ได้; `docs/labs/lab05/deployment.md`; SDS v0.4 (SD-03 → Cloud Run)
 - Evidence: `/api/ready` red (2 fail, 404) → green: server 58/58, tsc OK; smoke test กับ container ในเครื่อง PASS ทั้ง 4 check และล้มเมื่อ version ไม่ตรง; `bash -n` ผ่านทั้ง 3 script
