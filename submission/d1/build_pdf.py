@@ -1,6 +1,6 @@
 """Build the Deliverable 1 PDF from the engineering documents in docs/ (single source of truth).
 
-Usage (repo root):  python submission/d1/build_pdf.py [release-tag]
+Usage (repo root):  D1_STUDENT_IDS="<id A>,<id B>" python submission/d1/build_pdf.py [release-tag]
 Needs: Google Chrome (headless print) and `pip install pypdf`. Output: submission/d1/D1-<tag>.pdf
 Markdown and mermaid are rendered by Chrome from cdnjs, so the machine needs internet access.
 """
@@ -18,9 +18,12 @@ OUT = ROOT / 'submission' / 'd1' / 'build'
 CHROME = os.environ.get('CHROME', r'C:\Program Files\Google\Chrome\Application\chrome.exe')
 TAG = sys.argv[1] if len(sys.argv) > 1 else 'v0.1.0-sprint1'
 
+# Student IDs are not committed (public repository, Lab 5 R-12): pass them at build time,
+# e.g. D1_STUDENT_IDS="<id of Sxr1n>,<id of Leviathan-c137>" python submission/d1/build_pdf.py
+_IDS = (os.environ.get('D1_STUDENT_IDS', '').split(',') + ['', ''])[:2]
 TEAM = [
-    ('นายศารินทร์ ไชยารัตน์', '67070505207', 'Sxr1n'),
-    ('นายตันติยวัตร จันทร์ศิริ', '67070505216', 'Leviathan-c137'),
+    ('นายศารินทร์ ไชยารัตน์', _IDS[0].strip() or '(set D1_STUDENT_IDS)', 'Sxr1n'),
+    ('นายตันติยวัตร จันทร์ศิริ', _IDS[1].strip() or '(set D1_STUDENT_IDS)', 'Leviathan-c137'),
 ]
 CONTRACTS = sorted((ROOT / 'docs/sprints/sprint-1').glob('F0*.md'))
 PARTS = [
