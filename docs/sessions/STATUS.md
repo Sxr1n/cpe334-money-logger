@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-14 — Lab 5: starter kit adapted for Cloud Run — Claude + Sxr1n
+- Done: `deploy/deploy.sh`, `release.sh`, `teardown.sh`, `smoke_test.py`, `.github/workflows/deploy.yml` จาก starter kit ปรับเป็นชื่อ `money-logger*`, secret (DB URL, JWT, seed admin/user), migration job `prisma migrate deploy && prisma db seed`, service port 4000 + `COOKIE_SECURE=true` + `RUN_MIGRATIONS=false`; `ci.yml` เพิ่ม `workflow_call`; `/api/ready` (+2 test); entrypoint ข้าม migrate ได้; `docs/labs/lab05/deployment.md`; SDS v0.4 (SD-03 → Cloud Run)
+- Evidence: `/api/ready` red (2 fail, 404) → green: server 58/58, tsc OK; smoke test กับ container ในเครื่อง PASS ทั้ง 4 check และล้มเมื่อ version ไม่ตรง; `bash -n` ผ่านทั้ง 3 script
+- Decisions: ตัด login smoke check ของ kit (kit ใช้ bearer token, เราใช้ cookie); ไม่ใส่ `deploy/tests/` ของ kit
+- Open issues: งานที่ต้องให้คนทำ — GCP Free Trial + project + IAM + budget (Sxr1n), รัน `deploy.sh` ใน Cloud Shell, WIF + environment `demo`, เปิด repo เป็น public + ruleset `protect-main`, สาธิต PR ที่ CI fail; ยังไม่เคยรันกับ GCP จริง
+- Next session: Ep. 5 first deploy (Cloud Shell) → Ep. 6 → release v0.1.0-sprint1 ผ่าน pipeline
 ### 2026-11-14 — Public-repo prep (Lab 5 R-12) — Claude + Sxr1n
 - Done: ลบรหัสนักศึกษาออกจาก `CLAUDE.md`, `docs/srs.md` (v0.4) และ `submission/d1/build_pdf.py` (อ่านจาก env `D1_STUDENT_IDS` ตอน build); เลิก track `docs/course/` (ไฟล์ยังอยู่ในเครื่อง, ใส่ใน .gitignore)
 - Decisions: deploy บน Cloud Run + Cloud SQL ตาม starter kit (แทน SD-03 VM — แก้ SDS ใน PR ของ Lab 5); Sxr1n เป็น owner ของ GCP project; รหัสนักศึกษาใส่เฉพาะใน PDF
