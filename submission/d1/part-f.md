@@ -61,6 +61,32 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 | 6 | Overview Screen | Summary Card | Cash ฿33.8k, Debt ฿0, Inc ฿30k, Exp ฿1.2k, Net ฿28.8k | Explicit DOM assertions: `cash-total` ฿33,800.00, `debt-total` ฿0.00, `month-income` ฿30,000.00, `month-expense` ฿1,200.00, `month-net` ฿28,800.00 (`:20–25, 72`) | PASS |
 | 7 | Reload & Re-login | Overview & History | Survives reload & re-login; exactly 3 history rows | Overview metrics asserted identical after page reload (`:74`) and re-login (`:78`); `tbody tr` row count = 3 (`:81`) | PASS |
 
+#### Screenshots (user `bob`)
+
+Screenshots were captured on 2026-11-14 from the running app (local dev servers, PostgreSQL 16 in Docker, database reset and seeded by `e2e/global-setup.ts`). The application code is identical to tag `v0.1.0-sprint1` (`git diff v0.1.0-sprint1` touches only docs and `.gitignore`); the footer shows `API version: dev` because `APP_VERSION` is set only in the Docker build. No request was mocked.
+
+![Figure F-1. Overview after first login: all totals ฿0.00 (starting condition).](img/f1-01-overview-empty.png)
+*Figure F-1. Overview after first login: all totals ฿0.00 (starting condition).*
+
+![Figure F-2. Accounts: opening balance ฿5,000.00 on Bank (AC-F03-01).](img/f1-02-opening-balance-form.png)
+*Figure F-2. Accounts: opening balance ฿5,000.00 on Bank (AC-F03-01).*
+
+![Figure F-3. Receive money: ฿30,000.00 into Bank from Salary (AC-F04-01).](img/f1-03-receive-salary-form.png)
+*Figure F-3. Receive money: ฿30,000.00 into Bank from Salary (AC-F04-01).*
+
+![Figure F-4. Make a payment: ฿1,200.00 on Credit Card split into Dining ฿700.00 + Groceries ฿500.00 (AC-F05-01).](img/f1-04-card-purchase-form.png)
+*Figure F-4. Make a payment: ฿1,200.00 on Credit Card split into Dining ฿700.00 + Groceries ฿500.00 (AC-F05-01).*
+
+![Figure F-5. Persisted result after the ฿1,200.00 card repayment, logout and login: Cash ฿33,800.00, Debt ฿0.00, Income ฿30,000.00, Expense ฿1,200.00, Net ฿28,800.00 — opening balance and repayment not counted (AC-F06-02, AC-F06-03, BR-06).](img/f1-05-overview-after-relogin.png)
+*Figure F-5. Persisted result after the ฿1,200.00 card repayment, logout and login: Cash ฿33,800.00, Debt ฿0.00, Income ฿30,000.00, Expense ฿1,200.00, Net ฿28,800.00 — opening balance and repayment not counted (AC-F06-02, AC-F06-03, BR-06).*
+
+![Figure F-6. History: the 3 saved transactions, newest first (F-06 History; paging and detail are tested in TEST-F06-05).](img/f1-06-history.png)
+*Figure F-6. History: the 3 saved transactions, newest first (F-06 History; paging and detail are tested in TEST-F06-05).*
+
+![Figure F-7. Transaction detail opened from History (retrieval of a saved record).](img/f1-07-transaction-detail.png)
+*Figure F-7. Transaction detail opened from History (retrieval of a saved record).*
+
+
 ---
 
 ### F.1.2 Business-rule rejection
@@ -85,6 +111,15 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 - **Expected:** In `server/src/routes/transactions.ts:100-111`, the server queries accounts with `WHERE id IN (...) AND userId = req.user.id AND archivedAt IS NULL`. When account count does not match all referenced IDs, returns HTTP 404 `NOT_FOUND` with message `"One or more accounts not found."`. No foreign account information is disclosed.
 - **Actual:** Verified in `server/tests/f04-transactions.api.test.ts` (TEST-F04-05, TEST-F04-05b) and `server/tests/f05-transactions.api.test.ts` (TEST-F05-07). Returns 404 with standard error envelope.
 
+#### Screenshots
+
+![Figure F-8. Lines ฿900.00 ≠ total ฿1,000.00: the form shows "Lines must add up to the total" and Save is disabled (BR-01 client-side check; the server-side 422 is TEST-F05-03 / AC-F05-03).](img/f2-01-line-sum-mismatch.png)
+*Figure F-8. Lines ฿900.00 ≠ total ฿1,000.00: the form shows "Lines must add up to the total" and Save is disabled (BR-01 client-side check; the server-side 422 is TEST-F05-03 / AC-F05-03).*
+
+![Figure F-9. Paying ฿50,000.00 from Bank (balance ฿33,800.00): the server rejects with 422 and the form keeps the input (BR-07, AC-F05-05).](img/f2-02-cash-overspend-rejected.png)
+*Figure F-9. Paying ฿50,000.00 from Bank (balance ฿33,800.00): the server rejects with 422 and the form keeps the input (BR-07, AC-F05-05).*
+
+
 ---
 
 ### F.1.3 Login/logout and forbidden operations
@@ -104,13 +139,22 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 
 #### Demonstration 3: Administrator role forbidden from financial data (AC-F02-04, BR-12, NFR-02)
 - **Action:** User authenticated with role `ADMIN` accesses financial endpoints (`/api/accounts`, `/api/transactions`, `/api/overview`, `/api/summary`, `/api/transactions/:id`).
-- **Expected:** In `server/src/app.ts`, financial routes are protected by middleware `requireAuth, requireRole('USER')`. An `ADMIN` user receives HTTP 403 `FORBIDDEN` with body `{"error": {"code": "FORBIDDEN", "message": "Forbidden."}}` and zero financial data is returned.
+- **Expected:** In `server/src/app.ts`, financial routes are protected by middleware `requireAuth, requireRole('USER')`. An `ADMIN` user receives HTTP 403 `FORBIDDEN` with body `{"error": {"code": "FORBIDDEN", "message": "You do not have access to this resource."}}` and zero financial data is returned.
 - **Actual:** Verified across all financial endpoints in `server/tests/f02-admin.api.test.ts` (TEST-F02-04) and `server/tests/f06-overview.api.test.ts` (TEST-F06-06).
 
 #### Demonstration 4: Regular user forbidden from admin endpoints (AC-F02-05)
 - **Action:** Regular user `alice` (`role: "USER"`) calls `GET /api/admin/users` or attempts to patch user statuses.
 - **Expected:** Guard middleware `requireRole('ADMIN')` rejects the request with HTTP 403 `FORBIDDEN`.
 - **Actual:** Verified in `server/tests/f02-admin.api.test.ts` (TEST-F02-05).
+
+#### Screenshots
+
+![Figure F-10. Administrator sees only the Users page; no financial navigation (F-02 UI; the server-side block is Figure F-11).](img/f3-01-admin-users-page.png)
+*Figure F-10. Administrator sees only the Users page; no financial navigation (F-02 UI; the server-side block is Figure F-11).*
+
+![Figure F-11. Real API responses from the running app: no session → 401; admin → 403 on overview and on a transaction; alice → 404 on bob's transaction; alice → 403 on admin users (AC-F02-06, AC-F02-04, AC-F06-06, AC-F02-05). Hiding a button is not the control — the server returns these codes.](img/f3-02-api-access-restrictions.png)
+*Figure F-11. Real API responses from the running app: no session → 401; admin → 403 on overview and on a transaction; alice → 404 on bob's transaction; alice → 403 on admin users (AC-F02-06, AC-F02-04, AC-F06-06, AC-F02-05). Hiding a button is not the control — the server returns these codes.*
+
 
 ---
 
