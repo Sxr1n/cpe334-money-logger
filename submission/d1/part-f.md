@@ -63,7 +63,7 @@ Local setup: PostgreSQL 16 on port 5434 (docker-compose `money-logger-postgres`)
 
 #### Screenshots (user `bob`)
 
-Screenshots were captured on 2026-11-14 from the running app (local dev servers, PostgreSQL 16 in Docker, database reset and seeded by `e2e/global-setup.ts`). The application code is identical to tag `v0.1.0-sprint1` (`git diff v0.1.0-sprint1` touches only docs and `.gitignore`); the footer shows `API version: dev` because `APP_VERSION` is set only in the Docker build. No request was mocked.
+Screenshots were captured on 2026-11-14 (Figure F-1 retaken on 2026-11-15) from the running app (local dev servers, PostgreSQL 16 in Docker, database reset and seeded by `e2e/global-setup.ts`). The application code is identical to tag `v0.1.0-sprint1` (`git diff v0.1.0-sprint1` touches only docs and `.gitignore`); the footer shows `API version: dev` because `APP_VERSION` is set only in the Docker build. No request was mocked.
 
 ![Figure F-1. Overview after first login: all totals ฿0.00 (starting condition).](img/f1-01-overview-empty.png)
 *Figure F-1. Overview after first login: all totals ฿0.00 (starting condition).*

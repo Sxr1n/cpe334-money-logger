@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — **D1 due 15 Nov 23:59**. Lab 5 has no deadline for now (instructor announcement 2026-11-14: GCP access issue; late not penalized). D2 29 Nov, Final 13 Dec unchanged
-- Next session: Leviathan-c137 → review/merge PR #34 · Sxr1n → rebuild PDF after merge and submit D1 on LEB2 (by 15 Nov 23:59) · Lab 5 when GCP access is resolved
+- Next session: Leviathan-c137 → review/merge PR #35 · Sxr1n → submit D1 PDF on LEB2 (by 15 Nov 23:59) · Lab 5 when GCP access is resolved
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-1` (PRs #7–#33 merged; release PR #32 merged to main; PR #34 Part F fixes open)
 - Deployed URL / version: —
@@ -46,6 +46,11 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-15 — D1-S10 Final PDF check — Claude + Sxr1n
+- Done: PR #34 approved + merged (`c597032`); final PDF built from staging and checked: IDs + tag commit on cover, Part A–F start pages match the contents table (2/10/20/29/33/56), 11 figures, no placeholders, seed passwords/JWT secret not in the PDF; rendered Part F showed Figure F-1 as a loading spinner → retaken after data loads (PR #35)
+- Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]
+- Next session: submit D1 → Lab 5 when GCP works
+
 ### 2026-11-14 — D1-S9 Release + Part F check — Claude + Sxr1n
 - Done: #31 → staging (`f6a9b8b`), #32 → main (`e1747cb`, merge commits, both approved by Leviathan-c137); tag `v0.1.0-sprint1` → `e1747cb` pushed; Part F (#33) checked claim by claim against the code at the tag, evidence files, PR reviews and CI; PR #34: 5 factual fixes (reset-e2e author, unrecorded npm/Docker versions, 401 test IDs, 403 message text, who caught the selector clash) + 11 captioned screenshots (D1 §4.2/§5 require them; Part F had none); `build_pdf.py` resolves `img/` links
 - Evidence: CI on main run 43585303434 (13 files / 58 server tests, 6 E2E) and Deploy demo 43585303548 (tests pass, `deploy` skipped); screenshots `submission/d1/img/` captured from dev servers on code identical to the tag (`git diff v0.1.0-sprint1` = docs + .gitignore only), no mocks; PDF 76 pages = cover 1 + [8, 10, 9, 4, 23, 21], 11 images in Part F
