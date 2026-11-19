@@ -39,10 +39,10 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | 1 | Open the URL, log in as `alice` | Overview page; navigation shows "Alice Example"; Cash ฿0.00 |
 | 2 | Accounts → Bank → **Set opening balance**: amount `5000.00`, date = the 1st of the current month → Save | Bank balance ฿5,000.00; Bank shows "Opening ฿5,000.00 on …" and no longer has a Set opening balance button (once per account, BR-10) |
 | 3 | Receive money: account Bank, date today, total `30000.00`, one line Salary `30000.00` → Save | "Saved" message. Bank = 5,000.00 + 30,000.00 = **฿35,000.00** |
-| 4 | Make a payment: from Credit Card, date today, total `1200.00`, lines Spending → Dining `700.00` and Spending → Groceries `500.00` → Save | "Saved". Credit Card debt = 0 + 1,200.00 = **฿1,200.00**; Bank unchanged ฿35,000.00 |
-| 5 | Make a payment: from Bank, date today, total `1200.00`, one line Repay a debt → Credit Card `1200.00` → Save | "Saved". Bank = 35,000.00 − 1,200.00 = **฿33,800.00**; Credit Card debt = 1,200.00 − 1,200.00 = **฿0.00** |
+| 4 | Make a payment: from Credit Card, date today, total `1200.00`, lines Spending → Dining `700.00` and Spending → Groceries `500.00` → **Save Payment** | "Payment recorded successfully!". Credit Card debt = 0 + 1,200.00 = **฿1,200.00**; Bank unchanged ฿35,000.00 |
+| 5 | Make a payment: from Bank, date today, total `1200.00`, one line Repay a debt → Credit Card `1200.00` → **Save Payment** | "Payment recorded successfully!". Bank = 35,000.00 − 1,200.00 = **฿33,800.00**; Credit Card debt = 1,200.00 − 1,200.00 = **฿0.00** |
 | 6 | Open Overview | Cash ฿33,800.00; card debt ฿0.00; this month: Income **฿30,000.00**, Expense **฿1,200.00** (700 + 500), Net **฿28,800.00**. The opening balance (5,000) and the card repayment (1,200) are **not** counted as income or expense |
-| 7 | Open History | Exactly 3 rows, newest first: the Bank payment ฿1,200.00, the card payment ฿1,200.00, the salary receipt ฿30,000.00 (the opening balance is not a transaction) |
+| 7 | Open History | Exactly 3 rows, newest first: Paid · Bank · ฿1,200.00; Paid · Credit Card · ฿1,200.00; Received · Bank · ฿30,000.00 (the opening balance is not a transaction) |
 
 ### UAT-02 — Business rules and boundaries (business-rule / boundary case)
 - **References:** FR-11, FR-12, FR-13; BR-01, BR-05, BR-07, BR-08; AC-F04-07, AC-F05-05, AC-F05-06, AC-F05-08
@@ -52,8 +52,8 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | # | Action | Expected result |
 |---|---|---|
 | 1 | Receive money: Bank, today, total `1000.00`, one Salary line `900.00` | Message "Lines must add up to the total"; Save is disabled |
-| 2 | Make a payment: from Bank, today, total `33800.01`, line Dining `33800.01` → Save | Rejected with an error message at the form (not enough money in Bank); typed values stay in the form |
-| 3 | Make a payment: from Bank, today, total `0.01`, line Repay a debt → Credit Card `0.01` → Save | Rejected with an error message (repayment larger than the debt ฿0.00) |
+| 2 | Make a payment: from Bank, today, total `33800.01`, line Dining `33800.01` → **Save Payment** | Rejected: "Business rule violation." and "Not enough money in Bank (balance ฿33,800.00)"; the typed values stay in the form |
+| 3 | Make a payment: from Bank, today, total `0.01`, line Repay a debt → Credit Card `0.01` → **Save Payment** | Rejected: "Business rule violation." and "More than the outstanding debt ฿0.00" |
 | 4 | Open Overview and History | Still Cash ฿33,800.00, card debt ฿0.00, Income ฿30,000.00, Expense ฿1,200.00, and still 3 history rows — nothing from steps 1–3 was saved |
 
 ### UAT-03 — Other users' records and Administrator denial (forbidden role / ownership case)
@@ -63,14 +63,14 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 
 | # | Action | Expected result |
 |---|---|---|
-| 1 | Log in as `bob`. Receive money: Bank, today, total `100.00`, line Salary `100.00` → Save. Open History → open that row. **Write down the address**, e.g. `<URL>/transactions/42`. Log out | Bob's Bank ฿100.00; the detail page shows Salary ฿100.00 |
+| 1 | Log in as `bob`. Receive money: Bank, today, total `100.00`, line Salary `100.00` → Save. Open History → click the **date** of that row. **Write down the address**, e.g. `<URL>/transactions/42`. Log out | "Saved"; the detail page shows "Received ฿100.00", "Received into Bank", line Salary ฿100.00 |
 | 2 | Log in as `alice`. Open the address from step 1 | "Not found." — no amount, account or note of bob is shown |
 | 3 | As `alice`, open History and Accounts | No ฿100.00 receipt; only alice's seven accounts with her balances (Bank ฿33,800.00 if UAT-01 ran) |
 | 4 | As `alice`, open `<URL>/admin/users` | "Not allowed." — no user list |
-| 5 | Log out. Log in as `admin` | Users page listing alice, bob, admin with role and status. No balances or transactions anywhere |
+| 5 | Log out. Log in as `admin` | Lands on the Users page listing admin, alice, bob with role and status (Disable buttons for alice and bob). No balances or transactions anywhere |
 | 6 | As `admin`, open `<URL>/overview` | "Not allowed." |
 | 7 | As `admin`, type each address in the browser bar: `<URL>/api/overview`, `<URL>/api/accounts`, `<URL>/api/transactions` | Each shows `{"error":{"code":"FORBIDDEN","message":"You do not have access to this resource."}}` and nothing else — no balances, accounts or transactions |
-| 8 | Log out, then type `<URL>/api/accounts` | `{"error":{"code":"UNAUTHENTICATED", ...}}` — no data without login |
+| 8 | Log out, then type `<URL>/api/accounts` | `{"error":{"code":"UNAUTHENTICATED","message":"Please log in."}}` — no data without login |
 
 ### UAT-04 — History, state and persistence (state / history / persistence case)
 - **References:** FR-02, FR-18, FR-24, FR-25; NFR-04; AC-F01-04, AC-F01-08, AC-F06-05, AC-F06-07
@@ -80,7 +80,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | # | Action | Expected result |
 |---|---|---|
 | 1 | Open Overview and press the browser reload button | Same values as UAT-01 step 6 (Cash ฿33,800.00, Income ฿30,000.00, Expense ฿1,200.00, Net ฿28,800.00) |
-| 2 | History → open the card payment of ฿1,200.00 | Detail shows from Credit Card, total ฿1,200.00, lines Dining ฿700.00 and Groceries ฿500.00 |
+| 2 | History → click the date of the row Paid · Credit Card · ฿1,200.00 | Detail shows "Paid ฿1,200.00", "Paid from Credit Card", lines Dining ฿700.00 and Groceries ฿500.00 |
 | 3 | Log out. Press the browser Back button or open `<URL>/overview` | Login page; no balances are shown |
 | 4 | Log in as `alice` again | Same Overview values and the same 3 history rows |
 | 5 | On a later day, or after the Product Team announces a redeployment, log in as `alice` and repeat step 1 | Same values (data survives a redeploy). Record the version from `<URL>/api/health` |
@@ -115,3 +115,4 @@ Report every finding as a GitHub Issue in this repository (label `uat`) or in th
 | Ver | Date | Change | Reason |
 |---|---|---|---|
 | 0.1 | 2026-11-20 | Initial UAT cases UAT-01–UAT-05 and handoff | Lab 6 Part A |
+| 0.2 | 2026-11-20 | Exact screen texts (payment success, rejection messages, history rows, detail page) after a Product Team rehearsal of all five cases on a local build of the same code (all steps gave the expected results). The rehearsal is not UAT evidence | Make the cases executable without explanations |
