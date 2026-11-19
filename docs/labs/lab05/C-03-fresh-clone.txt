@@ -1,0 +1,36 @@
+# C-03 (R-01, R-02) fresh clone build and run — output of a scripted run (script: clone, cp .env.example .env, fill values, docker compose build --no-cache + up, curl checks, down -v)
+## 2026-11-19T22:31:59Z fresh clone of staging/sprint-1
+commit: b43f9f50976c29edb56d74e7dfc8807094fddf73
+tracked .env files: 0 (only .env.example is tracked)
+edited .env keys (values hidden): JWT_SECRET, SEED_ON_START=true, SEED_USER_PASSWORD, SEED_ADMIN_PASSWORD, APP_VERSION=<commit>
+$ docker compose build --no-cache app
+#22 resolving provenance for metadata file
+#22 DONE 0.0s
+ Image money-logger-app:b43f9f50976c29edb56d74e7dfc8807094fddf73 Built 
+$ docker compose up -d
+ Container money-logger-postgres Waiting 
+ Container money-logger-postgres Healthy 
+ Container money-logger-app Starting 
+ Container money-logger-app Started 
+$ docker compose ps
+app running Up 7 seconds
+postgres running Up 12 seconds (healthy)
+$ docker compose logs app (migrate + seed lines)
+money-logger-app  | 3 migrations found in prisma/migrations
+money-logger-app  | Applying migration `20261106235656_init_users`
+money-logger-app  | Applying migration `20261112230000_init_accounts`
+money-logger-app  | Applying migration `20261113000000_init_transactions`
+money-logger-app  | The following migration(s) have been applied:
+money-logger-app  | migrations/
+money-logger-app  |     └─ migration.sql
+money-logger-app  |     └─ migration.sql
+money-logger-app  |     └─ migration.sql
+money-logger-app  | All migrations have been successfully applied.
+GET /api/health -> {"status":"ok","version":"b43f9f50976c29edb56d74e7dfc8807094fddf73"}
+GET /api/ready -> {"status":"ready","db":"connected"}
+GET / -> 200 (React app)
+GET /api/accounts without login -> 401
+POST /api/auth/login alice (password from .env) -> 200
+GET /api/accounts as alice -> 200; accounts: "name":"Bank" "name":"Credit Card" "name":"Salary" "name":"Dining" "name":"Electricity" "name":"Groceries" "name":"Telecom" 
+$ docker compose down -v (cleanup)
+ Network app_default Removed 
