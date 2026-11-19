@@ -26,6 +26,13 @@ Before starting: read the running version and write it in every row. If the vers
 
 Rules: BLOCKED is not a pass — write the reason (e.g. login fails, URL down). For a rejected operation, also check and record that the protected data was not changed or shown.
 
+## 2b Coverage review of their cases (instructor clarification, Lab 6)
+We do not only run their cases: we check whether they cover the important Sprint 1 requirements and acceptance criteria, and add our own cases where they do not. Test beyond the script: boundaries, invalid inputs, access restrictions, unusual user actions (back button, double submit, two tabs, expired session).
+
+| Their Sprint 1 requirement / AC | Covered by their case? | Gap | Extra case we ran (ID) | Result |
+|---|---|---|---|---|
+| | | | X-01 | |
+
 ## 3 Evidence log
 | Evidence ID | Case / step | Action | Expected | Actual | Time | Version | File |
 |---|---|---|---|---|---|---|---|
