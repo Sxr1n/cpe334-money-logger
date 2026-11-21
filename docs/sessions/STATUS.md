@@ -1,10 +1,10 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: D1 submitted. **Lab 5 + Lab 6 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 7 + D2 29 Nov; Final 13 Dec
-- Next session: Leviathan-c137 → review/merge PR #35 · Sxr1n → submit D1 PDF on LEB2 (by 15 Nov 23:59) · Lab 5 when GCP access is resolved
+- Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
+- Next session: release PR staging → main → portal Recheck + Activate → JWT secret + first deploy → C-02/C-04/C-05/C-06 evidence → Lab 5 PDF · Lab 6 partner UAT · Sprint 2 contracts
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
-- Active staging branch: `staging/sprint-1` (PRs #7–#33 merged; release PR #32 merged to main; PR #34 Part F fixes open)
+- Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
 - Deployed URL / version: —
 
 ## Feature board
@@ -52,6 +52,11 @@
 - Decisions: JWT secret in team slot `s87ce2df5-app-secret-1`; alice/bob on the cloud stay untouched until the UAT team runs the cases
 - Open issues: resources not activated yet (Recheck needs `ci-docker.yml` on main); secret names and DATABASE_URL format unverified until activation; PRs #37/#39 must "Update branch" after #38 merges (required check `test-and-docker` only exists from #38); failing-check demo after #38; Lab 6 partner team unknown; ask TA early about a controlled defect exercise (§3.5)
 - Next session: merge #38 → release PR → portal Recheck + Activate → secret + first deploy → fill UAT URL/SHA → partner UAT
+
+### 2026-11-15 — D1-S10b SDS consistency fix — Claude + Sxr1n
+- Done: PR #36 (SDS v0.5: §1.1 Packaging no longer says "on the VM", Sources list current doc versions) approved + merged by Leviathan-c137 (`b43f9f5`); final PDF rebuilt from staging `b43f9f5`
+- Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]; text check: student IDs only on the cover, tag commit `e1747cb` on cover, "on the VM" only in the v0.5 revision row
+- Next session: submit D1 on LEB2
 
 ### 2026-11-15 — D1-S10 Final PDF check — Claude + Sxr1n
 - Done: PR #34 approved + merged (`c597032`); final PDF built from staging and checked: IDs + tag commit on cover, Part A–F start pages match the contents table (2/10/20/29/33/56), 11 figures, no placeholders, seed passwords/JWT secret not in the PDF; rendered Part F showed Figure F-1 as a loading spinner → retaken after data loads (PR #35)
