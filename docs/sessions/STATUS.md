@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
-- Next session: release PR staging → main → portal Recheck + Activate → JWT secret + first deploy → C-02/C-04/C-05/C-06 evidence → Lab 5 PDF · Lab 6 partner UAT · Sprint 2 contracts
+- Next session: Lab 5 PDF (needs team number + section/group for the file name) → submit by 22 Nov 23:59 · Lab 6 partner UAT · Sprint 2 contracts
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -46,6 +46,11 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-22 — Lab 5 C-05 rollback evidence — Claude + Sxr1n (+ Leviathan-c137)
+- Done: Leviathan-c137 merged #45 (`bc4f367`), ran rollback (image `b903e00`, revision `s87ce2df5-00004-c6v`) and roll forward (image `0831d0b`, revision `s87ce2df5-00005-cgk`) via Deploy demo, closed #30; bob's data unchanged on all three screenshots; Lab 5 report C-05 + limitations filled; `build_report.py` embeds `img/` PNGs (headless Chrome printed only the first 4 file:// images)
+- Evidence: runs 44926378340 and 44927793262 (deploy success, smoke 4/4 PASS each); `docs/labs/lab05/C-05-rollback.txt`; Figures 9–11 `submission/lab5/img/c05-rb-*.png`; live `/api/health` version `0831d0b7…` after roll forward
+- Open issues: Lab 5 Part 0 team number and PDF file name (section, group); Leviathan-c137 has no Cloud Console access to the shared project (not needed: deploys via Actions/WIF)
+- Next session: build + submit Lab 5 PDF → Lab 6 partner UAT → Sprint 2 contracts
 ### 2026-11-21 — Lab 5 deploy on the course cloud — Claude + Sxr1n (+ Leviathan-c137 reviews)
 - Done: #37–#41 merged (#41 release → main `b903e00`); portal "Connect to Google Cloud" → resources ready (prefix `s87ce2df5`, URL https://s87ce2df5-4d7hbszvwq-as.a.run.app); GitHub environment `demo` + WIF variables, `DEPLOY_ENABLED=true`; JWT secret in `s87ce2df5-app-secret-1` and first deploy by `deploy/deploy.sh` (Sxr1n, Cloud Shell; 2SV had to be enabled first); C-02 PR #42 (failing test, blocked, closed unmerged); C-04 live demo as bob (sign-in, ฿1,500 receipt, BR-07 rejection); #43 → staging, release #44 → main `0831d0b` deployed automatically (revision `s87ce2df5-00003-xnd`); C-05 after-redeploy; PR #45 with C-05/C-06 evidence
 - Evidence: `docs/labs/lab05/C-02-failing-check.txt`, `C-03-fresh-clone.txt`, `first-deploy-smoke.txt`, `C-06-release-deploy.txt`; Deploy demo run 44918889759 (CI 6/6, deploy, smoke 4/4); `submission/lab5/img/` Figures 1–8

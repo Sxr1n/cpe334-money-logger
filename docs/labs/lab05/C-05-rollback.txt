@@ -1,0 +1,60 @@
+# Lab 5 C-05 — rollback and roll forward (persistence across revisions)
+# Run by Leviathan-c137 via Actions > Deploy demo (workflow_dispatch on main 0831d0b, input image_tag).
+# Lines below: 'Verify image, migrate and deploy' and 'Smoke test' steps, extracted with: gh run view <id> --log (env lines removed).
+# Data check: bob's Overview (Bank ฿1,500.00, income ฿1,500.00) before, after rollback and after roll forward — report Figures 9–11.
+
+## Rollback — run 44926378340 (https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44926378340)
+## image_tag = b903e00628037a55d12491c9144e01a82f4c0a00 ; result: success (deploy success, test skipped by design for rollback)
+2026-11-21T16:46:29.2159057Z ##[group]Run bash deploy/release.sh
+2026-11-21T16:46:29.2198549Z ##[endgroup]
+2026-11-21T16:46:33.8486128Z Rollback: reuse existing image; skip tests, build, migration and seed.
+2026-11-21T16:46:36.4088665Z Deploying...
+2026-11-21T16:46:40.3667113Z Creating Revision.....................done
+2026-11-21T16:46:46.5769234Z Routing traffic...................................................................done
+2026-11-21T16:46:49.5231379Z Done.
+2026-11-21T16:46:51.3338864Z Service [s87ce2df5] revision [s87ce2df5-00004-c6v] has been deployed and is serving 100 percent of traffic.
+2026-11-21T16:46:51.3340111Z Service URL: https://s87ce2df5-670075229477.asia-southeast1.run.app
+2026-11-21T16:46:51.9989608Z Updating traffic...
+2026-11-21T16:46:55.4584903Z Done.
+2026-11-21T16:46:55.5104777Z URL: https://s87ce2df5-4d7hbszvwq-as.a.run.app
+2026-11-21T16:46:55.5105583Z Traffic:
+2026-11-21T16:46:55.5105974Z   100% LATEST (currently s87ce2df5-00004-c6v)
+2026-11-21T16:46:57.7420838Z Service URL: https://s87ce2df5-4d7hbszvwq-as.a.run.app
+2026-11-21T16:46:57.8910908Z ##[group]Run python3 deploy/smoke_test.py "$SERVICE_URL" "$IMAGE_TAG"
+2026-11-21T16:46:57.9383271Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T16:46:57.9384404Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T16:46:57.9384892Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T16:46:57.9385353Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T16:46:57.9386322Z ##[endgroup]
+2026-11-21T16:47:01.4860826Z PASS /api/health
+2026-11-21T16:47:01.4862089Z PASS /api/ready
+2026-11-21T16:47:01.4863180Z PASS /
+2026-11-21T16:47:01.4863827Z PASS /api/accounts
+
+## Roll forward — run 44927793262 (https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44927793262)
+## image_tag = 0831d0b7d9b57e008cfbcb96fd263a5bf21b71e9 ; result: success
+2026-11-21T17:02:13.6647867Z ##[group]Run bash deploy/release.sh
+2026-11-21T17:02:13.6689660Z ##[endgroup]
+2026-11-21T17:02:17.0372117Z Rollback: reuse existing image; skip tests, build, migration and seed.
+2026-11-21T17:02:19.6772990Z Deploying...
+2026-11-21T17:02:23.5938667Z Creating Revision.....................done
+2026-11-21T17:02:30.9209270Z Routing traffic..............................................................................done
+2026-11-21T17:02:31.5194428Z Done.
+2026-11-21T17:02:35.9567999Z Service [s87ce2df5] revision [s87ce2df5-00005-cgk] has been deployed and is serving 100 percent of traffic.
+2026-11-21T17:02:35.9569505Z Service URL: https://s87ce2df5-670075229477.asia-southeast1.run.app
+2026-11-21T17:02:36.6301096Z Updating traffic...
+2026-11-21T17:02:40.0619074Z Done.
+2026-11-21T17:02:40.1428194Z URL: https://s87ce2df5-4d7hbszvwq-as.a.run.app
+2026-11-21T17:02:40.1429074Z Traffic:
+2026-11-21T17:02:40.1429601Z   100% LATEST (currently s87ce2df5-00005-cgk)
+2026-11-21T17:02:42.3462511Z Service URL: https://s87ce2df5-4d7hbszvwq-as.a.run.app
+2026-11-21T17:02:42.4974843Z ##[group]Run python3 deploy/smoke_test.py "$SERVICE_URL" "$IMAGE_TAG"
+2026-11-21T17:02:42.5047934Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T17:02:42.5049392Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T17:02:42.5050024Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T17:02:42.5050661Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-21T17:02:42.5052007Z ##[endgroup]
+2026-11-21T17:02:44.6376931Z PASS /api/health
+2026-11-21T17:02:44.6377391Z PASS /api/ready
+2026-11-21T17:02:44.6377760Z PASS /
+2026-11-21T17:02:44.6378174Z PASS /api/accounts
