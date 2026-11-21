@@ -1,0 +1,26 @@
+# C-06 (R-07..R-10) reviewed change staging -> main -> automatic deployment — recorded 2026-11-21T15:27:56Z
+Change: PR #43 (label lab5) -> staging/sprint-1, approved by Leviathan-c137, merge 822e36d
+Release: PR #44 staging/sprint-1 -> main, approved by Leviathan-c137, merge commit 0831d0b7d9b57e008cfbcb96fd263a5bf21b71e9
+Pipeline: Deploy demo run 44918889759 (https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44918889759)
+  test / Server typecheck + unit/API-DB tests: success
+  test / Client build: success
+  test / E2E (Playwright): success
+  test / Secret scan (NFR-09): success
+  test / Docker image build: success
+  test / test-and-docker: success
+  deploy: success
+Deploy job log excerpt:
+  0831d0b7d9b57e008cfbcb96fd263a5bf21b71e9: digest: sha256:2b5cc93b2f1adf40c3263c891f5082c411f38f99e018154cf95e5d830170ec73 size: 856
+  Execution [s87ce2df5-migrate-w226h] has successfully completed.
+  Service [s87ce2df5] revision [s87ce2df5-00003-xnd] has been deployed and is serving 100 percent of traffic.
+    100% LATEST (currently s87ce2df5-00003-xnd)
+  PASS /api/health
+  PASS /api/ready
+  PASS /
+  PASS /api/accounts
+Running version: $ curl https://s87ce2df5-4d7hbszvwq-as.a.run.app/api/health
+  {"status":"ok","version":"0831d0b7d9b57e008cfbcb96fd263a5bf21b71e9"}
+
+# C-05 (R-04) persistence after redeploy
+Before: bob Bank 1,500.00 / income 1,500.00 created on release b903e00 (revision deployed by deploy.sh, C-04 Figure 6)
+After redeploy to revision s87ce2df5-00003-xnd (0831d0b): bob Overview still Bank 1,500.00 / income 1,500.00 (Figure 7, submission/lab5/img/c05-after-redeploy.png)

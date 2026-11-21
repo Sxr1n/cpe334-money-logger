@@ -5,7 +5,7 @@
 - Next session: release PR staging → main → portal Recheck + Activate → JWT secret + first deploy → C-02/C-04/C-05/C-06 evidence → Lab 5 PDF · Lab 6 partner UAT · Sprint 2 contracts
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
-- Deployed URL / version: —
+- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
 
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-21 — Lab 5 deploy on the course cloud — Claude + Sxr1n (+ Leviathan-c137 reviews)
+- Done: #37–#41 merged (#41 release → main `b903e00`); portal "Connect to Google Cloud" → resources ready (prefix `s87ce2df5`, URL https://s87ce2df5-4d7hbszvwq-as.a.run.app); GitHub environment `demo` + WIF variables, `DEPLOY_ENABLED=true`; JWT secret in `s87ce2df5-app-secret-1` and first deploy by `deploy/deploy.sh` (Sxr1n, Cloud Shell; 2SV had to be enabled first); C-02 PR #42 (failing test, blocked, closed unmerged); C-04 live demo as bob (sign-in, ฿1,500 receipt, BR-07 rejection); #43 → staging, release #44 → main `0831d0b` deployed automatically (revision `s87ce2df5-00003-xnd`); C-05 after-redeploy; PR #45 with C-05/C-06 evidence
+- Evidence: `docs/labs/lab05/C-02-failing-check.txt`, `C-03-fresh-clone.txt`, `first-deploy-smoke.txt`, `C-06-release-deploy.txt`; Deploy demo run 44918889759 (CI 6/6, deploy, smoke 4/4); `submission/lab5/img/` Figures 1–8
+- Decisions: alice untouched for Lab 6 UAT-01; bob used for Lab 5 demos (UAT cases v0.3 make bob's values relative); first deploy by script, later releases by Actions
+- Open issues: C-05 restart/rollback (Leviathan-c137, #30); Lab 5 Part 0 needs team number, section, group name; report limitations; build + submit Lab 5 PDF by 22 Nov 23:59; Lab 6 partner unknown
+- Next session: rollback evidence → Lab 5 PDF → Lab 6 partner UAT → Sprint 2 contracts (D2 29 Nov)
+
 ### 2026-11-20 — Lab 5 shared cloud + Lab 6 Part A — Claude + Sxr1n
 - Done: course portal sign-in (team prefix `s87ce2df5`, project `cpe-se-course-2026`); portal review said our repo lacked `ci-docker.yml` → team kit zip merged into our setup (PR #38: `deploy.sh` without resource creation, names `s87ce2df5*`, `ci.yml` → `ci-docker.yml` + job `test-and-docker`, `teardown.sh` removed, deployment.md v0.3, SDS v0.6); Lab 6 UAT cases UAT-01–05 + handoff (PR #39, v0.2 after a local rehearsal); ruleset `protect-main` (id 27680785) on `main` + `staging/**`: no deletion/force-push, PR with 1 approval, merge commits only, required check `test-and-docker`
 - Evidence: PR #38 CI all 6 checks pass (run 44623254181); `DRY_RUN=1 bash deploy/deploy.sh` touches only `s87ce2df5*`; UAT rehearsal 5/5 on local dev servers (temporary Playwright script, not committed; not UAT evidence)
@@ -199,5 +206,6 @@
 - Next session:
 
 ## Parked (เจอระหว่างทางแต่อยู่นอก scope)
+- Receive money: after Save, the Receiving account dropdown still shows the old balance (`Bank (฿0.00)`) until the page is reloaded — display only (seen on the live URL 2026-11-21)
 - รวม `getTodayBangkok()` (server/src/lib/ledger.ts) กับ `bangkokToday()` (server/src/lib/period.ts) และ `formatTHB` ใน AccountsPage/PayPage/ReceiveMoneyPage ให้ใช้ `client/src/format.ts`
 -
