@@ -22,8 +22,8 @@
 | Docker image + compose (L5-S1) | #25 | #13 (Sxr1n → Leviathan-c137) |
 | CI quality gate (L5-S2) | #26 | #14 (Sxr1n → Leviathan-c137) |
 | Cloud Run pipeline from the Starter Kit | #27–#29 | #22, #31 (Sxr1n → Leviathan-c137) |
-| Move to the shared course project, `ci-docker.yml` | #27–#29 | #38 (Sxr1n → ⟨TODO reviewer⟩) |
-| Merge gate demo (C-02) | #28 | ⟨TODO⟩ |
+| Move to the shared course project, `ci-docker.yml` | #27–#29 | #38 (Sxr1n → Leviathan-c137) |
+| Merge gate demo (C-02) | #28 | #42 (Sxr1n; closed unmerged by design) |
 | First deployment, secrets (C-04) | #27 | ⟨TODO⟩ |
 | Persistence and rollback (C-05) | #30 | ⟨TODO⟩ |
 | Release to main and auto deploy (C-06) | #29 | ⟨TODO⟩ |
@@ -32,7 +32,7 @@
 | Rubric part | Artifact / direct link | IDs / version | Verification result |
 |---|---|---|---|
 | 1. CI and quality gate | `ci-docker.yml`; PR #38 run [44623254181](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44623254181); ruleset `protect-main` | C-01, commit `da391af` | 6/6 checks pass |
-| 1. CI and quality gate | ⟨TODO: demo PR⟩ | C-02, ⟨commit⟩ | ⟨TODO: check failed; merge blocked⟩ |
+| 1. CI and quality gate | PR #42 and run [44909593693](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44909593693); `docs/labs/lab05/C-02-failing-check.txt`; Figure 2 | C-02, commit `cee2c7e` | Check failed; merge blocked |
 | 2. Docker and configuration | `Dockerfile`, `.dockerignore`, `.env.example`, `docs/labs/lab05/C-03-fresh-clone.txt` | C-03, commit `b43f9f5` | Fresh clone builds and runs; migrations applied; login 200 |
 | 3. GCP deployment | ⟨TODO: URL + screenshots⟩ | C-04, ⟨release⟩ | ⟨TODO⟩ |
 | 3. Persistence | ⟨TODO: before/after screenshots⟩ | C-05, ⟨release⟩ | ⟨TODO⟩ |
@@ -48,15 +48,23 @@
   - Secret scan (gitleaks)
 
   A sixth job, `test-and-docker`, passes only when all five passed. `deploy.yml` calls the same workflow before every deployment.
-- **C-01, passing PR:** PR #38, run 44623254181. All 6 checks pass: ⟨TODO: test summary — server N files / N tests, E2E N passed⟩.
+- **C-01, passing PR:** PR #38, run 44623254181. All 6 checks pass: server `Test Files 13 passed (13)`, `Tests 58 passed (58)`; E2E `6 passed`; client build, Docker build and gitleaks pass.
 - **Required check (R-06):** repository ruleset `protect-main` (id 27680785) on `main` and `staging/**`. It requires:
   - a Pull Request with 1 approval and merge commits only
   - the `test-and-docker` check
   - no deletion and no force-push
   - no bypass actors
 
-  ⟨TODO Figure 1: ruleset settings page⟩
-- **C-02, failing PR:** ⟨TODO: PR #N from temporary branch `demo/failing-check`. It changes one test assertion so the test fails, and does not touch application code. Figure 2: failed `test-and-docker` and the blocked merge button, commit …; the PR is closed without merging⟩.
+  ![Figure 1](img/ruleset.png)
+
+  ![Figure 1b](img/ruleset-2.png)
+
+  *Figure 1. R-06: ruleset `protect-main` (id 27680785) — targets `main` and `staging/**`, 1 required approval, merge commits only, required status check `test-and-docker`, deletions and force pushes blocked.*
+- **C-02, failing PR:** [PR #42](https://github.com/Sxr1n/cpe334-money-logger/pull/42) from the temporary branch `demo/lab5-failing-check` (commit `cee2c7e`). It changes one assertion in `server/tests/app.api.test.ts` so the test expects `/api/health` to return 201 (the real status is 200); application code is untouched. [CI run 44909593693](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44909593693): `Tests 1 failed | 57 passed (58)` → `test-and-docker` fails. `gh pr merge 42` is refused with "the base branch policy prohibits the merge". Full output: `docs/labs/lab05/C-02-failing-check.txt`. The PR was closed without merging and the branch deleted.
+
+  ![Figure 2](img/c02-blocked-merge.png)
+
+  *Figure 2. C-02 (R-06): PR #42 from a temporary branch; the required check `test-and-docker` failed and merging is blocked. Commit cee2c7e.*
 
 ## Answer Part 2: Docker and Reproducible Configuration
 
