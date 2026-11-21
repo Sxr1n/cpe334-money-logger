@@ -6,7 +6,7 @@ import { prisma } from '../src/prisma'
 describe('app scaffold', () => {
   it('GET /api/health returns status and version', async () => {
     const res = await request(app).get('/api/health')
-    expect(res.status).toBe(200)
+    expect(res.status).toBe(201) // Lab 5 C-02 demo: deliberately wrong, this PR must never be merged
     expect(res.body).toEqual({ status: 'ok', version: process.env.APP_VERSION ?? 'dev' })
   })
 
