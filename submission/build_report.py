@@ -2,8 +2,9 @@
 
 Usage (repo root):  STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab5/report.md <output.pdf>
 Student IDs are not committed (public repository): `{{ID_A}}` / `{{ID_B}}` in the Markdown are filled at build time.
-Relative `img/...` links resolve against the Markdown file's folder.
+Relative `img/...` PNG links resolve against the Markdown file's folder and are embedded.
 """
+import base64
 import importlib.util
 import os
 import re
@@ -23,8 +24,8 @@ def main():
     # `<!-- include: docs/x.md -->` embeds a repo document, so the PDF shows the committed version.
     text = re.sub(r'<!-- include: (\S+) -->', lambda m: (ROOT / m.group(1)).read_text(encoding='utf-8'), text)
     text = text.replace('{{ID_A}}', ids[0].strip() or '(set STUDENT_IDS)').replace('{{ID_B}}', ids[1].strip() or '(set STUDENT_IDS)')
-    # The HTML is printed from submission/d1/build/, so point img/ links at the report's folder.
-    text = text.replace('](img/', f'](../../{src.parent.relative_to(ROOT).as_posix()}/img/')
+    # Embed img/ files as data URIs: headless Chrome printed only the first few file:// images.
+    text = re.sub(r'\]\(img/([^)]+)\)', lambda m: '](data:image/png;base64,' + base64.b64encode((src.parent / 'img' / m.group(1)).read_bytes()).decode() + ')', text)
     body = '<script type="text/markdown">' + text.replace('</script', '<\\/script') + '</script>'
     d1.OUT.mkdir(parents=True, exist_ok=True)
     pdf = d1.print_pdf(d1.PAGE.format(title=src.stem, body=body), f'report-{src.parent.name}')
