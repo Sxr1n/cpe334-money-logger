@@ -16,12 +16,12 @@
 | F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 / PR #17 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
-| F-07 | Account management | 2 | SPECIFIED | Sxr1n | sprint-2/F07-account-management.md | — | — |
-| F-08 | Opening balance management | 2 | SPECIFIED | Sxr1n | sprint-2/F08-opening-balance-management.md | — | — |
-| F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | — | — |
-| F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | — | — |
-| F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | — | — |
-| F-12 | Search and filter | 2 | SPECIFIED | Sxr1n | sprint-2/F12-search-filter.md | — | — |
+| F-07 | Account management | 2 | SPECIFIED | Sxr1n | sprint-2/F07-account-management.md | #50 | — |
+| F-08 | Opening balance management | 2 | SPECIFIED | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 | — |
+| F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | — |
+| F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
+| F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
+| F-12 | Search and filter | 2 | SPECIFIED | Sxr1n | sprint-2/F12-search-filter.md | #55 | — |
 | F-13 | Favourite transactions | 3 | PLANNED | — | — | — | — |
 | F-14 | Duplicate transaction | 3 | PLANNED | — | — | — | — |
 | F-15 | Category spending | 3 | PLANNED | — | — | — | — |
@@ -50,7 +50,7 @@
 - Done: contracts F-07–F-12 in `docs/sprints/sprint-2/` (47 AC, 47 STS rows incl. TEST-NFR05-01, status SPECIFIED); SRS v0.5 (D-10–D-13, Q-03 resolved); features v0.3 (F-01–F-06 TESTED, F-07–F-12 SPECIFIED); traceability v0.7 (§2b Sprint 2 table, FR/BR rows filled); SDS v0.7 (Sprint 2 endpoints)
 - Evidence: branch `spec/sprint-2-contracts` (spec commits per feature); PR to `staging/sprint-2`
 - Decisions (Sxr1n, 2026-11-22): D-10 opening balance editable after transactions, rejected if balance < 0; D-11 unarchive allowed, no delete; D-12 edit/void rejected if a balance would go negative; D-13 account filter = primary or line. Owners: Sxr1n F-07/F-08/F-12, Leviathan-c137 F-09/F-10/F-11. F-08 uses a new `PATCH` so the F-03 `PUT` contract is unchanged; NFR-05 1,000-operation test in F-08 (runs after F-09–F-11 merge)
-- Open issues: `staging/sprint-2` created from `staging/sprint-1` `3fd73fe` (Sprint 1 code = `v0.1.0-sprint1`; Lab 5 docs since); Issues for F-07–F-12 to open after the PR is reviewed; F-09 and F-10 both edit `validateAllowedAccountTypes` → merge F-09 first
+- Open issues: `staging/sprint-2` created from `staging/sprint-1` `3fd73fe` (Sprint 1 code = `v0.1.0-sprint1`; Lab 5 docs since); Issues #50–#55 (F-07–F-12, label `sprint-2`, assigned); F-09 and F-10 both edit `validateAllowedAccountTypes` → merge F-09 first
 - Next session: Sprint 2 T-FEAT sessions in parallel
 ### 2026-11-22 — Lab 5 C-05 rollback evidence — Claude + Sxr1n (+ Leviathan-c137)
 - Done: Leviathan-c137 merged #45 (`bc4f367`), ran rollback (image `b903e00`, revision `s87ce2df5-00004-c6v`) and roll forward (image `0831d0b`, revision `s87ce2df5-00005-cgk`) via Deploy demo, closed #30; bob's data unchanged on all three screenshots; Lab 5 report C-05 + limitations filled; `build_report.py` embeds `img/` PNGs (headless Chrome printed only the first 4 file:// images)
