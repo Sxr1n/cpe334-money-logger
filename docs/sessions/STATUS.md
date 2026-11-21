@@ -2,9 +2,9 @@
 
 ## Current
 - Phase / next checkpoint: Phase 1 — **D1 due 15 Nov 23:59**. Lab 5 has no deadline for now (instructor announcement 2026-11-14: GCP access issue; late not penalized). D2 29 Nov, Final 13 Dec unchanged
-- Next session: Leviathan-c137 → review/merge PR #35 · Sxr1n → submit D1 PDF on LEB2 (by 15 Nov 23:59) · Lab 5 when GCP access is resolved
+- Next session: Sxr1n → submit D1 PDF on LEB2 (by 15 Nov 23:59) · Lab 5 when GCP access is resolved · then Sprint 2 contracts
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
-- Active staging branch: `staging/sprint-1` (PRs #7–#33 merged; release PR #32 merged to main; PR #34 Part F fixes open)
+- Active staging branch: `staging/sprint-1` (PRs #7–#36 merged; release PR #32 merged to main)
 - Deployed URL / version: —
 
 ## Feature board
@@ -46,6 +46,11 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-15 — D1-S10b SDS consistency fix — Claude + Sxr1n
+- Done: PR #36 (SDS v0.5: §1.1 Packaging no longer says "on the VM", Sources list current doc versions) approved + merged by Leviathan-c137 (`b43f9f5`); final PDF rebuilt from staging `b43f9f5`
+- Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]; text check: student IDs only on the cover, tag commit `e1747cb` on cover, "on the VM" only in the v0.5 revision row
+- Next session: submit D1 on LEB2
+
 ### 2026-11-15 — D1-S10 Final PDF check — Claude + Sxr1n
 - Done: PR #34 approved + merged (`c597032`); final PDF built from staging and checked: IDs + tag commit on cover, Part A–F start pages match the contents table (2/10/20/29/33/56), 11 figures, no placeholders, seed passwords/JWT secret not in the PDF; rendered Part F showed Figure F-1 as a loading spinner → retaken after data loads (PR #35)
 - Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]
