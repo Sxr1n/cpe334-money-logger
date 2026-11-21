@@ -1,4 +1,4 @@
-# Quality gate (Lab 5 L5-S2): every job must pass before a PR can merge into staging/* or main.
+# Quality gate (Lab 5 L5-S2; file name and job `test-and-docker` follow the Starter Kit): every job must pass before a PR can merge into staging/* or main.
 # Values below are CI-only placeholders for a throwaway database, not real secrets.
 name: CI
 
@@ -115,3 +115,12 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Lab 5 course portal and deploy.yml expect one check named `test-and-docker` (Starter Kit layout).
+  # It passes only when every job above passed, so it can be the single required check.
+  test-and-docker:
+    needs: [server, client, e2e, docker, secret-scan]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}" = true
