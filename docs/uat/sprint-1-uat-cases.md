@@ -21,7 +21,7 @@
 Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit Card (Loan taken), Salary (Income), Dining, Groceries, Electricity, Telecom (Expense).
 
 ## 2 Data setup, sequence and cleanup
-- The Product Team does not use `alice` or `bob` on the deployed release before the UAT session, so both start with ฿0.00 everywhere. Before starting, check on Overview that `alice` shows Cash ฿0.00. If not, stop and tell the Product Team (do not continue with other values).
+- The Product Team does not use `alice` on the deployed release before the UAT session, so alice starts with ฿0.00 everywhere. `bob` was used for the Product Team's Lab 5 deployment demo, so bob's cases use values relative to what you see at the start. Before starting, check on Overview that `alice` shows Cash ฿0.00. If not, stop and tell the Product Team (do not continue with other values).
 - **Run the cases in order UAT-01 → UAT-05.** UAT-02 and UAT-04 use the balances left by UAT-01. UAT-03 and UAT-05 do not depend on alice's balances.
 - An opening balance can be set only once per account (BR-11), and Sprint 1 has no edit or delete, so the data cannot be reset from the UI. For a re-test the Product Team tells you the expected starting values, or asks the TA to reset the database. Data is synthetic; nothing needs to be cleaned up.
 - Dates: "today" means today's date in Thailand (Asia/Bangkok). Amounts are typed in baht with two decimals.
@@ -63,7 +63,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 
 | # | Action | Expected result |
 |---|---|---|
-| 1 | Log in as `bob`. Receive money: Bank, today, total `100.00`, line Salary `100.00` → Save. Open History → click the **date** of that row. **Write down the address**, e.g. `<URL>/transactions/42`. Log out | "Saved"; the detail page shows "Received ฿100.00", "Received into Bank", line Salary ฿100.00 |
+| 1 | Log in as `bob`. On Overview **write down bob's Cash total B**. Receive money: Bank, today, total `100.00`, line Salary `100.00` → Save. Open History → click the **date** of that row. **Write down the address**, e.g. `<URL>/transactions/42`. Log out | "Saved"; the detail page shows "Received ฿100.00", "Received into Bank", line Salary ฿100.00 |
 | 2 | Log in as `alice`. Open the address from step 1 | "Not found." — no amount, account or note of bob is shown |
 | 3 | As `alice`, open History and Accounts | No ฿100.00 receipt; only alice's seven accounts with her balances (Bank ฿33,800.00 if UAT-01 ran) |
 | 4 | As `alice`, open `<URL>/admin/users` | "Not allowed." — no user list |
@@ -97,7 +97,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | 3 | Window A: reload the page | Bob is sent to the Login page (old session no longer works) |
 | 4 | Window A: log in as `bob` with his correct password | "Invalid username or password." — the same message as step 5 |
 | 5 | Window A: log in as `bob` with password `wrong-password` | "Invalid username or password." |
-| 6 | Window B: **Enable** bob. Window A: log in as `bob` | bob logs in; his Bank still shows ฿100.00 from UAT-03 |
+| 6 | Window B: **Enable** bob. Window A: log in as `bob` | bob logs in; his Cash total is still B + ฿100.00 (B from UAT-03 step 1) |
 | 7 | Window B: look at the Users page row of `admin` | No Disable button on the admin's own row (an administrator cannot disable their own account, BR-13); admin stays ACTIVE |
 
 ## 4 Result record (filled in by the UAT Team)
@@ -116,3 +116,4 @@ Report every finding as a GitHub Issue in this repository (label `uat`) or in th
 |---|---|---|---|
 | 0.1 | 2026-11-20 | Initial UAT cases UAT-01–UAT-05 and handoff | Lab 6 Part A |
 | 0.2 | 2026-11-20 | Exact screen texts (payment success, rejection messages, history rows, detail page) after a Product Team rehearsal of all five cases on a local build of the same code (all steps gave the expected results). The rehearsal is not UAT evidence | Make the cases executable without explanations |
+| 0.3 | 2026-11-21 | bob's expected values made relative (bob was used for the Lab 5 live demo); alice stays untouched | Deployed data is shared with the Lab 5 evidence |

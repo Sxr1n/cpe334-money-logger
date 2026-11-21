@@ -11,7 +11,7 @@
 | Students | นายศารินทร์ ไชยารัตน์ — {{ID_A}} — GitHub `Sxr1n` · นายตันติยวัตร จันทร์ศิริ — {{ID_B}} — GitHub `Leviathan-c137` |
 | Repository (public, R-12) | https://github.com/Sxr1n/cpe334-money-logger |
 | Submitted release | ⟨TODO: tag / main commit⟩ |
-| Public URL and commit it serves | ⟨TODO: URL⟩ — `<URL>/api/health` returns `version` = ⟨TODO: full SHA⟩ |
+| Public URL and commit it serves | https://s87ce2df5-4d7hbszvwq-as.a.run.app — `/api/health` returns `version` = `b903e00628037a55d12491c9144e01a82f4c0a00` (⟨update after the final release⟩) |
 | Cloud | Course project `cpe-se-course-2026`, region `asia-southeast1`, team prefix `s87ce2df5` (resources made by the course Student Cloud Portal, announcement 2026-11-20) |
 | Release procedure | [`docs/labs/lab05/deployment.md`](https://github.com/Sxr1n/cpe334-money-logger/blob/main/docs/labs/lab05/deployment.md) |
 
@@ -22,9 +22,9 @@
 | Docker image + compose (L5-S1) | #25 | #13 (Sxr1n → Leviathan-c137) |
 | CI quality gate (L5-S2) | #26 | #14 (Sxr1n → Leviathan-c137) |
 | Cloud Run pipeline from the Starter Kit | #27–#29 | #22, #31 (Sxr1n → Leviathan-c137) |
-| Move to the shared course project, `ci-docker.yml` | #27–#29 | #38 (Sxr1n → ⟨TODO reviewer⟩) |
-| Merge gate demo (C-02) | #28 | ⟨TODO⟩ |
-| First deployment, secrets (C-04) | #27 | ⟨TODO⟩ |
+| Move to the shared course project, `ci-docker.yml` | #27–#29 | #38 (Sxr1n → Leviathan-c137) |
+| Merge gate demo (C-02) | #28 | #42 (Sxr1n; closed unmerged by design) |
+| First deployment, secrets (C-04) | #27 | `deploy/deploy.sh` run by Sxr1n in Cloud Shell; JWT secret in slot 1; evidence in PR #43 |
 | Persistence and rollback (C-05) | #30 | ⟨TODO⟩ |
 | Release to main and auto deploy (C-06) | #29 | ⟨TODO⟩ |
 
@@ -32,9 +32,9 @@
 | Rubric part | Artifact / direct link | IDs / version | Verification result |
 |---|---|---|---|
 | 1. CI and quality gate | `ci-docker.yml`; PR #38 run [44623254181](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44623254181); ruleset `protect-main` | C-01, commit `da391af` | 6/6 checks pass |
-| 1. CI and quality gate | ⟨TODO: demo PR⟩ | C-02, ⟨commit⟩ | ⟨TODO: check failed; merge blocked⟩ |
+| 1. CI and quality gate | PR #42 and run [44909593693](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44909593693); `docs/labs/lab05/C-02-failing-check.txt`; Figure 2 | C-02, commit `cee2c7e` | Check failed; merge blocked |
 | 2. Docker and configuration | `Dockerfile`, `.dockerignore`, `.env.example`, `docs/labs/lab05/C-03-fresh-clone.txt` | C-03, commit `b43f9f5` | Fresh clone builds and runs; migrations applied; login 200 |
-| 3. GCP deployment | ⟨TODO: URL + screenshots⟩ | C-04, ⟨release⟩ | ⟨TODO⟩ |
+| 3. GCP deployment | https://s87ce2df5-4d7hbszvwq-as.a.run.app; Figures 3–6; `docs/labs/lab05/first-deploy-smoke.txt` | C-04, release `b903e00` | Sign-in, receipt saved, overspend rejected (BR-07); smoke test 4/4 PASS |
 | 3. Persistence | ⟨TODO: before/after screenshots⟩ | C-05, ⟨release⟩ | ⟨TODO⟩ |
 | 4. Release pipeline | ⟨TODO: release PR, Deploy demo run, Cloud Run revision⟩ | C-06, ⟨commit⟩ | ⟨TODO⟩ |
 
@@ -48,15 +48,23 @@
   - Secret scan (gitleaks)
 
   A sixth job, `test-and-docker`, passes only when all five passed. `deploy.yml` calls the same workflow before every deployment.
-- **C-01, passing PR:** PR #38, run 44623254181. All 6 checks pass: ⟨TODO: test summary — server N files / N tests, E2E N passed⟩.
+- **C-01, passing PR:** PR #38, run 44623254181. All 6 checks pass: server `Test Files 13 passed (13)`, `Tests 58 passed (58)`; E2E `6 passed`; client build, Docker build and gitleaks pass.
 - **Required check (R-06):** repository ruleset `protect-main` (id 27680785) on `main` and `staging/**`. It requires:
   - a Pull Request with 1 approval and merge commits only
   - the `test-and-docker` check
   - no deletion and no force-push
   - no bypass actors
 
-  ⟨TODO Figure 1: ruleset settings page⟩
-- **C-02, failing PR:** ⟨TODO: PR #N from temporary branch `demo/failing-check`. It changes one test assertion so the test fails, and does not touch application code. Figure 2: failed `test-and-docker` and the blocked merge button, commit …; the PR is closed without merging⟩.
+  ![Figure 1](img/ruleset.png)
+
+  ![Figure 1b](img/ruleset-2.png)
+
+  *Figure 1. R-06: ruleset `protect-main` (id 27680785) — targets `main` and `staging/**`, 1 required approval, merge commits only, required status check `test-and-docker`, deletions and force pushes blocked.*
+- **C-02, failing PR:** [PR #42](https://github.com/Sxr1n/cpe334-money-logger/pull/42) from the temporary branch `demo/lab5-failing-check` (commit `cee2c7e`). It changes one assertion in `server/tests/app.api.test.ts` so the test expects `/api/health` to return 201 (the real status is 200); application code is untouched. [CI run 44909593693](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44909593693): `Tests 1 failed | 57 passed (58)` → `test-and-docker` fails. `gh pr merge 42` is refused with "the base branch policy prohibits the merge". Full output: `docs/labs/lab05/C-02-failing-check.txt`. The PR was closed without merging and the branch deleted.
+
+  ![Figure 2](img/c02-blocked-merge.png)
+
+  *Figure 2. C-02 (R-06): PR #42 from a temporary branch; the required check `test-and-docker` failed and merging is blocked. Commit cee2c7e.*
 
 ## Answer Part 2: Docker and Reproducible Configuration
 
@@ -83,7 +91,29 @@
   - Secrets `s87ce2df5-database-url`, `-admin-password`, `-demo-password`, `-app-secret-1` (JWT)
 
   ⟨TODO Figure: Cloud Run service page with the revision and image digest⟩
-- **C-04, domain workflow on the public URL:** ⟨TODO Figures with the URL visible: alice signs in → receives salary → Overview shows the new balance; one rule rejection (payment larger than the Bank balance) or admin denied financial data⟩. The API and database are reached through the same requests (`/api/ready` shows `db: connected`).
+- **C-04, domain workflow on the public URL** (https://s87ce2df5-4d7hbszvwq-as.a.run.app, release `b903e00`, 2026-11-21 ≈21:45 Asia/Bangkok, user `bob`). Every page shows the running commit in the footer (`API version: b903e006…`):
+  1. Sign in over HTTPS (the session cookie is `Secure`). Overview shows ฿0.00 everywhere (Figure 3).
+  2. Main business action: Receive money ฿1,500.00 Salary → Bank, saved (Figure 4).
+  3. Rule rejection (BR-07, cash cannot go negative): Make a payment of ฿2,000.00 from Bank (balance ฿1,500.00). The server rejects it with "Business rule violation." and "Not enough money in Bank (balance ฿1,500.00)" (Figure 5).
+  4. Overview afterwards: Bank ฿1,500.00, income ฿1,500.00, expense ฿0.00. The rejected payment changed nothing (Figure 6).
+
+  The API and database answer through the same requests, and `https://s87ce2df5-4d7hbszvwq-as.a.run.app/api/ready` returns `{"status":"ready","db":"connected"}`. Smoke test output: `docs/labs/lab05/first-deploy-smoke.txt`.
+
+  ![Figure 3](img/c04-1-overview-before.png)
+
+  *Figure 3. C-04 (R-03): bob signed in on https://s87ce2df5-4d7hbszvwq-as.a.run.app/overview; release b903e00 in the footer.*
+
+  ![Figure 4](img/c04-2-receive-saved.png)
+
+  *Figure 4. C-04 (R-03): https://s87ce2df5-4d7hbszvwq-as.a.run.app/receive — ฿1,500.00 salary recorded into Bank.*
+
+  ![Figure 5](img/c04-3-rule-rejection.png)
+
+  *Figure 5. C-04 (R-03, BR-07): https://s87ce2df5-4d7hbszvwq-as.a.run.app/pay — a ฿2,000.00 payment from Bank (balance ฿1,500.00) is rejected by the server.*
+
+  ![Figure 6](img/c04-4-overview-after.png)
+
+  *Figure 6. C-04 (R-03): https://s87ce2df5-4d7hbszvwq-as.a.run.app/overview after the rejection — Bank ฿1,500.00, income ฿1,500.00, expense ฿0.00.*
 - **C-05, persistence:** ⟨TODO: a record created before a restart (new revision) and before a redeploy is still there afterwards; before and after screenshots with timestamps and revisions⟩.
 
 ## Answer Part 4: Repeatable Release Pipeline

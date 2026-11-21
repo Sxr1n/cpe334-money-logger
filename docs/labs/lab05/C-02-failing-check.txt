@@ -1,0 +1,24 @@
+# C-02 (R-06) failing check blocks merge — recorded 2026-11-21T13:36:44Z
+PR #42 (temporary branch demo/lab5-failing-check -> staging/sprint-1), head commit cee2c7e
+Change: server/tests/app.api.test.ts expects /api/health status 201 (real: 200); application code untouched
+CI run 44909593693:
+Server typecheck + unit/API-DB tests	fail
+test-and-docker	fail
+Client build	pass
+Docker image build	pass
+E2E (Playwright)	pass
+Secret scan (NFR-09)	pass
+
+Failing test (log excerpt):
+##[error]AssertionError: expected 200 to be 201 // Object.is equality
+      Tests  1 failed | 57 passed (58)
+ Test Files  1 failed | 12 passed (13)
+AssertionError: expected 200 to be 201 // Object.is equality
+ FAIL  tests/app.api.test.ts > app scaffold > GET /api/health returns status and version
+
+Merge state: BLOCKED
+$ gh pr merge 42 --merge
+X Pull request Sxr1n/cpe334-money-logger#42 is not mergeable: the base branch policy prohibits the merge.
+To have the pull request merged after all the requirements have been met, add the `--auto` flag.
+To use administrator privileges to immediately merge the pull request, add the `--admin` flag.
+Ruleset protect-main (id 27680785): required check test-and-docker, 1 approval, no bypass actors
