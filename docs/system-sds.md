@@ -147,8 +147,8 @@ The model is named `Txn` (table `transactions`) to avoid confusion with database
   2. Validate BR-01–BR-04, BR-09 with the ledger core.
   3. Compute deltas with the ledger core; reject if any CASH balance would go below 0 (BR-07) or a repayment exceeds the outstanding amount (BR-08) → 422.
   4. Insert the transaction and its lines, apply the deltas, commit. Any error rolls back everything (NFR-06).
-- **Opening balance** is two fields on the account (`opening_balance`, `opening_date`). Setting it adds the amount to `balance` in the same DB transaction; it creates no transaction row, so it cannot appear in income/expense (BR-06, BR-10). Changing it (F-08, Sprint 2) adds `new − old`.
-- **Edit and void** (Sprint 2) reverse the old deltas and apply the new ones in one DB transaction.
+- **Opening balance** is two fields on the account (`opening_balance`, `opening_date`). Setting it adds the amount to `balance` in the same DB transaction; it creates no transaction row, so it cannot appear in income/expense (BR-06, BR-10). Changing it (F-08, `PATCH`) adds `new − old` and is rejected if the balance would go below 0 (D-10).
+- **Edit and void** (F-11) reverse the old deltas and apply the new ones in one DB transaction; rejected if an affected balance would go below 0 (D-12) or an affected stored-balance account is archived.
 - NFR-05 check (Sprint 2): a test posts 1,000 random valid transactions and compares every stored balance with a recomputation from opening balances and lines.
 
 ### 2.5 Migrations and seed
@@ -214,7 +214,7 @@ All errors use one shape, with no stack traces or SQL text:
 | 401 | `UNAUTHENTICATED` / `INVALID_CREDENTIALS` | No/invalid/expired/revoked session; failed login (same message for every login failure) |
 | 403 | `FORBIDDEN` | Wrong role (BR-12); admin disabling self (BR-13) |
 | 404 | `NOT_FOUND` | Record does not exist **or** belongs to another user (BR-11) |
-| 409 | `CONFLICT` | Duplicate account name (BR-14), opening balance already set |
+| 409 | `CONFLICT` | Duplicate account name (BR-14), opening balance already set (F-03) or not set yet (F-08) |
 | 422 | `VALIDATION_FAILED` / `RULE_VIOLATION` | Field validation (BR-02, BR-09) / business rule (BR-01, BR-03, BR-04, BR-07, BR-08, BR-10) |
 | 500 | `INTERNAL` | Unexpected error (logged on the server without request bodies or passwords) |
 
@@ -223,8 +223,8 @@ All errors use one shape, with no stack traces or SQL text:
 |---|---|---|---|
 | Auth | `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` | any (login: none) | 1 |
 | Admin | `GET /api/admin/users`, `PATCH /api/admin/users/:id` (status) | ADMIN | 1 |
-| Accounts | `GET /api/accounts`, `PUT /api/accounts/:id/opening-balance` (S1); `POST /api/accounts`, `PATCH /api/accounts/:id` (S2) | USER | 1–2 |
-| Transactions | `POST /api/transactions`, `GET /api/transactions`, `GET /api/transactions/:id` (S1); edit/void/filters (S2); favourite (S3) | USER | 1–3 |
+| Accounts | `GET /api/accounts`, `PUT /api/accounts/:id/opening-balance` (S1); `POST /api/accounts`, `PATCH /api/accounts/:id`, `PATCH /api/accounts/:id/opening-balance` (S2) | USER | 1–2 |
+| Transactions | `POST /api/transactions`, `GET /api/transactions`, `GET /api/transactions/:id` (S1); `PUT /api/transactions/:id`, `POST /api/transactions/:id/void`, filter query parameters on `GET /api/transactions` (S2); favourite (S3) | USER | 1–3 |
 | Overview and reports | `GET /api/overview`, `GET /api/summary?from&to` (S1); `GET /api/reports/categories`, `GET /api/reports/monthly` (S3) | USER | 1, 3 |
 
 ---
@@ -317,3 +317,4 @@ Open (decided in D1-S4): whether Sprint 1's `POST /api/transactions` already acc
 | 0.4 | 2026-11-14 | SD-03 changed from one VM + docker compose to Cloud Run + Cloud SQL (Lab 5 reference stack; handout received with the starter kit); §7.3 rewritten; `/api/ready` added | Lab 5 |
 | 0.5 | 2026-11-15 | §1.1 Packaging row still said "on the VM" after the v0.4 change → Cloud Run; Sources updated to current document versions | Consistency fix before D1 submission |
 | 0.6 | 2026-11-20 | §7.3: deployment target is the shared course project (team prefix `s87ce2df5`, resources made by the course portal) instead of a team-owned project | Instructor announcement 2026-11-20 (course Google Cloud open) |
+| 0.7 | 2026-11-22 | Sprint 2 endpoints named in §4.3; §2.4 opening-balance change and edit/void rules (D-10, D-12); 409 for "opening balance not set yet" | D2-S1 contracts |

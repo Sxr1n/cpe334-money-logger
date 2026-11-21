@@ -5,7 +5,7 @@
 | Course | CPE334, Semester 1/2026 — Group Project, Theme 7 |
 | Team | นายศารินทร์ ไชยารัตน์ (GitHub `Sxr1n`); นายตันติยวัตร จันทร์ศิริ (GitHub `Leviathan-c137`) — student IDs are given in the submitted PDF only |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Document version | 0.4 (decisions accepted by team) |
+| Document version | 0.5 (decisions accepted by team) |
 | Source brief | `docs/course/group_work_specs_v1.pdf` §6 Theme 7 |
 
 > **Status:** decisions D-01–D-09 in §8.2 were accepted by the team on 2026-11-07 (v0.2). D-03 still awaits TA confirmation (Q-01); a different TA answer will be handled as a CHG.
@@ -189,13 +189,17 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | D-07 | Accounts with transactions are archived, never deleted (BR-15). | Preserves history and report totals. | Accepted (team, 2026-11-07) |
 | D-08 | Disabling a user revokes their sessions on the next request (BR-13). | Administrator control must take effect immediately. | Accepted (team, 2026-11-07) |
 | D-09 | Sprint 1 uses seeded accounts; account creation UI arrives in Sprint 2 (FR-08). | Matches the specs' Sprint 1 example and keeps the slice feasible. | Accepted (team, 2026-11-07) |
+| D-10 | An opening balance may be edited after the account has transactions (FR-10); the edit is rejected if the recomputed current balance would be negative. The opening date is informational. | Users can correct a wrong starting amount without voiding history; the non-negative invariant (BR-07/BR-08) still holds. Resolves Q-03. | Accepted (team, 2026-11-22) |
+| D-11 | An archived account can be unarchived (FR-09). | Recovers from archiving by mistake; no data is lost because archived accounts are never deleted (D-07). | Accepted (team, 2026-11-22) |
+| D-12 | Editing or voiding a transaction is rejected if any CASH, LOAN_TAKEN or LOAN_GIVEN balance would become negative (BR-07, BR-08 applied to the corrected result). | Keeps the same invariants as recording; voiding a receipt whose money was already spent is not allowed. | Accepted (team, 2026-11-22) |
+| D-13 | The history account filter (FR-19) matches a transaction whose primary account **or** any line uses the account. | INCOME/EXPENSE accounts are never primary, so a primary-only filter would find nothing for them. | Accepted (team, 2026-11-22) |
 
 ### 8.3 Open questions
 | ID | Question | Owner | Resolution |
 |---|---|---|---|
 | Q-01 | Is the cash non-negative rule (D-03) acceptable as the Sprint 1 rule, or should negative bank balances be allowed? | Team → TA | Open |
 | Q-02 | Should an administrator be able to see aggregate, non-identifying platform statistics (e.g. user count)? Current answer: no financial aggregates at all. | Team | Open |
-| Q-03 | Should editing an opening balance (FR-10) be allowed after transactions exist on that account? | Team | Open |
+| Q-03 | Should editing an opening balance (FR-10) be allowed after transactions exist on that account? | Team | Resolved 2026-11-22: yes, see D-10 |
 
 ---
 
@@ -213,3 +217,4 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | 0.2 | 2026-11-07 | D-01–D-09 changed from Proposed to Accepted (team); removed "Proposed" markers from BR-07/08/09/15. No FR/BR/NFR text changed. Reason: freeze rules before Sprint 1 contracts (D1-S2). | Team + Claude |
 | 0.3 | 2026-11-07 | Team names and student IDs filled in. No requirement changed. | Team |
 | 0.4 | 2026-11-14 | Student IDs removed from the repository before it becomes public (Lab 5 R-12); they appear only in submitted PDFs. No requirement changed. | Team |
+| 0.5 | 2026-11-22 | Decisions D-10–D-13 added for the Sprint 2 contracts (Q-03 resolved by D-10). No FR/BR/NFR text changed. | Team + Claude (D2-S1) |
