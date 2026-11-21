@@ -92,6 +92,8 @@ def part_body(letter, title, files):
         path = ROOT / f
         text = path.read_text(encoding='utf-8') if path.exists() else f'*Missing: `{f}` — not yet written.*'
         body.append(f'<p class="src">Source: <code>{html.escape(f)}</code></p>')
+        # part-f.md links submission/d1/img/; the HTML is printed from submission/d1/build/.
+        text = text.replace('](img/', '](../img/')
         safe = text.replace('</script', '<\\/script')  # keep the embedded Markdown inside its <script> block
         body.append(f'<script type="text/markdown">{safe}</script>')
     return '\n'.join(body)

@@ -24,10 +24,10 @@
 #   - Nothing secret lives in this file. Values come from GitHub
 #     Settings -> Environments -> demo (variables) and secrets.
 #   - Money Logger: the kit's optional login smoke check is removed (our session is a cookie, not a bearer token).
-#     (set both or neither).
+#     Resources live in the shared course project and use the team prefix s87ce2df5.
 #   - The cloud resources (Cloud SQL, secrets, service account, Artifact
-#     Registry, Cloud Run service/job) must already exist: create them once with
-#     deploy/deploy.sh. This workflow only UPDATES them.
+#     Registry, Cloud Run service/job) are created by the course portal. This
+#     workflow only UPDATES them; never create or delete shared resources.
 #
 # REFERENCES
 #   - Workflow syntax / reusable workflows:
@@ -44,7 +44,7 @@
 #   - Concurrency: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/control-the-concurrency-of-workflows-and-jobs
 #
 # ⭐ CHANGE ME — groups using another tech stack must edit (marked below):
-#   # CHANGE ME: SERVICE_NAME / MIGRATE_JOB_NAME / image path (money-logger)
+#   # CHANGE ME: SERVICE_NAME / MIGRATE_JOB_NAME / image path (s87ce2df5)
 #   # CHANGE ME: build step if your image is not built from the root Dockerfile
 #   # CHANGE ME: Python setup + smoke test if you use another smoke test
 # ##############################################################################
@@ -83,11 +83,11 @@ jobs:
   # ----------------------------------------------------------------------------
   test:
     if: github.ref == 'refs/heads/main' && !inputs.image_tag
-    # Money Logger: our CI workflow is ci.yml; its secret-scan job needs pull-requests: read.
+    # Money Logger: its secret-scan job needs pull-requests: read.
     permissions:
       contents: read
       pull-requests: read
-    uses: ./.github/workflows/ci.yml
+    uses: ./.github/workflows/ci-docker.yml
 
   # ----------------------------------------------------------------------------
   # Job 2: build, migrate, deploy, smoke-test.
@@ -96,7 +96,7 @@ jobs:
   deploy:
     needs: test
     # Money Logger: skipped (not failed) until the repository variable DEPLOY_ENABLED is set to 'true'
-    # (Settings -> Secrets and variables -> Actions -> Variables) once the GCP project exists.
+    # (Settings -> Secrets and variables -> Actions -> Variables) once the portal shows Resources ready.
     # Environment-level variables such as GCP_PROJECT_ID are not available to a job-level `if`.
     if: >-
       always() && !cancelled() && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true' &&
@@ -114,8 +114,8 @@ jobs:
       PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
       REGION: ${{ vars.GCP_REGION }}
       # CHANGE ME: names of your Cloud Run service and migration job.
-      SERVICE_NAME: money-logger
-      MIGRATE_JOB_NAME: money-logger-migrate
+      SERVICE_NAME: s87ce2df5
+      MIGRATE_JOB_NAME: s87ce2df5-migrate
       # Image tag = commit SHA (or the rollback SHA that was typed in).
       IMAGE_TAG: ${{ inputs.image_tag || github.sha }}
       ROLLBACK: ${{ inputs.image_tag != '' }}
@@ -153,14 +153,14 @@ jobs:
 
       # ------------------------------------------------------------------------
       # 4. Build and push the image (skipped for rollbacks)
-      #    CHANGE ME: image path `.../money-logger/money-logger` must match the
+      #    CHANGE ME: image path `.../s87ce2df5/s87ce2df5` must match the
       #    Artifact Registry repo and service names (see deploy/release.sh).
       # ------------------------------------------------------------------------
       - name: Build and push image
         if: env.ROLLBACK != 'true'
         run: |
           gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
-          IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/money-logger/money-logger:$IMAGE_TAG"
+          IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/s87ce2df5/s87ce2df5:$IMAGE_TAG"
           docker build --build-arg APP_VERSION="$IMAGE_TAG" --tag "$IMAGE" .
           docker push "$IMAGE"
 

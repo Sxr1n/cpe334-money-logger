@@ -2,8 +2,8 @@
 
 | Item | Value |
 |---|---|
-| Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1, `docs/traceability.md` v0.1 |
-| Document version | 0.4 |
+| Sources | `docs/srs.md` v0.4, `docs/features.md` v0.2, `docs/traceability.md` v0.3 |
+| Document version | 0.6 |
 | Scope | Whole product (Sprints 1–3). Feature contracts in `docs/sprints/sprint-N/` give exact endpoints, fields and screens. |
 
 ---
@@ -19,7 +19,7 @@
 | Database | PostgreSQL 16 | Real transactions, row locks (`SELECT … FOR UPDATE`), CHECK constraints, BIGINT money. |
 | Auth | bcryptjs + JWT in an httpOnly cookie, user status and token version checked on every request | Reuses the tested TokTickIT design; supports immediate revocation (logout, disable). |
 | Tests | Vitest (unit), Vitest + Supertest against a real PostgreSQL test DB (API-DB), Playwright (E2E) | Matches the three test levels required by the course. |
-| Packaging | Docker (one app image) + docker compose (app + PostgreSQL) | Required by Lab 5; same compose file shape locally and on the VM. |
+| Packaging | Docker (one app image) + docker compose (app + PostgreSQL) | Required by Lab 5; compose runs it locally, the same image runs on Cloud Run (SD-03). |
 
 ### 1.2 Components
 Modular monolith: one Express process serves both the API (`/api/*`) and, in production, the built React files. Three logical layers, one app container plus one database container.
@@ -285,7 +285,7 @@ Rules (NFR-09): only `.env.example` is committed (`.env` is git-ignored); the se
 `docker compose up -d` (PostgreSQL 16 on host port 5434, named volume) → `npm ci` in `server/` and `client/` → `npx prisma migrate deploy && npx prisma db seed` → `npm run dev` in both (Vite proxies `/api` to port 4000). Exact commands are kept in the README and checked from a fresh clone per release.
 
 ### 7.3 GCP deployment (Lab 5)
-Chosen design (SD-03, v0.4): the Lab 5 reference stack — **Cloud Run** service `money-logger` and migration job `money-logger-migrate`, **Cloud SQL for PostgreSQL 16** `money-logger-pg`, **Artifact Registry** `money-logger`, **Secret Manager** for `DATABASE_URL`, `JWT_SECRET` and seed passwords, and **GitHub Actions with Workload Identity Federation** (no key files). Full details, environment table and release procedure: `docs/labs/lab05/deployment.md`.
+Chosen design (SD-03, v0.4): the Lab 5 reference stack — in the shared course project `cpe-se-course-2026` with team prefix `s87ce2df5` (resources created by the course portal): **Cloud Run** service `s87ce2df5` and migration job `s87ce2df5-migrate`, **Cloud SQL for PostgreSQL** `s87ce2df5-pg`, **Artifact Registry** `s87ce2df5`, **Secret Manager** for `DATABASE_URL`, `JWT_SECRET` and seed passwords, and **GitHub Actions with Workload Identity Federation** (no key files). Full details, environment table and release procedure: `docs/labs/lab05/deployment.md`.
 
 | Concern | Design |
 |---|---|
@@ -315,3 +315,5 @@ Open (decided in D1-S4): whether Sprint 1's `POST /api/transactions` already acc
 | 0.2 | 2026-11-07 | Local PostgreSQL host port 5433 → 5434 (5433 is taken by the Labs 1–4 database on developer machines) | D1-S5 |
 | 0.3 | 2026-11-07 | Docker image and compose `app` service (L5-S1): env `COOKIE_SECURE`, `CLIENT_DIST`, `SEED_ON_START`; seed made non-destructive; SD-05 accepted | Lab 5 L5-S1 |
 | 0.4 | 2026-11-14 | SD-03 changed from one VM + docker compose to Cloud Run + Cloud SQL (Lab 5 reference stack; handout received with the starter kit); §7.3 rewritten; `/api/ready` added | Lab 5 |
+| 0.5 | 2026-11-15 | §1.1 Packaging row still said "on the VM" after the v0.4 change → Cloud Run; Sources updated to current document versions | Consistency fix before D1 submission |
+| 0.6 | 2026-11-20 | §7.3: deployment target is the shared course project (team prefix `s87ce2df5`, resources made by the course portal) instead of a team-owned project | Instructor announcement 2026-11-20 (course Google Cloud open) |

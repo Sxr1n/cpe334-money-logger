@@ -1,10 +1,10 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: Phase 1 — **D1 due 15 Nov 23:59**. Lab 5 has no deadline for now (instructor announcement 2026-11-14: GCP access issue; late not penalized). D2 29 Nov, Final 13 Dec unchanged
-- Next session: Leviathan-c137 → review release PRs · Sxr1n → tag `v0.1.0-sprint1` after main merge, then Lab 5 (L5-S3 GCP, protection demo) · both → PDFs
-- Latest release on main: `v0.1.0-sprint1` in progress — verified on staging `2f8dd76` (evidence/d1/release-v0.1.0-sprint1.txt); release PR staging → main next
-- Active staging branch: `staging/sprint-1` (PRs #7–#18 merged; CI green on `53cd180`)
+- Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
+- Next session: release PR staging → main → portal Recheck + Activate → JWT secret + first deploy → C-02/C-04/C-05/C-06 evidence → Lab 5 PDF · Lab 6 partner UAT · Sprint 2 contracts
+- Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
+- Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
 - Deployed URL / version: —
 
 ## Feature board
@@ -46,6 +46,35 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-20 — Lab 5 shared cloud + Lab 6 Part A — Claude + Sxr1n
+- Done: course portal sign-in (team prefix `s87ce2df5`, project `cpe-se-course-2026`); portal review said our repo lacked `ci-docker.yml` → team kit zip merged into our setup (PR #38: `deploy.sh` without resource creation, names `s87ce2df5*`, `ci.yml` → `ci-docker.yml` + job `test-and-docker`, `teardown.sh` removed, deployment.md v0.3, SDS v0.6); Lab 6 UAT cases UAT-01–05 + handoff (PR #39, v0.2 after a local rehearsal); ruleset `protect-main` (id 27680785) on `main` + `staging/**`: no deletion/force-push, PR with 1 approval, merge commits only, required check `test-and-docker`
+- Evidence: PR #38 CI all 6 checks pass (run 44623254181); `DRY_RUN=1 bash deploy/deploy.sh` touches only `s87ce2df5*`; UAT rehearsal 5/5 on local dev servers (temporary Playwright script, not committed; not UAT evidence)
+- Decisions: JWT secret in team slot `s87ce2df5-app-secret-1`; alice/bob on the cloud stay untouched until the UAT team runs the cases
+- Open issues: resources not activated yet (Recheck needs `ci-docker.yml` on main); secret names and DATABASE_URL format unverified until activation; PRs #37/#39 must "Update branch" after #38 merges (required check `test-and-docker` only exists from #38); failing-check demo after #38; Lab 6 partner team unknown; ask TA early about a controlled defect exercise (§3.5)
+- Next session: merge #38 → release PR → portal Recheck + Activate → secret + first deploy → fill UAT URL/SHA → partner UAT
+
+### 2026-11-15 — D1-S10b SDS consistency fix — Claude + Sxr1n
+- Done: PR #36 (SDS v0.5: §1.1 Packaging no longer says "on the VM", Sources list current doc versions) approved + merged by Leviathan-c137 (`b43f9f5`); final PDF rebuilt from staging `b43f9f5`
+- Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]; text check: student IDs only on the cover, tag commit `e1747cb` on cover, "on the VM" only in the v0.5 revision row
+- Next session: submit D1 on LEB2
+
+### 2026-11-15 — D1-S10 Final PDF check — Claude + Sxr1n
+- Done: PR #34 approved + merged (`c597032`); final PDF built from staging and checked: IDs + tag commit on cover, Part A–F start pages match the contents table (2/10/20/29/33/56), 11 figures, no placeholders, seed passwords/JWT secret not in the PDF; rendered Part F showed Figure F-1 as a loading spinner → retaken after data loads (PR #35)
+- Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]
+- Next session: submit D1 → Lab 5 when GCP works
+
+### 2026-11-14 — D1-S9 Release + Part F check — Claude + Sxr1n
+- Done: #31 → staging (`f6a9b8b`), #32 → main (`e1747cb`, merge commits, both approved by Leviathan-c137); tag `v0.1.0-sprint1` → `e1747cb` pushed; Part F (#33) checked claim by claim against the code at the tag, evidence files, PR reviews and CI; PR #34: 5 factual fixes (reset-e2e author, unrecorded npm/Docker versions, 401 test IDs, 403 message text, who caught the selector clash) + 11 captioned screenshots (D1 §4.2/§5 require them; Part F had none); `build_pdf.py` resolves `img/` links
+- Evidence: CI on main run 43585303434 (13 files / 58 server tests, 6 E2E) and Deploy demo 43585303548 (tests pass, `deploy` skipped); screenshots `submission/d1/img/` captured from dev servers on code identical to the tag (`git diff v0.1.0-sprint1` = docs + .gitignore only), no mocks; PDF 76 pages = cover 1 + [8, 10, 9, 4, 23, 21], 11 images in Part F
+- Decisions: screenshots taken by a temporary Playwright script (not committed); API access restrictions shown as a screen dump of real responses
+- Open issues: PR #34 needs review; PDF must be rebuilt from staging after merge (`D1_STUDENT_IDS=... python submission/d1/build_pdf.py v0.1.0-sprint1`); Lab 5 issues #23, #27–#30 open
+- Next session: submit D1 → Lab 5 when GCP works
+
+### 2026-11-14 — D1-S8b (Part F & PDF) — Claude + Leviathan-c137
+- Done: เติมเนื้อหา `submission/d1/part-f.md` (Working Sprint 1 and verification) ครบทุกหัวข้อตามข้อกำหนด D1 §4.2 — Program demonstrations (normal journey, rule rejections, role/forbidden ops), Automated test results (41/41 ACs PASS), Test excerpts (BR-07/BR-08 และ BR-11/BR-12), Workflow history (PR #17 F-04 และ PR #19 F-06), Contributions split, AI-use declaration, Known limitations; ประกอบเล่ม PDF ด้วย `submission/d1/build_pdf.py` ได้เอกสารสมบูรณ์ 65 หน้า
+- Evidence: `submission/d1/part-f.md`, `submission/d1/D1-v0.1.0-sprint1.pdf` (65 pages = cover 1 + parts [8, 10, 9, 4, 23, 10])
+- Next session: Sxr1n ตรวจสอบเล่ม PDF D1 และเตรียมส่ง LEB2
+
 ### 2026-11-14 — Lab 5 paused + deploy guard — Claude + Sxr1n
 - Done: บันทึกประกาศอาจารย์ (Lab 5 ไม่มีกำหนดส่ง, D1 ยังส่ง 15 Nov); job `deploy` ใน `deploy.yml` รันเฉพาะเมื่อ repo variable `DEPLOY_ENABLED == 'true'` เพื่อไม่ให้ release เข้า main ล้มขณะยังไม่มี GCP; repo เป็น public + secret scanning/push protection เปิดแล้ว (ตรวจผ่าน API)
 - Decisions: ใช้ repo variable แทน `vars.GCP_PROJECT_ID` เพราะตัวแปรระดับ environment ใช้ใน job-level `if` ไม่ได้
