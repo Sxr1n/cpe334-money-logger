@@ -1,0 +1,12 @@
+# First deployment to the course cloud (C-04 base) — 2026-11-21T14:38:49Z
+Run by Sxr1n in Cloud Shell: DRY_RUN=0 bash deploy/deploy.sh on main b903e00 (output ended 'Deployment Completed!')
+URL: https://s87ce2df5-4d7hbszvwq-as.a.run.app
+$ curl https://s87ce2df5-4d7hbszvwq-as.a.run.app/api/health
+{"status":"ok","version":"b903e00628037a55d12491c9144e01a82f4c0a00"}
+$ curl https://s87ce2df5-4d7hbszvwq-as.a.run.app/api/ready
+{"status":"ready","db":"connected"}
+$ python deploy/smoke_test.py https://s87ce2df5-4d7hbszvwq-as.a.run.app b903e00628037a55d12491c9144e01a82f4c0a00
+PASS /api/health
+PASS /api/ready
+PASS /
+PASS /api/accounts
