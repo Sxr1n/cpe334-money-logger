@@ -11,7 +11,7 @@
 | Students | นายศารินทร์ ไชยารัตน์ — {{ID_A}} — GitHub `Sxr1n` · นายตันติยวัตร จันทร์ศิริ — {{ID_B}} — GitHub `Leviathan-c137` |
 | Repository (public, R-12) | https://github.com/Sxr1n/cpe334-money-logger |
 | Submitted release | ⟨TODO: tag / main commit⟩ |
-| Public URL and commit it serves | ⟨TODO: URL⟩ — `<URL>/api/health` returns `version` = ⟨TODO: full SHA⟩ |
+| Public URL and commit it serves | https://s87ce2df5-4d7hbszvwq-as.a.run.app — `/api/health` returns `version` = `b903e00628037a55d12491c9144e01a82f4c0a00` (⟨update after the final release⟩) |
 | Cloud | Course project `cpe-se-course-2026`, region `asia-southeast1`, team prefix `s87ce2df5` (resources made by the course Student Cloud Portal, announcement 2026-11-20) |
 | Release procedure | [`docs/labs/lab05/deployment.md`](https://github.com/Sxr1n/cpe334-money-logger/blob/main/docs/labs/lab05/deployment.md) |
 
@@ -24,7 +24,7 @@
 | Cloud Run pipeline from the Starter Kit | #27–#29 | #22, #31 (Sxr1n → Leviathan-c137) |
 | Move to the shared course project, `ci-docker.yml` | #27–#29 | #38 (Sxr1n → Leviathan-c137) |
 | Merge gate demo (C-02) | #28 | #42 (Sxr1n; closed unmerged by design) |
-| First deployment, secrets (C-04) | #27 | ⟨TODO⟩ |
+| First deployment, secrets (C-04) | #27 | `deploy/deploy.sh` run by Sxr1n in Cloud Shell; JWT secret in slot 1; evidence in PR #43 |
 | Persistence and rollback (C-05) | #30 | ⟨TODO⟩ |
 | Release to main and auto deploy (C-06) | #29 | ⟨TODO⟩ |
 
@@ -34,7 +34,7 @@
 | 1. CI and quality gate | `ci-docker.yml`; PR #38 run [44623254181](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44623254181); ruleset `protect-main` | C-01, commit `da391af` | 6/6 checks pass |
 | 1. CI and quality gate | PR #42 and run [44909593693](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44909593693); `docs/labs/lab05/C-02-failing-check.txt`; Figure 2 | C-02, commit `cee2c7e` | Check failed; merge blocked |
 | 2. Docker and configuration | `Dockerfile`, `.dockerignore`, `.env.example`, `docs/labs/lab05/C-03-fresh-clone.txt` | C-03, commit `b43f9f5` | Fresh clone builds and runs; migrations applied; login 200 |
-| 3. GCP deployment | ⟨TODO: URL + screenshots⟩ | C-04, ⟨release⟩ | ⟨TODO⟩ |
+| 3. GCP deployment | https://s87ce2df5-4d7hbszvwq-as.a.run.app; Figures 3–6; `docs/labs/lab05/first-deploy-smoke.txt` | C-04, release `b903e00` | Sign-in, receipt saved, overspend rejected (BR-07); smoke test 4/4 PASS |
 | 3. Persistence | ⟨TODO: before/after screenshots⟩ | C-05, ⟨release⟩ | ⟨TODO⟩ |
 | 4. Release pipeline | ⟨TODO: release PR, Deploy demo run, Cloud Run revision⟩ | C-06, ⟨commit⟩ | ⟨TODO⟩ |
 
@@ -91,7 +91,29 @@
   - Secrets `s87ce2df5-database-url`, `-admin-password`, `-demo-password`, `-app-secret-1` (JWT)
 
   ⟨TODO Figure: Cloud Run service page with the revision and image digest⟩
-- **C-04, domain workflow on the public URL:** ⟨TODO Figures with the URL visible: alice signs in → receives salary → Overview shows the new balance; one rule rejection (payment larger than the Bank balance) or admin denied financial data⟩. The API and database are reached through the same requests (`/api/ready` shows `db: connected`).
+- **C-04, domain workflow on the public URL** (https://s87ce2df5-4d7hbszvwq-as.a.run.app, release `b903e00`, 2026-11-21 ≈21:45 Asia/Bangkok, user `bob`). Every page shows the running commit in the footer (`API version: b903e006…`):
+  1. Sign in over HTTPS (the session cookie is `Secure`). Overview shows ฿0.00 everywhere (Figure 3).
+  2. Main business action: Receive money ฿1,500.00 Salary → Bank, saved (Figure 4).
+  3. Rule rejection (BR-07, cash cannot go negative): Make a payment of ฿2,000.00 from Bank (balance ฿1,500.00). The server rejects it with "Business rule violation." and "Not enough money in Bank (balance ฿1,500.00)" (Figure 5).
+  4. Overview afterwards: Bank ฿1,500.00, income ฿1,500.00, expense ฿0.00. The rejected payment changed nothing (Figure 6).
+
+  The API and database answer through the same requests, and `https://s87ce2df5-4d7hbszvwq-as.a.run.app/api/ready` returns `{"status":"ready","db":"connected"}`. Smoke test output: `docs/labs/lab05/first-deploy-smoke.txt`.
+
+  ![Figure 3](img/c04-1-overview-before.png)
+
+  *Figure 3. C-04 (R-03): bob signed in on https://s87ce2df5-4d7hbszvwq-as.a.run.app/overview; release b903e00 in the footer.*
+
+  ![Figure 4](img/c04-2-receive-saved.png)
+
+  *Figure 4. C-04 (R-03): https://s87ce2df5-4d7hbszvwq-as.a.run.app/receive — ฿1,500.00 salary recorded into Bank.*
+
+  ![Figure 5](img/c04-3-rule-rejection.png)
+
+  *Figure 5. C-04 (R-03, BR-07): https://s87ce2df5-4d7hbszvwq-as.a.run.app/pay — a ฿2,000.00 payment from Bank (balance ฿1,500.00) is rejected by the server.*
+
+  ![Figure 6](img/c04-4-overview-after.png)
+
+  *Figure 6. C-04 (R-03): https://s87ce2df5-4d7hbszvwq-as.a.run.app/overview after the rejection — Bank ฿1,500.00, income ฿1,500.00, expense ฿0.00.*
 - **C-05, persistence:** ⟨TODO: a record created before a restart (new revision) and before a redeploy is still there afterwards; before and after screenshots with timestamps and revisions⟩.
 
 ## Answer Part 4: Repeatable Release Pipeline
