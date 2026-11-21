@@ -1,13 +1,13 @@
 # CPE334 Lab 5 — CI/CD, Docker and GCP deployment
 
-<!-- Build: STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab5/report.md submission/lab5/lab5_sec<N>_<group>.pdf
-     Every ⟨TODO⟩ must be replaced with real evidence before submitting. -->
+<!-- Build: STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab5/report.md submission/lab5/lab5_sec131_Help_me.pdf
+     The PDF holds student IDs: never commit it (public repository). -->
 
 ## Answer Part 0: Team and Evidence Index
 
 | Item | Value |
 |---|---|
-| Team / topic | ⟨TODO: team number⟩ · Theme 7 Personal Money and Expense Logging System (Money Logger) |
+| Team / topic | Section 131, group "Help me" (course cloud prefix `s87ce2df5`) · Theme 7 Personal Money and Expense Logging System (Money Logger) |
 | Students | นายศารินทร์ ไชยารัตน์ — {{ID_A}} — GitHub `Sxr1n` · นายตันติยวัตร จันทร์ศิริ — {{ID_B}} — GitHub `Leviathan-c137` |
 | Repository (public, R-12) | https://github.com/Sxr1n/cpe334-money-logger |
 | Submitted release | `main` commit `0831d0b` (application code = `v0.1.0-sprint1`) |
