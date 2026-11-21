@@ -1,10 +1,10 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: Phase 1 — **D1 due 15 Nov 23:59**. Lab 5 has no deadline for now (instructor announcement 2026-11-14: GCP access issue; late not penalized). D2 29 Nov, Final 13 Dec unchanged
-- Next session: Sxr1n → submit D1 PDF on LEB2 (by 15 Nov 23:59) · Lab 5 when GCP access is resolved · then Sprint 2 contracts
+- Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
+- Next session: release PR staging → main → portal Recheck + Activate → JWT secret + first deploy → C-02/C-04/C-05/C-06 evidence → Lab 5 PDF · Lab 6 partner UAT · Sprint 2 contracts
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
-- Active staging branch: `staging/sprint-1` (PRs #7–#36 merged; release PR #32 merged to main)
+- Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
 - Deployed URL / version: —
 
 ## Feature board
@@ -46,6 +46,13 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-20 — Lab 5 shared cloud + Lab 6 Part A — Claude + Sxr1n
+- Done: course portal sign-in (team prefix `s87ce2df5`, project `cpe-se-course-2026`); portal review said our repo lacked `ci-docker.yml` → team kit zip merged into our setup (PR #38: `deploy.sh` without resource creation, names `s87ce2df5*`, `ci.yml` → `ci-docker.yml` + job `test-and-docker`, `teardown.sh` removed, deployment.md v0.3, SDS v0.6); Lab 6 UAT cases UAT-01–05 + handoff (PR #39, v0.2 after a local rehearsal); ruleset `protect-main` (id 27680785) on `main` + `staging/**`: no deletion/force-push, PR with 1 approval, merge commits only, required check `test-and-docker`
+- Evidence: PR #38 CI all 6 checks pass (run 44623254181); `DRY_RUN=1 bash deploy/deploy.sh` touches only `s87ce2df5*`; UAT rehearsal 5/5 on local dev servers (temporary Playwright script, not committed; not UAT evidence)
+- Decisions: JWT secret in team slot `s87ce2df5-app-secret-1`; alice/bob on the cloud stay untouched until the UAT team runs the cases
+- Open issues: resources not activated yet (Recheck needs `ci-docker.yml` on main); secret names and DATABASE_URL format unverified until activation; PRs #37/#39 must "Update branch" after #38 merges (required check `test-and-docker` only exists from #38); failing-check demo after #38; Lab 6 partner team unknown; ask TA early about a controlled defect exercise (§3.5)
+- Next session: merge #38 → release PR → portal Recheck + Activate → secret + first deploy → fill UAT URL/SHA → partner UAT
+
 ### 2026-11-15 — D1-S10b SDS consistency fix — Claude + Sxr1n
 - Done: PR #36 (SDS v0.5: §1.1 Packaging no longer says "on the VM", Sources list current doc versions) approved + merged by Leviathan-c137 (`b43f9f5`); final PDF rebuilt from staging `b43f9f5`
 - Evidence: `submission/d1/D1-v0.1.0-sprint1.pdf` 76 pages = cover 1 + [8, 10, 9, 4, 23, 21]; text check: student IDs only on the cover, tag commit `e1747cb` on cover, "on the VM" only in the v0.5 revision row
