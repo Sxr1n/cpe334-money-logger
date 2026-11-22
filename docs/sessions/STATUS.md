@@ -16,7 +16,7 @@
 | F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 / PR #17 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
-| F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR pending | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
+| F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR #56 | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
 | F-08 | Opening balance management | 2 | SPECIFIED | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 | — |
 | F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | — |
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
