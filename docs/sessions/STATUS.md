@@ -1,8 +1,8 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
-- Next session: Sxr1n submits `submission/lab5/lab5_sec131_Help_me.pdf` (built locally, 10 pages, not committed) on LEB2 by 22 Nov 23:59 · Lab 6 partner UAT · Sprint 2 contracts
+- Phase / next checkpoint: D1 submitted; **Lab 5 submitted on LEB2 2026-11-22** (`lab5_sec131_Help_me.pdf`, team 59). **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
+- Next session: Lab 6 partner UAT (partner team unknown) · D2-S1 Sprint 2 contracts (D2 + Lab 6 + Lab 7 due 29 Nov)
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
