@@ -1,5 +1,5 @@
 # F-07 Account management — Sprint 2
-Linked: FR-08, FR-09, BR-04, BR-11, BR-12, BR-14, BR-15, NFR-01, NFR-02, NFR-10   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-08, FR-09, BR-04, BR-11, BR-12, BR-14, BR-15, NFR-01, NFR-02, NFR-10   Status: TESTED   Owner: Sxr1n
 Depends on: F-01, F-03 (account list), F-06. Design references: `docs/system-sds.md` §2.3 (case-insensitive name index), §4; decisions D-07, D-11
 
 ## 1 Behavior & workflow
@@ -104,9 +104,17 @@ No schema change. `accounts.archived_at` and the unique index `accounts_user_id_
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F07-01 … AC-F07-08 | — | NOT RUN | — |
+| AC-F07-01 | `server/tests/f07-accounts.api.test.ts::TEST-F07-01` | PASS | 3a75c2f |
+| AC-F07-02 | `server/tests/f07-accounts.api.test.ts::TEST-F07-02`, `server/tests/f07-accounts.unit.test.ts::TEST-F07-02` | PASS | 3a75c2f |
+| AC-F07-03 | `server/tests/f07-accounts.api.test.ts::TEST-F07-03` | PASS | 3a75c2f |
+| AC-F07-04 | `server/tests/f07-accounts.api.test.ts::TEST-F07-04` | PASS | 3a75c2f |
+| AC-F07-05 | `server/tests/f07-accounts.api.test.ts::TEST-F07-05` | PASS | 3a75c2f |
+| AC-F07-06 | `server/tests/f07-accounts.api.test.ts::TEST-F07-06` | PASS | 3a75c2f |
+| AC-F07-07 | `server/tests/f07-accounts.api.test.ts::TEST-F07-07` | PASS | 3a75c2f |
+| AC-F07-08 | `e2e/f07-accounts.spec.ts::TEST-F07-08` | PASS | 3a75c2f |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. Archive and unarchive with no delete (D-07, D-11); archived accounts give 404 on posting (existing F-04 loader) and the posting lock re-checks `archived_at`. | D2-S1 |
+| 0.2 | 2026-11-23 | Implemented; all AC PASS (red `e25946a`, green `3a75c2f`, `evidence/d2/F07-*.txt`). Status → TESTED. No behaviour change from v0.1. | D2-S2 |

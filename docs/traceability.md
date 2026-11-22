@@ -131,14 +131,14 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 
 | AC | Short description | TEST | Level | TDD | Test file::name | Result | Commit |
 |---|---|---|---|---|---|---|---|
-| AC-F07-01 | When alice posts each of the five types (Wallet CASH, Loan to Ken LOAN_GIVEN, Loan from Mom LOAN_TAKEN, Interest … | TEST-F07-01 | API-DB |  | — | NOT RUN | — |
-| AC-F07-02 | Name "" , "   " or 51 characters → 422 VALIDATION_FAILED (details.name) and no account is created; a 50-character … | TEST-F07-02 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F07-03 | Given alice has Bank (CASH), creating "bank" CASH → 409 and no account is created; creating "Bank" EXPENSE → 201; … | TEST-F07-03 | API-DB | yes | — | NOT RUN | — |
-| AC-F07-04 | When alice renames Dining to "Food & drinks", then 200, and GET /api/transactions/:id of an earlier card purchase … | TEST-F07-04 | API-DB |  | — | NOT RUN | — |
-| AC-F07-05 | Given Bank balance 0, archiving Bank → 200 archived: true; given Bank balance 1, archiving → 422 RULE_VIOLATION … | TEST-F07-05 | API-DB | yes | — | NOT RUN | — |
-| AC-F07-06 | Given Telecom is archived, a PAYMENT with a Telecom line, or a RECEIPT into an archived Wallet, → 404 and nothing … | TEST-F07-06 | API-DB |  | — | NOT RUN | — |
-| AC-F07-07 | Without a session POST /api/accounts and PATCH /api/accounts/:id → 401; as admin → 403; alice PATCH on bob's Bank … | TEST-F07-07 | API-DB |  | — | NOT RUN | — |
-| AC-F07-08 | In the browser on /accounts, alice creates "Wallet" (Cash) and sees it under Cash; creating "wallet" again shows … | TEST-F07-08 | E2E |  | — | NOT RUN | — |
+| AC-F07-01 | When alice posts each of the five types (Wallet CASH, Loan to Ken LOAN_GIVEN, Loan from Mom LOAN_TAKEN, Interest … | TEST-F07-01 | API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-01` | PASS | 3a75c2f |
+| AC-F07-02 | Name "" , "   " or 51 characters → 422 VALIDATION_FAILED (details.name) and no account is created; a 50-character … | TEST-F07-02 | unit + API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-02`, `server/tests/f07-accounts.unit.test.ts::TEST-F07-02` | PASS | 3a75c2f |
+| AC-F07-03 | Given alice has Bank (CASH), creating "bank" CASH → 409 and no account is created; creating "Bank" EXPENSE → 201; … | TEST-F07-03 | API-DB | yes | `server/tests/f07-accounts.api.test.ts::TEST-F07-03` | PASS | 3a75c2f |
+| AC-F07-04 | When alice renames Dining to "Food & drinks", then 200, and GET /api/transactions/:id of an earlier card purchase … | TEST-F07-04 | API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-04` | PASS | 3a75c2f |
+| AC-F07-05 | Given Bank balance 0, archiving Bank → 200 archived: true; given Bank balance 1, archiving → 422 RULE_VIOLATION … | TEST-F07-05 | API-DB | yes | `server/tests/f07-accounts.api.test.ts::TEST-F07-05` | PASS | 3a75c2f |
+| AC-F07-06 | Given Telecom is archived, a PAYMENT with a Telecom line, or a RECEIPT into an archived Wallet, → 404 and nothing … | TEST-F07-06 | API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-06` | PASS | 3a75c2f |
+| AC-F07-07 | Without a session POST /api/accounts and PATCH /api/accounts/:id → 401; as admin → 403; alice PATCH on bob's Bank … | TEST-F07-07 | API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-07` | PASS | 3a75c2f |
+| AC-F07-08 | In the browser on /accounts, alice creates "Wallet" (Cash) and sees it under Cash; creating "wallet" again shows … | TEST-F07-08 | E2E |  | `e2e/f07-accounts.spec.ts::TEST-F07-08` | PASS | 3a75c2f |
 | AC-F08-01 | Given Bank opening 1000000 and a RECEIPT of 500000 (Bank 1500000), when alice patches the opening balance to … | TEST-F08-01 | API-DB |  | — | NOT RUN | — |
 | AC-F08-02 | Given Bank opening 1000000 and a PAYMENT of 800000 (Bank 200000), patching the opening balance to 799999 → 422 … | TEST-F08-02 | unit + API-DB | yes | — | NOT RUN | — |
 | AC-F08-03 | Given Credit Card opening debt 500000 and a repayment of 300000 (debt 200000), patching the opening to 299999 → … | TEST-F08-03 | API-DB | yes | — | NOT RUN | — |
@@ -206,3 +206,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.5 | 2026-11-13 | Record test results for F-04 (AC-F04-01..07) and close AC-F03-02 as PASS | D1-S6b |
 | 0.6 | 2026-11-14 | Add AC-F05-08 / TEST-F05-08 to NFR-10 and Sprint 1 table; record commit 6f52657 for F-05 | PR #18 review |
 | 0.7 | 2026-11-22 | Sprint 2 contracts (F-07–F-12): AC/TEST IDs for FR-08–10, FR-14–17, FR-19–21, BR-14–16, NFR-05; new §2b; Q-03 and line-type gaps closed | D2-S1 |
+| 0.8 | 2026-11-23 | F-07 results: AC-F07-01..08 PASS on `3a75c2f` | D2-S2 |

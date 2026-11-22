@@ -4,7 +4,7 @@
 - Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
 - Next session: Sxr1n submits `submission/lab5/lab5_sec131_Help_me.pdf` (built locally, 10 pages, not committed) on LEB2 by 22 Nov 23:59 · Lab 6 partner UAT · Sprint 2 contracts
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
-- Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
+- Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
 
 ## Feature board
@@ -16,7 +16,7 @@
 | F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 / PR #17 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
-| F-07 | Account management | 2 | SPECIFIED | Sxr1n | sprint-2/F07-account-management.md | #50 | — |
+| F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR pending | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
 | F-08 | Opening balance management | 2 | SPECIFIED | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 | — |
 | F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | — |
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-23 — D2-S2 F-07 Account management — Claude + Sxr1n
+- Done: `POST /api/accounts`, `PATCH /api/accounts/:id` (rename, archive at balance 0 under row lock, unarchive); archived accounts hidden from Overview and Pay/Receive selects; posting lock re-checks `archived_at` (404); opening balance on archived → 422; Accounts page New account / Rename / Archive / Archived section
+- Evidence: red `e25946a` → `evidence/d2/F07-red.txt` (API 7 fail, unit module missing, E2E no button); green `3a75c2f` → `evidence/d2/F07-green.txt` (tsc OK, server 15 files / 66 tests, client build OK, E2E 7/7)
+- Decisions: none new (contract v0.1 unchanged); E2E heading selector needed `exact: true` (matched "Cash & Bank Accounts")
+- Open issues: PR #48 (Lab 5 team number) is on `staging/sprint-1` only → merge `staging/sprint-1` into `staging/sprint-2` with the next release PR
+- Next session: F-08 (Sxr1n) · Leviathan-c137 F-09 · review the F-07 PR
 ### 2026-11-22 — D2-S1 Sprint 2 contracts — Claude + Sxr1n
 - Done: contracts F-07–F-12 in `docs/sprints/sprint-2/` (47 AC, 47 STS rows incl. TEST-NFR05-01, status SPECIFIED); SRS v0.5 (D-10–D-13, Q-03 resolved); features v0.3 (F-01–F-06 TESTED, F-07–F-12 SPECIFIED); traceability v0.7 (§2b Sprint 2 table, FR/BR rows filled); SDS v0.7 (Sprint 2 endpoints)
 - Evidence: branch `spec/sprint-2-contracts` (spec commits per feature); PR to `staging/sprint-2`
