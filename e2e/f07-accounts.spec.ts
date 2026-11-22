@@ -11,7 +11,7 @@ test('TEST-F07-08 create, duplicate name, archive rules and hidden archived acco
   await expect(page).toHaveURL(/\/overview$/)
 
   await page.getByRole('link', { name: 'Accounts' }).click()
-  await expect(page.getByRole('heading', { name: 'Accounts' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Accounts', exact: true })).toBeVisible()
 
   async function create(name: string) {
     await page.getByRole('button', { name: 'New account' }).click()

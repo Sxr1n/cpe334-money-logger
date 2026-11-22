@@ -144,13 +144,15 @@ router.post('/', async (req: Request, res: Response) => {
       const lockedAccounts: any[] = []
       for (const accId of sortedIds) {
         const rows: any[] = await tx.$queryRawUnsafe(
-          `SELECT id, name, balance, type FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE`,
+          `SELECT id, name, balance, type FROM accounts WHERE id = $1 AND user_id = $2 AND archived_at IS NULL FOR UPDATE`,
           accId,
           userId,
         )
-        if (rows.length > 0) {
-          lockedAccounts.push(rows[0])
+        // F-07 BR-04: an account archived between the first load and this lock gives the same 404 as a missing one.
+        if (rows.length === 0) {
+          throw Object.assign(new Error('NOT_FOUND'), { code: 'NOT_FOUND' })
         }
+        lockedAccounts.push(rows[0])
       }
 
       const lockedAccountMap = new Map(lockedAccounts.map((a) => [a.id, a]))
@@ -228,6 +230,9 @@ router.post('/', async (req: Request, res: Response) => {
 
     return res.status(201).json(serializeTransaction(createdTxn))
   } catch (err: any) {
+    if (err?.code === 'NOT_FOUND') {
+      return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'One or more accounts not found.' } })
+    }
     if (err?.code === 'RULE_VIOLATION') {
       return res.status(422).json({
         error: { code: 'RULE_VIOLATION', message: 'Business rule violation.', details: err.details },
