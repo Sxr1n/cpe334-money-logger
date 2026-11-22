@@ -1,0 +1,211 @@
+# F-07 RED — tests written before implementation (branch feature/F07-account-management, base d7f49d8)
+# Command: cd server && npx vitest run tests/f07-accounts.api.test.ts tests/f07-accounts.unit.test.ts
+# Note: 401/403 and the cross-user PATCH 404 already hold through the existing requireAuth/requireRole mount and the missing route; TEST-F07-07 fails on the POST 201.
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ❯ tests/f07-accounts.api.test.ts (7 tests | 7 failed) 2409ms
+     × TEST-F07-01 creates accounts of all five types, listed and usable 461ms
+     × TEST-F07-02 validates name and type 324ms
+     × TEST-F07-03 rejects duplicate names per user and type, ignoring case 325ms
+     × TEST-F07-04 rename shows the new name on earlier transactions 339ms
+     × TEST-F07-05 archive needs a zero balance for CASH/LOAN; EXPENSE keeps its history 309ms
+     × TEST-F07-06 archived accounts cannot be used until unarchived 283ms
+     × TEST-F07-07 401 / 403 / cross-user 404; identity only from the session 366ms
+ ❯ tests/f07-accounts.unit.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f07-accounts.unit.test.ts [ tests/f07-accounts.unit.test.ts ]
+Error: Cannot find module '../src/lib/accountInput' imported from C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server/tests/f07-accounts.unit.test.ts
+ ❯ tests/f07-accounts.unit.test.ts:2:1
+      1| import { describe, expect, it } from 'vitest'
+      2| import { validateAccountInput } from '../src/lib/accountInput'
+       | ^
+      3|
+      4| describe('F-07 account input (unit)', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-01 creates accounts of all five types, listed and usable
+AssertionError: expected 404 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:49:26
+     47|     ]) {
+     48|       const res = await post(alice, { name, type })
+     49|       expect(res.status).toBe(201)
+       |                          ^
+     50|       expect(res.body).toMatchObject({ name, type, balance: 0, opening…
+     51|       created[name] = res.body.id
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-02 validates name and type
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:74:26
+     72|     ]) {
+     73|       const res = await post(alice, body)
+     74|       expect(res.status).toBe(422)
+       |                          ^
+     75|       expect(res.body.error.code).toBe('VALIDATION_FAILED')
+     76|       expect(res.body.error.details.name).toBeDefined()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-03 rejects duplicate names per user and type, ignoring case
+AssertionError: expected 404 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:91:24
+     89|   it('TEST-F07-03 rejects duplicate names per user and type, ignoring …
+     90|     const dup = await post(alice, { name: 'bank', type: 'CASH' })
+     91|     expect(dup.status).toBe(409)
+       |                        ^
+     92|     expect(dup.body.error.code).toBe('CONFLICT')
+     93|     expect(dup.body.error.details.name).toBe('You already have a CASH …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-04 rename shows the new name on earlier transactions
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:113:24
+    111|
+    112|     const res = await patch(alice, acc.Dining, { name: 'Food & drinks'…
+    113|     expect(res.status).toBe(200)
+       |                        ^
+    114|     expect(res.body).toMatchObject({ id: acc.Dining, name: 'Food & dri…
+    115|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-05 archive needs a zero balance for CASH/LOAN; EXPENSE keeps its history
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:122:23
+    120|   it('TEST-F07-05 archive needs a zero balance for CASH/LOAN; EXPENSE …
+    121|     const ok = await patch(alice, acc.Bank, { archived: true })
+    122|     expect(ok.status).toBe(200)
+       |                       ^
+    123|     expect(ok.body.archived).toBe(true)
+    124|     expect((await patch(alice, acc.Bank, { archived: false })).status)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-06 archived accounts cannot be used until unarchived
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:150:69
+    148|   it('TEST-F07-06 archived accounts cannot be used until unarchived', …
+    149|     const wallet = (await post(alice, { name: 'Wallet', type: 'CASH' }…
+    150|     expect((await patch(alice, wallet, { archived: true })).status).to…
+       |                                                                     ^
+    151|     expect((await patch(alice, acc.Telecom, { archived: true })).statu…
+    152|     const before = await prisma.txn.count()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-07 401 / 403 / cross-user 404; identity only from the session
+AssertionError: expected 404 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 404
+
+ ❯ tests/f07-accounts.api.test.ts:182:24
+    180|
+    181|     const res = await post(alice, { name: 'Wallet', type: 'CASH', user…
+    182|     expect(res.status).toBe(201)
+       |                        ^
+    183|     expect((await prisma.account.findUnique({ where: { id: res.body.id…
+    184|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  7 failed (7)
+   Start at  01:50:18
+   Duration  4.70s (transform 152ms, setup 30ms, import 372ms, tests 2.41s, environment 0ms)
+
+
+# Command: PW_CHANNEL=chrome npx playwright test e2e/f07-accounts.spec.ts
+
+Running 1 test using 1 worker
+
+  x  1 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (30.5s)
+
+
+  1) [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'New account' })
+
+
+      15 |
+      16 |   async function create(name: string) {
+    > 17 |     await page.getByRole('button', { name: 'New account' }).click()
+         |                                                             ^
+      18 |     await page.getByLabel('Name').fill(name)
+      19 |     await page.getByLabel('Type').selectOption('CASH')
+      20 |     await page.getByRole('button', { name: 'Create' }).click()
+        at create (C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f07-accounts.spec.ts:17:61)
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f07-accounts.spec.ts:24:9
+
+    Error Context: test-results\f07-accounts-TEST-F07-08-c-3d42d-nd-hidden-archived-accounts-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f07-accounts-TEST-F07-08-c-3d42d-nd-hidden-archived-accounts-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f07-accounts-TEST-F07-08-c-3d42d-nd-hidden-archived-accounts-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts 
