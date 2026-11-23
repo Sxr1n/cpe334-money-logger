@@ -1,8 +1,8 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
-- Next session: Sxr1n submits `submission/lab5/lab5_sec131_Help_me.pdf` (built locally, 10 pages, not committed) on LEB2 by 22 Nov 23:59 · Lab 6 partner UAT · Sprint 2 contracts
+- Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
+- Next session: F-12 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -17,7 +17,7 @@
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
 | F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR #56 | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
-| F-08 | Opening balance management | 2 | SPECIFIED | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 | — |
+| F-08 | Opening balance management | 2 | IN PROGRESS (01–06 PASS; 07 after F-09–F-11) | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR pending | red `51eeffc`, green `c341d6d` (evidence/d2/F08-*.txt) |
 | F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | — |
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-23 — D2-S3 F-08 Opening balance management — Claude + Sxr1n
+- Done: `PATCH /api/accounts/:id/opening-balance` (balance += new − old under a row lock; 422 if negative, INCOME/EXPENSE or archived; 409 if not set yet); Accounts page "Edit opening balance" pre-filled, server field errors under Amount
+- Evidence: red `51eeffc` → `evidence/d2/F08-red.txt` (5 fail; TEST-F08-05 already passed via middleware); green `c341d6d` → `evidence/d2/F08-green.txt` (tsc OK, server 17 files / 72 tests, client build OK, E2E 8/8)
+- Decisions: none new; F-08 status IN PROGRESS until AC-F08-07 (TEST-NFR05-01) runs after F-09–F-11
+- Open issues: Leviathan-c137 has not started F-09 yet (no branch on 2026-11-23); `staging/sprint-1` (#48) still to merge into `staging/sprint-2`
+- Next session: F-12 (Sxr1n)
 ### 2026-11-23 — D2-S2 F-07 Account management — Claude + Sxr1n
 - Done: `POST /api/accounts`, `PATCH /api/accounts/:id` (rename, archive at balance 0 under row lock, unarchive); archived accounts hidden from Overview and Pay/Receive selects; posting lock re-checks `archived_at` (404); opening balance on archived → 422; Accounts page New account / Rename / Archive / Archived section
 - Evidence: red `e25946a` → `evidence/d2/F07-red.txt` (API 7 fail, unit module missing, E2E no button); green `3a75c2f` → `evidence/d2/F07-green.txt` (tsc OK, server 15 files / 66 tests, client build OK, E2E 7/7)

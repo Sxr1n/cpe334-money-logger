@@ -1,5 +1,5 @@
 # F-08 Opening balance management — Sprint 2
-Linked: FR-10, BR-02, BR-05, BR-06, BR-07, BR-08, BR-10, BR-11, BR-12, NFR-01, NFR-02, NFR-05, NFR-10   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-10, BR-02, BR-05, BR-06, BR-07, BR-08, BR-10, BR-11, BR-12, NFR-01, NFR-02, NFR-05, NFR-10   Status: IN PROGRESS (AC-F08-01–06 PASS; AC-F08-07 waits for F-09–F-11)   Owner: Sxr1n
 Depends on: F-03. NFR-05 check also needs F-09, F-10 and F-11 merged. Design references: `docs/system-sds.md` §2.4 (opening balance, SD-02); decision D-10 (Q-03)
 
 ## 1 Behavior & workflow
@@ -81,9 +81,16 @@ No schema change.
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F08-01 … AC-F08-07 | — | NOT RUN | — |
+| AC-F08-01 | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-01` | PASS | c341d6d |
+| AC-F08-02 | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-02`, `server/tests/f08-opening-balance.unit.test.ts::TEST-F08-02` | PASS | c341d6d |
+| AC-F08-03 | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-03` | PASS | c341d6d |
+| AC-F08-04 | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-04` | PASS | c341d6d |
+| AC-F08-05 | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-05` | PASS | c341d6d |
+| AC-F08-06 | `e2e/f08-opening-balance.spec.ts::TEST-F08-06` | PASS | c341d6d |
+| AC-F08-07 | `TEST-NFR05-01` (not written yet; needs F-09–F-11) | NOT RUN | — |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. Q-03 resolved as D-10 (edit allowed after transactions, rejected if the balance would go negative). New `PATCH` endpoint so the F-03 `PUT` contract (409 when already set) stays unchanged. NFR-05 property test placed here. | D2-S1 |
+| 0.2 | 2026-11-23 | AC-F08-01–06 implemented and PASS (red `51eeffc`, green `c341d6d`, `evidence/d2/F08-*.txt`). AC-F08-07 (NFR-05) still NOT RUN until F-09–F-11 merge. No behaviour change from v0.1. | D2-S3 |
