@@ -2,7 +2,7 @@ import { AccountType, type Account } from '../../generated/prisma/client'
 import { Router, type Request, type Response } from 'express'
 import { validateAccountInput, validateName } from '../lib/accountInput'
 import { formatBaht } from '../lib/ledger'
-import { validateOpeningBalanceInput } from '../lib/openingBalance'
+import { balanceAfterOpeningChange, validateOpeningBalanceInput } from '../lib/openingBalance'
 import { parsePeriod, sendValidationFailed } from '../lib/query'
 import { periodTotalsByAccount } from '../lib/summary'
 import { prisma } from '../prisma'
@@ -224,6 +224,46 @@ router.put('/:id/opening-balance', async (req: Request, res: Response) => {
     if (err instanceof Error && err.message === 'CONFLICT') {
       return res.status(409).json({
         error: { code: 'CONFLICT', message: 'Opening balance already set.' },
+      })
+    }
+    throw err
+  }
+})
+
+// PATCH /api/accounts/:id/opening-balance (USER) — F-08: change an existing opening balance (D-10)
+router.patch('/:id/opening-balance', async (req: Request, res: Response) => {
+  const id = Number(req.params.id)
+  const validation = validateOpeningBalanceInput(req.body)
+  if (validation.errorType === 'BAD_REQUEST') return badRequest(res)
+
+  const account = Number.isInteger(id) ? await prisma.account.findFirst({ where: { id, userId: req.user!.id } }) : null
+  if (!account) return notFound(res)
+  if (!validation.valid) return sendValidationFailed(res, validation.details!)
+
+  const rule = (message: string, details?: Record<string, string>) =>
+    res.status(422).json({ error: { code: 'RULE_VIOLATION', message, ...(details ? { details } : {}) } })
+  if (!HAS_BALANCE.includes(account.type)) return rule('Opening balance can only be set on CASH, LOAN_TAKEN or LOAN_GIVEN accounts.')
+  if (account.archivedAt !== null) return rule('Account is archived.')
+  if (account.openingBalance === null) {
+    return res.status(409).json({ error: { code: 'CONFLICT', message: 'Opening balance not set yet.' } })
+  }
+
+  const { amount, date } = req.body as { amount: number; date: string }
+  try {
+    const updated = await prisma.$transaction(async (tx) => {
+      // Lock the row so a concurrent posting cannot slip between the check and the write (BR-05).
+      const [row] = await tx.$queryRaw<[{ balance: bigint; opening_balance: bigint }]>`
+        SELECT balance, opening_balance FROM accounts WHERE id = ${id} FOR UPDATE`
+      const balance = balanceAfterOpeningChange(row.balance, row.opening_balance, BigInt(amount))
+      if (balance < 0n) throw Object.assign(new Error('NEGATIVE'), { balance })
+      return tx.account.update({ where: { id }, data: { openingBalance: BigInt(amount), openingDate: new Date(date), balance } })
+    })
+    res.json(serializeAccount(updated))
+  } catch (err) {
+    if (err instanceof Error && err.message === 'NEGATIVE') {
+      const { balance } = err as Error & { balance: bigint }
+      return rule('Business rule violation.', {
+        amount: `Too low: the balance would be −฿${formatBaht(-balance)} because of later transactions`,
       })
     }
     throw err
