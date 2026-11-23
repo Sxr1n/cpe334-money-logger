@@ -7,6 +7,7 @@ export interface AccountItem {
   name: string
   type: string
   balance: number
+  archived: boolean
 }
 
 interface FormLine {
@@ -70,7 +71,7 @@ export default function ReceiveMoneyPage() {
     try {
       setLoading(true)
       const res = await api<{ items: AccountItem[] }>('/accounts')
-      setAccounts(res.items)
+      setAccounts(res.items.filter((a) => !a.archived)) // F-07: archived accounts take no new transactions
 
       const cash = res.items.filter((a) => a.type === 'CASH')
       const income = res.items.filter((a) => a.type === 'INCOME')

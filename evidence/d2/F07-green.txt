@@ -1,0 +1,46 @@
+# F-07 GREEN — full regression after implementation (branch feature/F07-account-management)
+# E2E selector fix in TEST-F07-08: heading 'Accounts' needed exact match (it also matched 'Cash & Bank Accounts' once the list loaded); assertion unchanged.
+
+## server: npx tsc --noEmit
+tsc OK
+
+## server: npx vitest run
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+
+ Test Files  15 passed (15)
+      Tests  66 passed (66)
+   Start at  01:54:56
+   Duration  21.90s (transform 253ms, setup 151ms, import 2.79s, tests 15.27s, environment 1ms)
+
+
+## client: npm run build
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.6 building client environment for production...
+transforming...
+✓ 35 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-7-DCGAfd.js   300.69 kB │ gzip: 90.81 kB
+
+✓ built in 209ms
+
+## e2e: PW_CHANNEL=chrome npx playwright test
+
+Running 7 tests using 1 worker
+
+  ok 1 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (980ms)
+  ok 2 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (477ms)
+  ok 3 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (749ms)
+  ok 4 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (812ms)
+  ok 5 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (2.2s)
+  ok 6 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (1.2s)
+  ok 7 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (359ms)
+
+  7 passed (11.9s)
