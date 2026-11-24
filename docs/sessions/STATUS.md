@@ -21,7 +21,7 @@
 | F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | — |
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
-| F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR pending | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
+| F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
 | F-13 | Favourite transactions | 3 | PLANNED | — | — | — | — |
 | F-14 | Duplicate transaction | 3 | PLANNED | — | — | — | — |
 | F-15 | Category spending | 3 | PLANNED | — | — | — | — |
