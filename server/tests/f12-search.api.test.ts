@@ -100,7 +100,7 @@ describe('F-12 Search and filter history', () => {
     const ken = await mk(aliceId, { date: '2026-11-06', primary: acc.Bank, total: 100, lines: [[acc.Dining, 100]], note: 'lunch with Ken' })
     await mk(aliceId, { date: '2026-11-07', primary: acc.Bank, total: 100, lines: [[acc.Dining, 100]], note: 'Launch party' })
     const percent = await mk(aliceId, { date: '2026-11-08', primary: acc.Bank, total: 100, lines: [[acc.Groceries, 100]], note: '10% off' })
-    await mk(aliceId, { date: '2026-11-09', primary: acc.Bank, total: 100, lines: [[acc.Groceries, 100]], note: 'lunch_box' })
+    await mk(aliceId, { date: '2026-11-09', primary: acc.Bank, total: 100, lines: [[acc.Groceries, 100]], note: 'lunchXbox' }) // matches q=h_b only if _ were a wildcard
     await mk(aliceId, { date: '2026-10-20', primary: acc.Bank, total: 100, lines: [[acc.Dining, 100]], note: 'old lunch' })
 
     expect(ids(await search('q=LUNCH&from=2026-11-01'))).toEqual(expect.arrayContaining([team, ken]))

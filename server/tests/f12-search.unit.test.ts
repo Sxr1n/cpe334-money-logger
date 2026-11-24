@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseTxnFilter } from '../src/lib/query'
+import { escapeLike, parseTxnFilter } from '../src/lib/query'
 
 const err = (q: Record<string, string>) => {
   const r = parseTxnFilter(q)
@@ -26,5 +26,12 @@ describe('F-12 history filter parser (unit)', () => {
     expect(parseTxnFilter({ from: '2026-11-01', to: '2026-11-30', accountId: '7', form: 'RECEIPT', status: 'VOID', minAmount: '0', maxAmount: '50000', q: ' lunch ' })).toEqual({
       filter: { from: '2026-11-01', to: '2026-11-30', accountId: 7, form: 'RECEIPT', status: 'VOID', minAmount: 0n, maxAmount: 50000n, q: 'lunch' },
     })
+  })
+
+  it('TEST-F12-04 escapeLike makes % _ and backslash literal', () => {
+    expect(escapeLike('10% off')).toBe(String.raw`10\% off`)
+    expect(escapeLike('h_b')).toBe(String.raw`h\_b`)
+    expect(escapeLike(String.raw`a\b`)).toBe(String.raw`a\\b`)
+    expect(escapeLike('lunch')).toBe('lunch')
   })
 })
