@@ -171,13 +171,13 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F11-08 | Without a session PUT and void → 401; as admin → 403; alice editing or voiding bob's transaction → 404 and bob's … | TEST-F11-08 | API-DB |  | — | NOT RUN | — |
 | AC-F11-09 | (NFR-06) When the balance update step throws during an edit (test spy on postingSteps), the response is 500 and … | TEST-F11-09 | API-DB |  | — | NOT RUN | — |
 | AC-F11-10 | In the browser, alice opens a payment's detail, edits the amount, sees the updated detail and Overview balance; … | TEST-F11-10 | E2E |  | — | NOT RUN | — |
-| AC-F12-01 | Given alice's transactions dated 2026-10-31, 2026-11-01, 2026-11-15 and 2026-11-30, from=2026-11-01&to=2026-11-30 … | TEST-F12-01 | API-DB |  | — | NOT RUN | — |
-| AC-F12-02 | accountId = Dining returns the card purchases that have a Dining line although their primary is Credit Card; … | TEST-F12-02 | API-DB | yes | — | NOT RUN | — |
-| AC-F12-03 | form=RECEIPT returns only receipts; status=VOID returns only voided transactions; minAmount=50000&maxAmount=120000 … | TEST-F12-03 | API-DB |  | — | NOT RUN | — |
-| AC-F12-04 | q=LUNCH matches notes "Team lunch" and "lunch with Ken" but not "Launch"; q=% matches only notes containing a … | TEST-F12-04 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F12-05 | from=2026-11-30&to=2026-11-01, from=2026-13-01, minAmount=-1, minAmount=10&maxAmount=5, accountId=abc, … | TEST-F12-05 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F12-06 | Without a session → 401; as admin → 403; when bob has a transaction with note "secret lunch", alice's q=secret … | TEST-F12-06 | API-DB |  | — | NOT RUN | — |
-| AC-F12-07 | In the browser, alice filters History by Account Dining and Text "lunch"; only matching rows show; after reloading … | TEST-F12-07 | E2E |  | — | NOT RUN | — |
+| AC-F12-01 | Given alice's transactions dated 2026-10-31, 2026-11-01, 2026-11-15 and 2026-11-30, from=2026-11-01&to=2026-11-30 … | TEST-F12-01 | API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-01` | PASS | 63d377b |
+| AC-F12-02 | accountId = Dining returns the card purchases that have a Dining line although their primary is Credit Card; … | TEST-F12-02 | API-DB | yes | `server/tests/f12-search.api.test.ts::TEST-F12-02` | PASS | 63d377b |
+| AC-F12-03 | form=RECEIPT returns only receipts; status=VOID returns only voided transactions; minAmount=50000&maxAmount=120000 … | TEST-F12-03 | API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-03` | PASS | 63d377b |
+| AC-F12-04 | q=LUNCH matches notes "Team lunch" and "lunch with Ken" but not "Launch"; q=% matches only notes containing a … | TEST-F12-04 | unit + API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-04`, `server/tests/f12-search.unit.test.ts::TEST-F12-04` | PASS | 63d377b |
+| AC-F12-05 | from=2026-11-30&to=2026-11-01, from=2026-13-01, minAmount=-1, minAmount=10&maxAmount=5, accountId=abc, … | TEST-F12-05 | unit + API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-05`, `server/tests/f12-search.unit.test.ts::TEST-F12-05` | PASS | 63d377b |
+| AC-F12-06 | Without a session → 401; as admin → 403; when bob has a transaction with note "secret lunch", alice's q=secret … | TEST-F12-06 | API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-06` | PASS | 63d377b |
+| AC-F12-07 | In the browser, alice filters History by Account Dining and Text "lunch"; only matching rows show; after reloading … | TEST-F12-07 | E2E |  | `e2e/f12-search.spec.ts::TEST-F12-07` | PASS | 63d377b |
 
 ## 3. Coverage gaps
 | Gap | Affects | Plan |
@@ -208,3 +208,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.7 | 2026-11-22 | Sprint 2 contracts (F-07–F-12): AC/TEST IDs for FR-08–10, FR-14–17, FR-19–21, BR-14–16, NFR-05; new §2b; Q-03 and line-type gaps closed | D2-S1 |
 | 0.8 | 2026-11-23 | F-07 results: AC-F07-01..08 PASS on `3a75c2f` | D2-S2 |
 | 0.9 | 2026-11-23 | F-08 results: AC-F08-01..06 PASS on `c341d6d`; AC-F08-07 NOT RUN (needs F-09–F-11) | D2-S3 |
+| 0.10 | 2026-11-24 | F-12 results: AC-F12-01..07 PASS on `63d377b` | D2-S4 |

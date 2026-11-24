@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-12 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: Sprint 3 contracts (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -21,7 +21,7 @@
 | F-09 | Transfers | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | — |
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
-| F-12 | Search and filter | 2 | SPECIFIED | Sxr1n | sprint-2/F12-search-filter.md | #55 | — |
+| F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR pending | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
 | F-13 | Favourite transactions | 3 | PLANNED | — | — | — | — |
 | F-14 | Duplicate transaction | 3 | PLANNED | — | — | — | — |
 | F-15 | Category spending | 3 | PLANNED | — | — | — | — |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-24 — D2-S4 F-12 Search and filter history — Claude + Sxr1n
+- Done: `GET /api/transactions` filters (from, to, accountId = primary or line, form, status, minAmount, maxAmount, q case-insensitive and literal); `parseTxnFilter` (422 per parameter) and `escapeLike` in `lib/query.ts`; History filter bar kept in the URL, Clear filters, filtered empty state
+- Evidence: red `37675b2` → `evidence/d2/F12-red.txt` (6 fail; TEST-F12-06 already passed through F-06 scoping); green `63d377b` → `evidence/d2/F12-green.txt` (tsc OK, server 19 files / 81 tests, client build OK, E2E 9/9)
+- Decisions: none new; branch based on the F-08 branch (PR #57 open) to avoid doc conflicts
+- Open issues: Prisma `contains` does not escape `%`/`_` (found by TEST-F12-04) — other `contains` queries must use `escapeLike`; F-09–F-11 not started by Leviathan-c137 as of 2026-11-24
+- Next session: Sprint 3 contracts F-13–F-16 (D2 requirement)
 ### 2026-11-23 — D2-S3 F-08 Opening balance management — Claude + Sxr1n
 - Done: `PATCH /api/accounts/:id/opening-balance` (balance += new − old under a row lock; 422 if negative, INCOME/EXPENSE or archived; 409 if not set yet); Accounts page "Edit opening balance" pre-filled, server field errors under Amount
 - Evidence: red `51eeffc` → `evidence/d2/F08-red.txt` (5 fail; TEST-F08-05 already passed via middleware); green `c341d6d` → `evidence/d2/F08-green.txt` (tsc OK, server 17 files / 72 tests, client build OK, E2E 8/8)

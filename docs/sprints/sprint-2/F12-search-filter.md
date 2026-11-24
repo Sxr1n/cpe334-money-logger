@@ -1,5 +1,5 @@
 # F-12 Search and filter history — Sprint 2
-Linked: FR-19, BR-11, BR-12, NFR-01, NFR-02, NFR-08   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-19, BR-11, BR-12, NFR-01, NFR-02, NFR-08   Status: TESTED   Owner: Sxr1n
 Depends on: F-06 (history list), F-11 (status VOID, for the status filter). Design references: `docs/system-sds.md` §4.1, index `(user_id, txn_date DESC, id DESC)`; decision D-13
 
 ## 1 Behavior & workflow
@@ -82,9 +82,16 @@ No schema change. Existing indexes: `transactions (user_id, txn_date DESC, id DE
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F12-01 … AC-F12-07 | — | NOT RUN | — |
+| AC-F12-01 | `server/tests/f12-search.api.test.ts::TEST-F12-01` | PASS | 63d377b |
+| AC-F12-02 | `server/tests/f12-search.api.test.ts::TEST-F12-02` | PASS | 63d377b |
+| AC-F12-03 | `server/tests/f12-search.api.test.ts::TEST-F12-03` | PASS | 63d377b |
+| AC-F12-04 | `server/tests/f12-search.api.test.ts::TEST-F12-04`, `server/tests/f12-search.unit.test.ts::TEST-F12-04` | PASS | 63d377b |
+| AC-F12-05 | `server/tests/f12-search.api.test.ts::TEST-F12-05`, `server/tests/f12-search.unit.test.ts::TEST-F12-05` | PASS | 63d377b |
+| AC-F12-06 | `server/tests/f12-search.api.test.ts::TEST-F12-06` | PASS | 63d377b |
+| AC-F12-07 | `e2e/f12-search.spec.ts::TEST-F12-07` | PASS | 63d377b |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. Account filter matches primary or line account (D-13); foreign `accountId` gives an empty list; `q` is matched literally. | D2-S1 |
+| 0.2 | 2026-11-24 | Implemented; all AC PASS (red `37675b2`, green `63d377b`, `evidence/d2/F12-*.txt`). Prisma `contains` does not escape `%`/`_`, so `escapeLike` is used as planned in TEST-F12-04. Status → TESTED. No behaviour change from v0.1. | D2-S4 |
