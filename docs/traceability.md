@@ -146,13 +146,13 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F08-05 | Without a session → 401; as admin → 403; alice patching bob's Bank → 404 and bob's Bank is unchanged. | TEST-F08-05 | API-DB |  | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-05` | PASS | c341d6d |
 | AC-F08-06 | In the browser on /accounts, "Edit opening balance" on Bank opens the form with the current amount and date; … | TEST-F08-06 | E2E |  | `e2e/f08-opening-balance.spec.ts::TEST-F08-06` | PASS | c341d6d |
 | AC-F08-07 | (NFR-05) After a seeded run of 1,000 random valid operations covering every form, every allowed line type, … | TEST-NFR05-01 | API-DB |  | — | NOT RUN | — |
-| AC-F09-01 | Given Bank 1000000 and Wallet 0, a PAYMENT from Bank with one Wallet line 300000 → 201, Bank 700000, Wallet … | TEST-F09-01 | unit + API-DB | yes | `server/tests/f09-transfers.unit.test.ts::TEST-F09-01`, `server/tests/f09-transfers.api.test.ts::TEST-F09-01` | PASS | 7c530d1 |
-| AC-F09-02 | Given Bank 700000 and Wallet 300000, a RECEIPT into Wallet with one Bank line 200000 → 201, Bank 500000, Wallet … | TEST-F09-02 | unit + API-DB |  | `server/tests/f09-transfers.unit.test.ts::TEST-F09-02`, `server/tests/f09-transfers.api.test.ts::TEST-F09-02` | PASS | 7c530d1 |
-| AC-F09-03 | Given Bank 500000, a RECEIPT into Wallet with a Bank line 500001 → 422 RULE_VIOLATION … | TEST-F09-03 | unit + API-DB | yes | `server/tests/f09-transfers.unit.test.ts::TEST-F09-03`, `server/tests/f09-transfers.api.test.ts::TEST-F09-03` | PASS | 7c530d1 |
-| AC-F09-04 | A PAYMENT from Bank with a Bank line → 422; with bob's Wallet as a line → 404 and bob's Wallet is unchanged; with … | TEST-F09-04 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-04` | PASS | 7c530d1 |
-| AC-F09-05 | Given card debt 0 and Wallet 0, a PAYMENT from Credit Card with a Wallet line 100000 → 201, debt 100000, Wallet … | TEST-F09-05 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-05` | PASS | 7c530d1 |
-| AC-F09-06 | A PAYMENT from Bank total 150000 with lines Dining 50000 + Wallet 100000 → 201, Bank −150000, Wallet +100000, and … | TEST-F09-06 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-06` | PASS | 7c530d1 |
-| AC-F09-07 | In the browser, alice records a transfer Bank → Wallet on /pay using the "Transfer to my cash account" group; a … | TEST-F09-07 | E2E |  | `e2e/f09-transfers.spec.ts::TEST-F09-07` | PASS | 7c530d1 |
+| AC-F09-01 | Given Bank 1000000 and Wallet 0, a PAYMENT from Bank with one Wallet line 300000 → 201, Bank 700000, Wallet … | TEST-F09-01 | unit + API-DB | yes | `server/tests/f09-transfers.unit.test.ts::TEST-F09-01`, `server/tests/f09-transfers.api.test.ts::TEST-F09-01` | PASS | c36a003 |
+| AC-F09-02 | Given Bank 700000 and Wallet 300000, a RECEIPT into Wallet with one Bank line 200000 → 201, Bank 500000, Wallet … | TEST-F09-02 | unit + API-DB |  | `server/tests/f09-transfers.unit.test.ts::TEST-F09-02`, `server/tests/f09-transfers.api.test.ts::TEST-F09-02` | PASS | c36a003 |
+| AC-F09-03 | Given Bank 500000, a RECEIPT into Wallet with a Bank line 500001 → 422 RULE_VIOLATION … | TEST-F09-03 | unit + API-DB | yes | `server/tests/f09-transfers.unit.test.ts::TEST-F09-03`, `server/tests/f09-transfers.api.test.ts::TEST-F09-03` | PASS | c36a003 |
+| AC-F09-04 | A PAYMENT from Bank with a Bank line → 422; with bob's Wallet as a line → 404 and bob's Wallet is unchanged; with … | TEST-F09-04 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-04` | PASS | c36a003 |
+| AC-F09-05 | Given card debt 0 and Wallet 0, a PAYMENT from Credit Card with a Wallet line 100000 → 201, debt 100000, Wallet … | TEST-F09-05 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-05` | PASS | c36a003 |
+| AC-F09-06 | A PAYMENT from Bank total 150000 with lines Dining 50000 + Wallet 100000 → 201, Bank −150000, Wallet +100000, and … | TEST-F09-06 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-06` | PASS | c36a003 |
+| AC-F09-07 | In the browser, alice records a transfer Bank → Wallet on /pay using the "Transfer to my cash account" group; a … | TEST-F09-07 | E2E |  | `e2e/f09-transfers.spec.ts::TEST-F09-07` | PASS | c36a003 |
 | AC-F10-01 | Given Bank 1000000 and "Loan to Ken" 0, a PAYMENT from Bank with a Ken line 200000 → 201, Bank 800000, Ken 200000, … | TEST-F10-01 | unit + API-DB |  | — | NOT RUN | — |
 | AC-F10-02 | Given Ken 200000, a RECEIPT into Bank with a Ken line 150000 → 201, Ken 50000, income unchanged; then a Ken line … | TEST-F10-02 | unit + API-DB | yes | — | NOT RUN | — |
 | AC-F10-03 | Given "Loan from Mom" 0, a RECEIPT into Bank with a Mom line 500000 → 201, Mom debt 500000, Bank +500000, income … | TEST-F10-03 | API-DB |  | — | NOT RUN | — |
@@ -209,4 +209,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.8 | 2026-11-23 | F-07 results: AC-F07-01..08 PASS on `3a75c2f` | D2-S2 |
 | 0.9 | 2026-11-23 | F-08 results: AC-F08-01..06 PASS on `c341d6d`; AC-F08-07 NOT RUN (needs F-09–F-11) | D2-S3 |
 | 0.10 | 2026-11-24 | F-12 results: AC-F12-01..07 PASS on `63d377b` | D2-S4 |
-| 0.11 | 2026-11-26 | F-09 results: AC-F09-01..07 PASS on `7c530d1` | D2-S6 |
+| 0.11 | 2026-11-26 | F-09 results: AC-F09-01..07 PASS on `c36a003` (including E2E fix and F-05/F-04 test updates) | D2-S6 |
