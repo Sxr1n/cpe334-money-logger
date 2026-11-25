@@ -2,6 +2,10 @@ import { expect, test } from '@playwright/test'
 
 const password = process.env.SEED_USER_PASSWORD ?? ''
 
+function formatTHB(satang: number): string {
+  return `฿${(satang / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
 test('TEST-F09-07 record a cash transfer on /pay using Transfer to my cash account; Overview updates balances without changing expense', async ({
   page,
 }) => {
@@ -12,14 +16,28 @@ test('TEST-F09-07 record a cash transfer on /pay using Transfer to my cash accou
   await expect(page).toHaveURL(/\/overview$/)
 
   // Ensure Bank has sufficient balance and Wallet F09 exists via API
-  const accounts = (await (await page.request.get('/api/accounts')).json()).items as { id: number; name: string; balance: number }[]
-  const bank = accounts.find((a) => a.name === 'Bank')!
-  await page.request.put(`/api/accounts/${bank.id}/opening-balance`, { data: { amount: 1000000, date: '2026-11-01' } })
-  // Also record opening balance update if already set
-  await page.request.patch(`/api/accounts/${bank.id}/opening-balance`, { data: { amount: 1000000, date: '2026-11-01' } })
+  const accountsBefore = (await (await page.request.get('/api/accounts')).json()).items as {
+    id: number
+    name: string
+    balance: number
+    openingBalance: number | null
+  }[]
+  const bank = accountsBefore.find((a) => a.name === 'Bank')!
+  if (bank.openingBalance === null) {
+    await page.request.put(`/api/accounts/${bank.id}/opening-balance`, { data: { amount: 1000000, date: '2026-11-01' } })
+  } else if (bank.balance < 500000) {
+    await page.request.patch(`/api/accounts/${bank.id}/opening-balance`, {
+      data: { amount: bank.openingBalance + 1000000, date: '2026-11-01' },
+    })
+  }
+  const bankAfterTopup = (
+    (await (await page.request.get('/api/accounts')).json()).items as { id: number; balance: number }[]
+  ).find((a) => a.id === bank.id)!
+  const bankBefore = bankAfterTopup.balance
   const summaryBefore = (await (await page.request.get('/api/summary')).json()) as { expense: number }
 
-  const walletRes = await page.request.post('/api/accounts', { data: { name: 'Wallet F09', type: 'CASH' } })
+  const walletName = `Wallet F09 ${Date.now()}`
+  const walletRes = await page.request.post('/api/accounts', { data: { name: walletName, type: 'CASH' } })
   expect(walletRes.status()).toBe(201)
   const wallet = (await walletRes.json()) as { id: number }
 
@@ -29,7 +47,7 @@ test('TEST-F09-07 record a cash transfer on /pay using Transfer to my cash accou
   await page.locator('#primaryAccountId').selectOption(String(bank.id))
   await page.locator('#total').fill('3000.00')
 
-  // Select Wallet F09 from the Transfer to my cash account optgroup
+  // Select Wallet from the Transfer to my cash account optgroup
   const transferGroup = page.locator('optgroup[label="Transfer to my cash account"]')
   await expect(transferGroup).toBeAttached()
   await expect(transferGroup.locator(`option[value="${wallet.id}"]`)).toBeAttached()
@@ -41,9 +59,10 @@ test('TEST-F09-07 record a cash transfer on /pay using Transfer to my cash accou
 
   await page.getByRole('link', { name: 'Overview' }).click()
   await expect(page).toHaveURL(/\/overview$/)
-  await expect(page.getByText('Wallet F09')).toBeVisible()
-  await expect(page.getByText('฿3,000.00')).toBeVisible()
 
-  const summaryAfter = (await (await page.request.get('/api/summary')).json()) as { expense: number }
-  expect(summaryAfter.expense).toBe(summaryBefore.expense)
+  // Verify both account balances scoped to their rows in the Cash card, and month expense unchanged
+  const cashCard = page.locator('.card', { has: page.getByRole('heading', { name: 'Cash', exact: true }) })
+  await expect(cashCard.locator('li', { hasText: 'Bank' }).first()).toContainText(formatTHB(bankBefore - 300000))
+  await expect(cashCard.locator('li', { hasText: walletName })).toContainText('฿3,000.00')
+  await expect(page.getByTestId('month-expense')).toHaveText(formatTHB(summaryBefore.expense))
 })

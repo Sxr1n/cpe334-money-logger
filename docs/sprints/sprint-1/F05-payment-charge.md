@@ -97,3 +97,4 @@ No change (uses tables from F-03 and F-04).
 | 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
 | 0.3 | 2026-11-14 | Completed implementation and verified tests (TEST-F05-01..07 + E2E TEST-F05-08). Status -> TESTED. | F-05 |
 | 0.4 | 2026-11-14 | Address PR #18 review: add AC-F05-08 + TEST-F05-08 to contract, record commit SHA 6f52657 in §9. | PR #18 review |
+| 0.5 | 2026-11-26 | F-09 supersedes the "a line to another CASH account → 422" part of AC-F05-04 (CASH lines are now valid transfers; TEST-F05-04 checks INCOME line instead). | F-09 / PR #67 review |

@@ -230,8 +230,8 @@ describe('F-05 Payment/charge API', () => {
     expect(resLoanGivenPrimary.status).toBe(422)
     expect(resLoanGivenPrimary.body.error?.code).toBe('RULE_VIOLATION')
 
-    // 4. Line to another CASH account (Wallet)
-    const resCashLine = await request(app)
+    // 4. Line to an INCOME account (Salary) — forbidden on PAYMENT (BR-03)
+    const resIncomeLine = await request(app)
       .post('/api/transactions')
       .set('Cookie', cookie)
       .send({
@@ -239,10 +239,10 @@ describe('F-05 Payment/charge API', () => {
         primaryAccountId: aliceBankId,
         date: today,
         total: 50000,
-        lines: [{ accountId: aliceSecondCashId, amount: 50000 }],
+        lines: [{ accountId: aliceSalaryId, amount: 50000 }],
       })
-    expect(resCashLine.status).toBe(422)
-    expect(resCashLine.body.error?.code).toBe('RULE_VIOLATION')
+    expect(resIncomeLine.status).toBe(422)
+    expect(resIncomeLine.body.error?.code).toBe('RULE_VIOLATION')
 
     // 5. Line equal to primary
     const resSameAccount = await request(app)
