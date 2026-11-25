@@ -36,10 +36,10 @@ test('TEST-F10-08 mixed RECEIPT (Salary + Repayment to me) reduces Owed to me to
   await page.locator('tbody select').nth(1).selectOption(String(ken.id))
   await page.locator('tbody input[placeholder="0.00"]').nth(1).fill('500.00')
 
-  const saveBtn = page.getByRole('button', { name: 'Save receipt' })
+  const saveBtn = page.getByRole('button', { name: 'Save', exact: true })
   await expect(saveBtn).toBeEnabled()
   await saveBtn.click()
-  await expect(page.getByRole('alert')).toContainText('Receipt saved')
+  await expect(page.getByRole('alert')).toContainText('Saved')
 
   await page.getByRole('link', { name: 'Overview' }).click()
   await expect(page).toHaveURL(/\/overview$/)
