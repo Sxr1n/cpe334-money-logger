@@ -83,7 +83,7 @@ Also verified: NFR-05 1,000-transaction recomputation (SR-02); NFR-07 durability
 
 Also verified: NFR-08 responsiveness with 5,000 transactions (SR-04); full regression and UAT re-test.
 
-**Order.** F-13 and F-15 are planned first. At least one of them must be working in `v0.3.0-rc1` on GCP by 29 Nov (Deliverable 2). F-14 and F-16 follow, and the product must be nearly complete by 29 Nov because of the 1–11 Dec exams.
+**Order.** F-15 first (D-16: the Sprint 3 workflow in `v0.3.0-rc1`), then F-13, F-14 and F-16; all four owned by Sxr1n so that Leviathan-c137 can finish F-09–F-11 (team decision 2026-11-25). At least one of them must be working in `v0.3.0-rc1` on GCP by 29 Nov (Deliverable 2). F-14 and F-16 follow, and the product must be nearly complete by 29 Nov because of the 1–11 Dec exams.
 
 **Completion outcome.** `v1.0.0` on `main` and GCP by 13 Dec; every FR/BR/NFR has a final result in `docs/traceability.md`; DoD review done; known limitations disclosed.
 
@@ -101,3 +101,4 @@ Also verified: NFR-08 responsiveness with 5,000 transactions (SR-04); full regre
 | 0.1 | 2026-11-07 | Initial three-sprint plan | D1-S2 baseline |
 | 0.2 | 2026-11-07 | All checkpoint dates +7 days (D1 15 Nov, Lab 5 22 Nov, Lab 6 29 Nov, Lab 7 and D2 6 Dec, Final 20 Dec) per the instructor's LEB2 announcement; internal target for near-complete product stays before the 1–11 Dec exams (30 Nov) | Course schedule change |
 | 0.3 | 2026-11-07 | Correction of v0.2 after checking LEB2: only D1 moved (8 → 15 Nov, same day as Lab 5); D2 29 Nov and Final 13 Dec unchanged; Sprint 2/3 windows restored | LEB2 schedule |
+| 0.4 | 2026-11-25 | Sprint 3 order and owners: F-15 first for the RC (D-16), Sxr1n owns F-13–F-16 | D2-S5 |

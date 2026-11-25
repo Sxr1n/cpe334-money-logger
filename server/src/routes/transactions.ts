@@ -19,6 +19,7 @@ function serializeTransaction(txn: any) {
     total: Number(txn.total),
     note: txn.note,
     status: txn.status,
+    isFavorite: txn.isFavorite,
     primaryAccount: {
       id: txn.primaryAccount.id,
       name: txn.primaryAccount.name,
@@ -77,6 +78,7 @@ router.get('/', async (req: Request, res: Response) => {
     ...(f.status ? { status: f.status } : {}),
     ...(f.q ? { note: { contains: escapeLike(f.q), mode: 'insensitive' as const } } : {}),
     ...(f.accountId ? { OR: [{ primaryAccountId: f.accountId }, { lines: { some: { accountId: f.accountId } } }] } : {}),
+    ...(f.favorite ? { isFavorite: true, status: TxnStatus.POSTED } : {}),
   }
   const [items, total] = await Promise.all([
     prisma.txn.findMany({
@@ -92,6 +94,22 @@ router.get('/', async (req: Request, res: Response) => {
 })
 
 // GET /api/transactions/:id (USER) — BR-11: another user's id is "not found"
+// PUT /api/transactions/:id/favorite (USER) — F-13: a VOID transaction cannot become a favourite (D-15)
+router.put('/:id/favorite', async (req: Request, res: Response) => {
+  const favorite = (req.body as { favorite?: unknown } | undefined)?.favorite
+  if (typeof favorite !== 'boolean') {
+    return res.status(400).json({ error: { code: 'BAD_REQUEST', message: 'Invalid request body.' } })
+  }
+  const id = Number(req.params.id)
+  const txn = Number.isInteger(id) ? await prisma.txn.findFirst({ where: { id, userId: req.user!.id } }) : null
+  if (!txn) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Not found.' } })
+  if (favorite && txn.status === TxnStatus.VOID) {
+    return res.status(422).json({ error: { code: 'RULE_VIOLATION', message: 'A void transaction cannot be a favourite.' } })
+  }
+  const updated = await prisma.txn.update({ where: { id }, data: { isFavorite: favorite }, include: withAccounts })
+  res.json(serializeTransaction(updated))
+})
+
 router.get('/:id', async (req: Request, res: Response) => {
   const id = Number(req.params.id)
   const txn = Number.isInteger(id)

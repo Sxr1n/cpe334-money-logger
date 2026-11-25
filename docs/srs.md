@@ -5,7 +5,7 @@
 | Course | CPE334, Semester 1/2026 — Group Project, Theme 7 |
 | Team | นายศารินทร์ ไชยารัตน์ (GitHub `Sxr1n`); นายตันติยวัตร จันทร์ศิริ (GitHub `Leviathan-c137`) — student IDs are given in the submitted PDF only |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Document version | 0.5 (decisions accepted by team) |
+| Document version | 0.6 (decisions accepted by team) |
 | Source brief | `docs/course/group_work_specs_v1.pdf` §6 Theme 7 |
 
 > **Status:** decisions D-01–D-09 in §8.2 were accepted by the team on 2026-11-07 (v0.2). D-03 still awaits TA confirmation (Q-01); a different TA answer will be handled as a CHG.
@@ -193,6 +193,9 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | D-11 | An archived account can be unarchived (FR-09). | Recovers from archiving by mistake; no data is lost because archived accounts are never deleted (D-07). | Accepted (team, 2026-11-22) |
 | D-12 | Editing or voiding a transaction is rejected if any CASH, LOAN_TAKEN or LOAN_GIVEN balance would become negative (BR-07, BR-08 applied to the corrected result). | Keeps the same invariants as recording; voiding a receipt whose money was already spent is not allowed. | Accepted (team, 2026-11-22) |
 | D-13 | The history account filter (FR-19) matches a transaction whose primary account **or** any line uses the account. | INCOME/EXPENSE accounts are never primary, so a primary-only filter would find nothing for them. | Accepted (team, 2026-11-22) |
+| D-14 | A period report (FR-27) covers at most 12 months per request; the default is the last 6 Bangkok months up to the current month. | Enough for a yearly view, keeps the response bounded and gives a testable boundary. | Accepted (team, 2026-11-25) |
+| D-15 | A VOID transaction cannot be marked as favourite (FR-22) and is hidden from the favourites list; it can be duplicated (FR-23). | A favourite that no longer counts is misleading; duplicating a voided entry is the natural way to re-record it correctly. | Accepted (team, 2026-11-25) |
+| D-16 | F-15 Category spending is the Sprint 3 workflow delivered in `v0.3.0-rc1` for Deliverable 2. | Read-only, no schema change, independent of F-09–F-11, and it exercises BR-06. | Accepted (team, 2026-11-25) |
 
 ### 8.3 Open questions
 | ID | Question | Owner | Resolution |
@@ -218,3 +221,4 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | 0.3 | 2026-11-07 | Team names and student IDs filled in. No requirement changed. | Team |
 | 0.4 | 2026-11-14 | Student IDs removed from the repository before it becomes public (Lab 5 R-12); they appear only in submitted PDFs. No requirement changed. | Team |
 | 0.5 | 2026-11-22 | Decisions D-10–D-13 added for the Sprint 2 contracts (Q-03 resolved by D-10). No FR/BR/NFR text changed. | Team + Claude (D2-S1) |
+| 0.6 | 2026-11-25 | Decisions D-14–D-16 added for the Sprint 3 contracts. No FR/BR/NFR text changed. | Team + Claude (D2-S5) |

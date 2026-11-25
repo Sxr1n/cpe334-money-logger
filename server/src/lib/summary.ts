@@ -29,3 +29,8 @@ export async function summarize(userId: number, period: { from: string; to: stri
   }
   return { from: period.from, to: period.to, income, expense, net: income - expense }
 }
+
+// F-15: share of all spending, one decimal, computed on integer satang; null when nothing was spent.
+export function percentOf(total: number, all: number): number | null {
+  return all === 0 ? null : Math.round((total * 1000) / all) / 10
+}

@@ -224,7 +224,7 @@ All errors use one shape, with no stack traces or SQL text:
 | Auth | `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` | any (login: none) | 1 |
 | Admin | `GET /api/admin/users`, `PATCH /api/admin/users/:id` (status) | ADMIN | 1 |
 | Accounts | `GET /api/accounts`, `PUT /api/accounts/:id/opening-balance` (S1); `POST /api/accounts`, `PATCH /api/accounts/:id`, `PATCH /api/accounts/:id/opening-balance` (S2) | USER | 1–2 |
-| Transactions | `POST /api/transactions`, `GET /api/transactions`, `GET /api/transactions/:id` (S1); `PUT /api/transactions/:id`, `POST /api/transactions/:id/void`, filter query parameters on `GET /api/transactions` (S2); favourite (S3) | USER | 1–3 |
+| Transactions | `POST /api/transactions`, `GET /api/transactions`, `GET /api/transactions/:id` (S1); `PUT /api/transactions/:id`, `POST /api/transactions/:id/void`, filter query parameters on `GET /api/transactions` (S2); `PUT /api/transactions/:id/favorite`, `?favorite=true` (S3) | USER | 1–3 |
 | Overview and reports | `GET /api/overview`, `GET /api/summary?from&to` (S1); `GET /api/reports/categories`, `GET /api/reports/monthly` (S3) | USER | 1, 3 |
 
 ---
@@ -318,3 +318,4 @@ Open (decided in D1-S4): whether Sprint 1's `POST /api/transactions` already acc
 | 0.5 | 2026-11-15 | §1.1 Packaging row still said "on the VM" after the v0.4 change → Cloud Run; Sources updated to current document versions | Consistency fix before D1 submission |
 | 0.6 | 2026-11-20 | §7.3: deployment target is the shared course project (team prefix `s87ce2df5`, resources made by the course portal) instead of a team-owned project | Instructor announcement 2026-11-20 (course Google Cloud open) |
 | 0.7 | 2026-11-22 | Sprint 2 endpoints named in §4.3; §2.4 opening-balance change and edit/void rules (D-10, D-12); 409 for "opening balance not set yet" | D2-S1 contracts |
+| 0.8 | 2026-11-25 | Sprint 3 endpoints named in §4.3 (favourite); reports endpoints unchanged (`/api/reports/categories`, `/api/reports/monthly`, mounted behind the USER guard) | D2-S5 |
