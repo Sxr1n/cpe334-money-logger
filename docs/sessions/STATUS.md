@@ -51,7 +51,7 @@
 - Evidence: red `255be65` → `evidence/d2/F14-red.txt` (unit module missing, E2E 3 fail); green `b5cc4a3` → `evidence/d2/F14-green.txt` (server tsc OK, 25 files / 98 tests; client 1 test + build OK; E2E 15/15)
 - Decisions (Sxr1n, 2026-11-26): Vitest added to `client/` (+ `npm test` in CI "Client build"); TEST-F14-03 sets VOID through `server/prisma/e2e-void.ts` until F-11 (contract v0.2)
 - Open issues: replace `e2e-void.ts` with the F-11 void API when F-11 merges; F-09 (#67) merged during this session → merged into the F-14 branch (`00bcb2f`), full regression green (`evidence/d2/F14-green-after-F09.txt`: server 27 files / 107 tests, E2E 16/16); the repo lives in OneDrive — move it out or pause sync
-- Next session: Leviathan-c137 F-09–F-11; release prep for D2
+- Next session: Leviathan-c137 F-10 → F-11 (F-09 merged in #67); after F-11: TEST-NFR05-01 (AC-F08-07) and switch TEST-F14-03 to the F-11 void API; release prep for D2
 ### 2026-11-26 — D2-S8 F-13 Favourite transactions — Claude + Sxr1n
 - Done: `PUT /api/transactions/:id/favorite` (VOID → 422, D-15); `favorite=true` filter (POSTED favourites only); `isFavorite` in the transaction shape; detail-page toggle (`aria-pressed`), Favourites page + nav link
 - Evidence: red `c4b8f42` → `evidence/d2/F13-red.txt` (5 fail); green `748556f` → `evidence/d2/F13-green.txt` (tsc OK, server 25 files / 98 tests, client build OK, E2E 12/12)
