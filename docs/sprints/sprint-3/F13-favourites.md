@@ -1,5 +1,5 @@
 # F-13 Favourite transactions — Sprint 3
-Linked: FR-22, BR-11, BR-12, NFR-01, NFR-02   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-22, BR-11, BR-12, NFR-01, NFR-02   Status: TESTED   Owner: Sxr1n
 Depends on: F-06 (detail, history), F-12 (list filters), F-11 (VOID status). Design references: `docs/system-sds.md` §2.2 (`transactions.is_favorite` already exists), §4.3; decision D-15
 
 ## 1 Behavior & workflow
@@ -62,9 +62,14 @@ No schema change (`transactions.is_favorite BOOLEAN NOT NULL DEFAULT false` exis
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F13-01 … AC-F13-05 | — | NOT RUN | — |
+| AC-F13-01 | `server/tests/f13-favourites.api.test.ts::TEST-F13-01` | PASS | 748556f |
+| AC-F13-02 | `server/tests/f13-favourites.api.test.ts::TEST-F13-02` | PASS | 748556f |
+| AC-F13-03 | `server/tests/f13-favourites.api.test.ts::TEST-F13-03`, `server/tests/f13-favourites.unit.test.ts::TEST-F13-03` | PASS | 748556f |
+| AC-F13-04 | `server/tests/f13-favourites.api.test.ts::TEST-F13-04` | PASS | 748556f |
+| AC-F13-05 | `e2e/f13-favourites.spec.ts::TEST-F13-05` | PASS | 748556f |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-25 | Initial contract (D-15: VOID cannot be marked; the list shows only POSTED favourites). | D2-S5 |
+| 0.2 | 2026-11-26 | Implemented; all AC PASS (red `c4b8f42`, green `748556f`, `evidence/d2/F13-*.txt`). The Favourites Duplicate button arrives with F-14. Status → TESTED. | D2-S8 |

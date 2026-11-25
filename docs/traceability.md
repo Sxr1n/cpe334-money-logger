@@ -184,11 +184,11 @@ Short descriptions; full wording in `docs/sprints/sprint-3/` (v0.1, D2-S5). F-15
 
 | AC | Short description | TEST | Level | TDD | Test file::name | Result | Commit |
 |---|---|---|---|---|---|---|---|
-| AC-F13-01 | When alice marks her payment as favourite → 200 isFavorite: true; GET /api/transactions?favorite=true returns … | TEST-F13-01 | API-DB |  | — | NOT RUN | — |
-| AC-F13-02 | Marking a VOID transaction → 422 RULE_VIOLATION and the flag stays false; a favourite that is then voided is no … | TEST-F13-02 | API-DB | yes | — | NOT RUN | — |
-| AC-F13-03 | favorite=yes → 422 naming favorite; body { "favorite": "true" } → 400. | TEST-F13-03 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F13-04 | Without a session → 401; as admin → 403; alice marking bob's transaction → 404 and bob's flag is unchanged; bob's … | TEST-F13-04 | API-DB |  | — | NOT RUN | — |
-| AC-F13-05 | In the browser, alice adds a transaction to favourites from its detail page, sees it on Favourites, removes it, … | TEST-F13-05 | E2E |  | — | NOT RUN | — |
+| AC-F13-01 | When alice marks her payment as favourite → 200 isFavorite: true; GET /api/transactions?favorite=true returns … | TEST-F13-01 | API-DB |  | `server/tests/f13-favourites.api.test.ts::TEST-F13-01` | PASS | 748556f |
+| AC-F13-02 | Marking a VOID transaction → 422 RULE_VIOLATION and the flag stays false; a favourite that is then voided is no … | TEST-F13-02 | API-DB | yes | `server/tests/f13-favourites.api.test.ts::TEST-F13-02` | PASS | 748556f |
+| AC-F13-03 | favorite=yes → 422 naming favorite; body { "favorite": "true" } → 400. | TEST-F13-03 | unit + API-DB |  | `server/tests/f13-favourites.api.test.ts::TEST-F13-03`, `server/tests/f13-favourites.unit.test.ts::TEST-F13-03` | PASS | 748556f |
+| AC-F13-04 | Without a session → 401; as admin → 403; alice marking bob's transaction → 404 and bob's flag is unchanged; bob's … | TEST-F13-04 | API-DB |  | `server/tests/f13-favourites.api.test.ts::TEST-F13-04` | PASS | 748556f |
+| AC-F13-05 | In the browser, alice adds a transaction to favourites from its detail page, sees it on Favourites, removes it, … | TEST-F13-05 | E2E |  | `e2e/f13-favourites.spec.ts::TEST-F13-05` | PASS | 748556f |
 | AC-F14-01 | toDuplicateDraft of a PAYMENT dated 2026-11-01 with lines Dining 70000 + Groceries 50000, note "Weekend" and … | TEST-F14-01 | unit | yes | — | NOT RUN | — |
 | AC-F14-02 | In the browser, Duplicate on a payment opens /pay?duplicate=:id with the values pre-filled and today's date; … | TEST-F14-02 | E2E |  | — | NOT RUN | — |
 | AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | — | NOT RUN | — |
@@ -239,3 +239,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.11 | 2026-11-25 | Sprint 3 contracts (F-13–F-16): AC/TEST IDs for FR-22, FR-23, FR-26, FR-27, BR-17; new §2c (21 rows) | D2-S5 |
 | 0.12 | 2026-11-25 | F-15 results: AC-F15-01..06 PASS on `0e291ae` | D2-S6 |
 | 0.13 | 2026-11-26 | F-16 results: AC-F16-01..06 PASS on `c5d7c81` | D2-S7 |
+| 0.14 | 2026-11-26 | F-13 results: AC-F13-01..05 PASS on `748556f` | D2-S8 |
