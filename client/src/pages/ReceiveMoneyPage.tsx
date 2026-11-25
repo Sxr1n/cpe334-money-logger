@@ -384,14 +384,23 @@ export default function ReceiveMoneyPage() {
                         value={l.accountId}
                         onChange={(e) => updateLine(l.id, 'accountId', e.target.value)}
                         disabled={pending}
-                        aria-label="Income account"
+                        aria-label="Line account"
                       >
                         {l.accountId === 0 && <option value={0}>Choose an account</option>}
-                        {incomeAccounts.map((inc) => (
-                          <option key={inc.id} value={inc.id}>
-                            {inc.name}
-                          </option>
-                        ))}
+                        <optgroup label="Income">
+                          {incomeAccounts.map((inc) => (
+                            <option key={inc.id} value={inc.id}>
+                              {inc.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="Transfer from my cash account">
+                          {cashAccounts.map((c) => (
+                            <option key={c.id} value={c.id} disabled={c.id === primaryAccountId}>
+                              {c.name} (Cash: {formatTHB(c.balance)})
+                            </option>
+                          ))}
+                        </optgroup>
                       </select>
                     </td>
                     <td>

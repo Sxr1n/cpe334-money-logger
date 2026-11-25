@@ -118,9 +118,10 @@ export default function PayPage() {
   const payingAccounts = accounts?.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN') ?? []
   const expenseAccounts = accounts?.filter((a) => a.type === 'EXPENSE') ?? []
   const loanTakenAccounts = accounts?.filter((a) => a.type === 'LOAN_TAKEN') ?? []
+  const cashAccounts = accounts?.filter((a) => a.type === 'CASH') ?? []
 
   function addLine() {
-    const defaultAccId = expenseAccounts[0]?.id ?? loanTakenAccounts[0]?.id ?? 0
+    const defaultAccId = expenseAccounts[0]?.id ?? loanTakenAccounts[0]?.id ?? cashAccounts[0]?.id ?? 0
     setLines((prev) => [...prev, { id: `line-${Date.now()}-${Math.random()}`, accountId: defaultAccId, amountStr: '' }])
   }
 
@@ -433,6 +434,13 @@ export default function PayPage() {
                         {loanTakenAccounts.map((a) => (
                           <option key={a.id} value={a.id} disabled={a.id === primaryAccountId}>
                             {a.name} (Outstanding debt: {formatTHB(a.balance)})
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Transfer to my cash account">
+                        {cashAccounts.map((a) => (
+                          <option key={a.id} value={a.id} disabled={a.id === primaryAccountId}>
+                            {a.name} (Cash: {formatTHB(a.balance)})
                           </option>
                         ))}
                       </optgroup>
