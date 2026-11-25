@@ -1,0 +1,48 @@
+# F-15 GREEN — full regression after implementation (branch feature/F15-category-spending)
+
+## server: npx tsc --noEmit
+tsc OK
+
+## server: npx vitest run
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+
+ Test Files  21 passed (21)
+      Tests  87 passed (87)
+   Start at  23:08:37
+   Duration  53.32s (transform 673ms, setup 505ms, import 9.64s, tests 30.06s, environment 3ms)
+
+
+## client: npm run build
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.6 building client environment for production...
+transforming...
+✓ 36 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-FV3QFb7f.js   308.06 kB │ gzip: 92.68 kB
+
+✓ built in 620ms
+
+## e2e: PW_CHANNEL=chrome npx playwright test
+
+Running 10 tests using 1 worker
+
+  ok  1 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (2.5s)
+  ok  2 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (949ms)
+  ok  3 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (1.6s)
+  ok  4 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (1.6s)
+  ok  5 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (4.0s)
+  ok  6 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (2.3s)
+  ok  7 [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves (1.5s)
+  ok  8 [desktop] › e2e\f12-search.spec.ts:6:1 › TEST-F12-07 filter History by account and text; filters survive reload; Clear shows everything (1.9s)
+  ok  9 [desktop] › e2e\f15-reports.spec.ts:6:1 › TEST-F15-06 Reports shows category spending for the month and an empty range (1.2s)
+  ok 10 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (772ms)
+
+  10 passed (30.4s)
