@@ -1,0 +1,166 @@
+F-14 RED - branch feature/F14-duplicate, parent commit 174a2b9, run 2026-11-26 01:56 local
+
+=== client: npm test (TEST-F14-01) ===
+
+> client@0.0.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/client
+
+ ❯ src/duplicate.test.ts (0 test)
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/duplicate.test.ts [ src/duplicate.test.ts ]
+Error: Cannot find module './duplicate' imported from 
+C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/client/src/duplicate.test.ts
+ ❯ src/duplicate.test.ts:3:1
+      1| import { describe, expect, it } from 'vitest'
+      2| import type { TxnView } from './format'
+      3| import { toDuplicateDraft } from './duplicate'
+       | ^
+      4|
+      5| describe('F-14 toDuplicateDraft (BR-17)', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  01:55:34
+   Duration  189ms (transform 15ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
+
+=== npx playwright test e2e/f14-duplicate.spec.ts (TEST-F14-02..04) ===
+node.exe : [WebServer] (node:34920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43016) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:12548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:22664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged (30.5s)
+(node:42280) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:40624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt (30.4s)
+(node:44000) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  3 [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found (7.1s)
+
+
+  1) [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Duplicate' })
+
+
+      38 |   const before = await txnCount(page)
+      39 |   await page.goto(`/transactions/${source.id}`)
+    > 40 |   await page.getByRole('link', { name: 'Duplicate' }).click()
+         |                                                       ^
+      41 |   await expect(page).toHaveURL(new RegExp(`/pay\\?duplicate=${source.id}$`))
+      42 |   await expect(page.getByText('Duplicated from the transaction of 01 Nov 2026')).toBeVisible()
+      43 |   await expect(page.locator('#primaryAccountId')).toHaveValue(String(id('Bank')))
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f14-duplicate.spec.ts:40:55
+
+    Error Context: test-results\f14-duplicate-TEST-F14-02--91e32-til-Save-original-unchanged-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f14-duplicate-TEST-F14-02--91e32-til-Save-original-unchanged-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f14-duplicate-TEST-F14-02--91e32-til-Save-original-unchanged-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: 'Duplicate' })
+
+
+      68 |
+      69 |   await page.goto(`/transactions/${source.id}`)
+    > 70 |   await page.getByRole('link', { name: 'Duplicate' }).click()
+         |                                                       ^
+      71 |   await expect(page).toHaveURL(new RegExp(`/receive\\?duplicate=${source.id}$`))
+      72 |   await expect(page.locator('#totalInput')).toHaveValue('45.00')
+      73 |   await page.getByRole('button', { name: 'Save', exact: true }).click()
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f14-duplicate.spec.ts:70:55
+
+    Error Context: test-results\f14-duplicate-TEST-F14-03--3d810--saves-a-new-POSTED-receipt-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f14-duplicate-TEST-F14-03--3d810--saves-a-new-POSTED-receipt-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f14-duplicate-TEST-F14-03--3d810--saves-a-new-POSTED-receipt-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Archived accounts were left empty: Hobby F14')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByText('Archived accounts were left empty: Hobby F14') with timeout 5000ms
+      - waiting for getByText('Archived accounts were left empty: Hobby F14')
+
+
+      92 |
+      93 |   await page.goto(`/pay?duplicate=${source.id}`)
+    > 94 |   await expect(page.getByText('Archived accounts were left empty: Hobby F14')).toBeVisible()
+         |                                                                                ^
+      95 |   await expect(page.getByLabel('Category / Debt account')).toHaveValue('0')
+      96 |   await expect(page.locator('#total')).toHaveValue('10.00')
+      97 |
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f14-duplicate.spec.ts:94:80
+
+    Error Context: test-results\f14-duplicate-TEST-F14-04--35801--foreign-id-shows-not-found-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f14-duplicate-TEST-F14-04--35801--foreign-id-shows-not-found-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f14-duplicate-TEST-F14-04--35801--foreign-id-shows-not-found-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged 
+    [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt 
+    [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found 
