@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: Sprint 3 contracts (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-15 (Sxr1n, RC workflow) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -22,10 +22,10 @@
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
 | F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
-| F-13 | Favourite transactions | 3 | PLANNED | — | — | — | — |
-| F-14 | Duplicate transaction | 3 | PLANNED | — | — | — | — |
-| F-15 | Category spending | 3 | PLANNED | — | — | — | — |
-| F-16 | Period reports | 3 | PLANNED | — | — | — | — |
+| F-13 | Favourite transactions | 3 | SPECIFIED | Sxr1n | sprint-3/F13-favourites.md | — | — |
+| F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | — | — |
+| F-15 | Category spending | 3 | SPECIFIED | Sxr1n | sprint-3/F15-category-spending.md | — | — |
+| F-16 | Period reports | 3 | SPECIFIED | Sxr1n | sprint-3/F16-period-reports.md | — | — |
 
 ## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
 | วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-25 — D2-S5 Sprint 3 contracts — Claude + Sxr1n
+- Done: contracts F-13–F-16 in `docs/sprints/sprint-3/` (21 AC, 21 STS rows, SPECIFIED); SRS v0.6 (D-14–D-16); features v0.4; plan v0.4 (F-15 first, Sxr1n owns F-13–F-16); traceability v0.11 (§2c); SDS v0.8
+- Evidence: branch `spec/sprint-3-contracts` (spec commits per feature)
+- Decisions (Sxr1n, 2026-11-25): D-14 period report ≤ 12 months, default last 6; D-15 VOID cannot be favourited (hidden from list) but can be duplicated; D-16 F-15 is the Sprint 3 workflow in `v0.3.0-rc1`; Sxr1n owns all Sprint 3 features
+- Open issues: PR #57 approved but merging from this session was blocked by the permission classifier → Sxr1n merges; F-14 unit test needs Vitest for a pure client module (decide in F-14: client dev dependency or server Vitest include)
+- Next session: F-15 Category spending
 ### 2026-11-24 — D2-S4 F-12 Search and filter history — Claude + Sxr1n
 - Done: `GET /api/transactions` filters (from, to, accountId = primary or line, form, status, minAmount, maxAmount, q case-insensitive and literal); `parseTxnFilter` (422 per parameter) and `escapeLike` in `lib/query.ts`; History filter bar kept in the URL, Clear filters, filtered empty state
 - Evidence: red `37675b2` → `evidence/d2/F12-red.txt` (6 fail; TEST-F12-06 already passed through F-06 scoping); green `63d377b` → `evidence/d2/F12-green.txt` (tsc OK, server 19 files / 81 tests, client build OK, E2E 9/9)

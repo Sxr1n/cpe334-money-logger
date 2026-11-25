@@ -34,12 +34,12 @@ Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and re
 | FR-19 | F-12 Search and filter history | 2 | AC-F12-01, AC-F12-02, AC-F12-03, AC-F12-04, AC-F12-07 | TEST-F12-01, TEST-F12-02, TEST-F12-03, TEST-F12-04, TEST-F12-07 |
 | FR-20 | F-11 Transaction corrections | 2 | AC-F11-01, AC-F11-02, AC-F11-03, AC-F11-04, AC-F11-10 | TEST-F11-01, TEST-F11-02, TEST-F11-03, TEST-F11-04, TEST-F11-10 |
 | FR-21 | F-11 Transaction corrections | 2 | AC-F11-05, AC-F11-06, AC-F11-10 | TEST-F11-05, TEST-F11-06, TEST-F11-10 |
-| FR-22 | F-13 Favourite transactions | 3 | planned | planned |
-| FR-23 | F-14 Duplicate transaction | 3 | planned | planned |
+| FR-22 | F-13 Favourite transactions | 3 | AC-F13-01, AC-F13-02, AC-F13-05 | TEST-F13-01, TEST-F13-02, TEST-F13-05 |
+| FR-23 | F-14 Duplicate transaction | 3 | AC-F14-01, AC-F14-02, AC-F14-03 | TEST-F14-01, TEST-F14-02, TEST-F14-03 |
 | FR-24 | F-06 Overview, summary and history | 1 | AC-F06-02, AC-F06-07 | TEST-F06-02, TEST-F06-07 |
 | FR-25 | F-06 Overview, summary and history | 1 | AC-F06-03, AC-F06-04 | TEST-F06-03, TEST-F06-04 |
-| FR-26 | F-15 Category spending | 3 | planned | planned |
-| FR-27 | F-16 Period reports | 3 | planned | planned |
+| FR-26 | F-15 Category spending | 3 | AC-F15-01, AC-F15-02, AC-F15-03, AC-F15-06 | TEST-F15-01, TEST-F15-02, TEST-F15-03, TEST-F15-06 |
+| FR-27 | F-16 Period reports | 3 | AC-F16-01, AC-F16-03, AC-F16-04, AC-F16-06 | TEST-F16-01, TEST-F16-03, TEST-F16-04, TEST-F16-06 |
 
 ### 1.2 Business rules
 A rule shared by several features is verified in Sprint 1 where it first applies; later features that reuse it add their own AC in their sprint ("planned").
@@ -62,7 +62,7 @@ A rule shared by several features is verified in Sprint 1 where it first applies
 | BR-14 | F-07 Account management | 2 | AC-F07-02, AC-F07-03 | TEST-F07-02, TEST-F07-03 (Sprint 2) |
 | BR-15 | F-07 Account management | 2 | AC-F07-05, AC-F07-06 | TEST-F07-05, TEST-F07-06 (Sprint 2) |
 | BR-16 | F-11 Transaction corrections | 2 | AC-F11-03, AC-F11-05, AC-F11-06 | TEST-F11-03, TEST-F11-05, TEST-F11-06 (Sprint 2) |
-| BR-17 | F-14 Duplicate transaction | 3 | planned | planned |
+| BR-17 | F-14 Duplicate transaction | 3 | AC-F14-01, AC-F14-02 | TEST-F14-01, TEST-F14-02 |
 
 ### 1.3 Non-functional requirements
 | REQ | Feature / responsibility | Sprint (establish / verify) | AC | TEST |
@@ -179,6 +179,33 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F12-06 | Without a session → 401; as admin → 403; when bob has a transaction with note "secret lunch", alice's q=secret … | TEST-F12-06 | API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-06` | PASS | 63d377b |
 | AC-F12-07 | In the browser, alice filters History by Account Dining and Text "lunch"; only matching rows show; after reloading … | TEST-F12-07 | E2E |  | `e2e/f12-search.spec.ts::TEST-F12-07` | PASS | 63d377b |
 
+## 2c. Sprint 3 AC and tests
+Short descriptions; full wording in `docs/sprints/sprint-3/` (v0.1, D2-S5). F-15 is delivered first (D-16).
+
+| AC | Short description | TEST | Level | TDD | Test file::name | Result | Commit |
+|---|---|---|---|---|---|---|---|
+| AC-F13-01 | When alice marks her payment as favourite → 200 isFavorite: true; GET /api/transactions?favorite=true returns … | TEST-F13-01 | API-DB |  | — | NOT RUN | — |
+| AC-F13-02 | Marking a VOID transaction → 422 RULE_VIOLATION and the flag stays false; a favourite that is then voided is no … | TEST-F13-02 | API-DB | yes | — | NOT RUN | — |
+| AC-F13-03 | favorite=yes → 422 naming favorite; body { "favorite": "true" } → 400. | TEST-F13-03 | unit + API-DB |  | — | NOT RUN | — |
+| AC-F13-04 | Without a session → 401; as admin → 403; alice marking bob's transaction → 404 and bob's flag is unchanged; bob's … | TEST-F13-04 | API-DB |  | — | NOT RUN | — |
+| AC-F13-05 | In the browser, alice adds a transaction to favourites from its detail page, sees it on Favourites, removes it, … | TEST-F13-05 | E2E |  | — | NOT RUN | — |
+| AC-F14-01 | toDuplicateDraft of a PAYMENT dated 2026-11-01 with lines Dining 70000 + Groceries 50000, note "Weekend" and … | TEST-F14-01 | unit | yes | — | NOT RUN | — |
+| AC-F14-02 | In the browser, Duplicate on a payment opens /pay?duplicate=:id with the values pre-filled and today's date; … | TEST-F14-02 | E2E |  | — | NOT RUN | — |
+| AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | — | NOT RUN | — |
+| AC-F14-04 | When the source uses an archived account, the form leaves that field empty and lists the archived name in the … | TEST-F14-04 | E2E |  | — | NOT RUN | — |
+| AC-F15-01 | Given alice's card purchase in November with Dining 70000 + Groceries 50000, GET … | TEST-F15-01 | unit + API-DB | yes | — | NOT RUN | — |
+| AC-F15-02 | In the same period alice also records a card repayment from Bank, a Salary receipt and a VOID payment with a … | TEST-F15-02 | API-DB | yes | — | NOT RUN | — |
+| AC-F15-03 | Lines dated 2026-10-31 and 2026-12-01 are excluded and lines dated 2026-11-01 and 2026-11-30 are included; an … | TEST-F15-03 | API-DB |  | — | NOT RUN | — |
+| AC-F15-04 | from=2026-11-30&to=2026-11-01 or from=2026-13-01 → 422 VALIDATION_FAILED naming the parameter. | TEST-F15-04 | API-DB |  | — | NOT RUN | — |
+| AC-F15-05 | Without a session → 401; as admin → 403; bob's spending never appears in alice's result. | TEST-F15-05 | API-DB |  | — | NOT RUN | — |
+| AC-F15-06 | In the browser, alice opens Reports and sees her category rows with amounts and percentages for the current month; … | TEST-F15-06 | E2E |  | — | NOT RUN | — |
+| AC-F16-01 | Given a Salary receipt 3000000 on 2026-11-05 and a card purchase 120000 on 2026-11-06, … | TEST-F16-01 | API-DB | yes | — | NOT RUN | — |
+| AC-F16-02 | A card repayment, a transfer, an opening balance and a VOID transaction in November do not change November's … | TEST-F16-02 | API-DB | yes | — | NOT RUN | — |
+| AC-F16-03 | A transaction dated 2026-10-31 counts in October and one dated 2026-11-01 counts in November. | TEST-F16-03 | API-DB |  | — | NOT RUN | — |
+| AC-F16-04 | fromMonth=2025-12&toMonth=2026-11 (12 months) → 200 with 12 items; fromMonth=2025-11&toMonth=2026-11 (13) → 422; … | TEST-F16-04 | unit + API-DB |  | — | NOT RUN | — |
+| AC-F16-05 | Without a session → 401; as admin → 403; bob's transactions never change alice's figures. | TEST-F16-05 | API-DB |  | — | NOT RUN | — |
+| AC-F16-06 | In the browser, alice opens Reports and sees the default 6-month table with the current month's income and … | TEST-F16-06 | E2E |  | — | NOT RUN | — |
+
 ## 3. Coverage gaps
 | Gap | Affects | Plan |
 |---|---|---|
@@ -209,3 +236,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.8 | 2026-11-23 | F-07 results: AC-F07-01..08 PASS on `3a75c2f` | D2-S2 |
 | 0.9 | 2026-11-23 | F-08 results: AC-F08-01..06 PASS on `c341d6d`; AC-F08-07 NOT RUN (needs F-09–F-11) | D2-S3 |
 | 0.10 | 2026-11-24 | F-12 results: AC-F12-01..07 PASS on `63d377b` | D2-S4 |
+| 0.11 | 2026-11-25 | Sprint 3 contracts (F-13–F-16): AC/TEST IDs for FR-22, FR-23, FR-26, FR-27, BR-17; new §2c (21 rows) | D2-S5 |
