@@ -7,6 +7,21 @@ export default function TransactionDetailPage() {
   const { id } = useParams()
   const [txn, setTxn] = useState<TxnView | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [favPending, setFavPending] = useState(false)
+  const [favError, setFavError] = useState<string | null>(null)
+
+  async function toggleFavorite() {
+    if (!txn) return
+    setFavPending(true)
+    setFavError(null)
+    try {
+      setTxn(await api<TxnView>(`/transactions/${txn.id}/favorite`, { method: 'PUT', body: { favorite: !txn.isFavorite } }))
+    } catch (err) {
+      setFavError(err instanceof ApiError ? err.message : 'Something went wrong.')
+    } finally {
+      setFavPending(false)
+    }
+  }
 
   useEffect(() => {
     api<TxnView>(`/transactions/${id}`)
@@ -22,9 +37,22 @@ export default function TransactionDetailPage() {
       <Link to="/transactions" className="small">
         ← Back to history
       </Link>
-      <h1 className="h4 my-3">
-        {formLabel(txn.form)} {formatTHB(txn.total)}
-      </h1>
+      <div className="d-flex align-items-center gap-3 my-3">
+        <h1 className="h4 mb-0">
+          {formLabel(txn.form)} {formatTHB(txn.total)}
+        </h1>
+        {txn.status !== 'VOID' && (
+          <button
+            className={`btn btn-sm ${txn.isFavorite ? 'btn-warning' : 'btn-outline-secondary'}`}
+            aria-pressed={txn.isFavorite}
+            onClick={toggleFavorite}
+            disabled={favPending}
+          >
+            {txn.isFavorite ? '★ Favourite' : '☆ Add to favourites'}
+          </button>
+        )}
+      </div>
+      {favError && <div className="alert alert-danger py-2">{favError}</div>}
       <dl className="row">
         <dt className="col-sm-3">Date</dt>
         <dd className="col-sm-9">{formatDisplayDate(txn.date)}</dd>

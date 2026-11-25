@@ -16,6 +16,7 @@ export interface TxnView {
   total: number
   note: string | null
   status: string
+  isFavorite: boolean // F-13
   primaryAccount: { id: number; name: string; type: string }
   lines: { id: number; account: { id: number; name: string; type: string }; amount: number }[]
 }

@@ -36,6 +36,11 @@ export default function Layout({ role }: { role: CurrentUser['role'] }) {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/favorites" className="nav-link">
+                  Favourites
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/reports" className="nav-link">
                   Reports
                 </Link>
