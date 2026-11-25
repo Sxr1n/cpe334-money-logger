@@ -193,12 +193,12 @@ Short descriptions; full wording in `docs/sprints/sprint-3/` (v0.1, D2-S5). F-15
 | AC-F14-02 | In the browser, Duplicate on a payment opens /pay?duplicate=:id with the values pre-filled and today's date; … | TEST-F14-02 | E2E |  | — | NOT RUN | — |
 | AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | — | NOT RUN | — |
 | AC-F14-04 | When the source uses an archived account, the form leaves that field empty and lists the archived name in the … | TEST-F14-04 | E2E |  | — | NOT RUN | — |
-| AC-F15-01 | Given alice's card purchase in November with Dining 70000 + Groceries 50000, GET … | TEST-F15-01 | unit + API-DB | yes | — | NOT RUN | — |
-| AC-F15-02 | In the same period alice also records a card repayment from Bank, a Salary receipt and a VOID payment with a … | TEST-F15-02 | API-DB | yes | — | NOT RUN | — |
-| AC-F15-03 | Lines dated 2026-10-31 and 2026-12-01 are excluded and lines dated 2026-11-01 and 2026-11-30 are included; an … | TEST-F15-03 | API-DB |  | — | NOT RUN | — |
-| AC-F15-04 | from=2026-11-30&to=2026-11-01 or from=2026-13-01 → 422 VALIDATION_FAILED naming the parameter. | TEST-F15-04 | API-DB |  | — | NOT RUN | — |
-| AC-F15-05 | Without a session → 401; as admin → 403; bob's spending never appears in alice's result. | TEST-F15-05 | API-DB |  | — | NOT RUN | — |
-| AC-F15-06 | In the browser, alice opens Reports and sees her category rows with amounts and percentages for the current month; … | TEST-F15-06 | E2E |  | — | NOT RUN | — |
+| AC-F15-01 | Given alice's card purchase in November with Dining 70000 + Groceries 50000, GET … | TEST-F15-01 | unit + API-DB | yes | `server/tests/f15-categories.api.test.ts::TEST-F15-01`, `server/tests/f15-categories.unit.test.ts::TEST-F15-01` | PASS | 0e291ae |
+| AC-F15-02 | In the same period alice also records a card repayment from Bank, a Salary receipt and a VOID payment with a … | TEST-F15-02 | API-DB | yes | `server/tests/f15-categories.api.test.ts::TEST-F15-02` | PASS | 0e291ae |
+| AC-F15-03 | Lines dated 2026-10-31 and 2026-12-01 are excluded and lines dated 2026-11-01 and 2026-11-30 are included; an … | TEST-F15-03 | API-DB |  | `server/tests/f15-categories.api.test.ts::TEST-F15-03` | PASS | 0e291ae |
+| AC-F15-04 | from=2026-11-30&to=2026-11-01 or from=2026-13-01 → 422 VALIDATION_FAILED naming the parameter. | TEST-F15-04 | API-DB |  | `server/tests/f15-categories.api.test.ts::TEST-F15-04` | PASS | 0e291ae |
+| AC-F15-05 | Without a session → 401; as admin → 403; bob's spending never appears in alice's result. | TEST-F15-05 | API-DB |  | `server/tests/f15-categories.api.test.ts::TEST-F15-05` | PASS | 0e291ae |
+| AC-F15-06 | In the browser, alice opens Reports and sees her category rows with amounts and percentages for the current month; … | TEST-F15-06 | E2E |  | `e2e/f15-reports.spec.ts::TEST-F15-06` | PASS | 0e291ae |
 | AC-F16-01 | Given a Salary receipt 3000000 on 2026-11-05 and a card purchase 120000 on 2026-11-06, … | TEST-F16-01 | API-DB | yes | — | NOT RUN | — |
 | AC-F16-02 | A card repayment, a transfer, an opening balance and a VOID transaction in November do not change November's … | TEST-F16-02 | API-DB | yes | — | NOT RUN | — |
 | AC-F16-03 | A transaction dated 2026-10-31 counts in October and one dated 2026-11-01 counts in November. | TEST-F16-03 | API-DB |  | — | NOT RUN | — |
@@ -237,3 +237,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.9 | 2026-11-23 | F-08 results: AC-F08-01..06 PASS on `c341d6d`; AC-F08-07 NOT RUN (needs F-09–F-11) | D2-S3 |
 | 0.10 | 2026-11-24 | F-12 results: AC-F12-01..07 PASS on `63d377b` | D2-S4 |
 | 0.11 | 2026-11-25 | Sprint 3 contracts (F-13–F-16): AC/TEST IDs for FR-22, FR-23, FR-26, FR-27, BR-17; new §2c (21 rows) | D2-S5 |
+| 0.12 | 2026-11-25 | F-15 results: AC-F15-01..06 PASS on `0e291ae` | D2-S6 |

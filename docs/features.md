@@ -26,7 +26,7 @@ Feature IDs are stable. A feature that is dropped is marked `WITHDRAWN (CHG-xx)`
 | F-12 | Search and filter history | Filter history by date range, account, form, amount range and note text. | FR-19 | BR-11 | NFR-02, NFR-08 | F-06 | 2 | TESTED |
 | F-13 | Favourite transactions | Mark/unmark a transaction as favourite and list favourites. | FR-22 | BR-11 | NFR-02 | F-06 | 3 | SPECIFIED |
 | F-14 | Duplicate transaction | Open a new editable form pre-filled from an existing transaction (date = today, favourite not copied); nothing stored until submitted. | FR-23 | BR-17 | NFR-02 | F-04, F-05, F-13 | 3 | SPECIFIED |
-| F-15 | Category spending | Per-EXPENSE-account totals and percentage of all expenses for a period. | FR-26 | BR-06, BR-11 | NFR-02 | F-06 | 3 | SPECIFIED |
+| F-15 | Category spending | Per-EXPENSE-account totals and percentage of all expenses for a period. | FR-26 | BR-06, BR-11 | NFR-02 | F-06 | 3 | TESTED |
 | F-16 | Period reports | Monthly income, expense and net for a selected range of months (Asia/Bangkok month boundaries). | FR-27 | BR-06, BR-11 | NFR-02 | F-06 | 3 | SPECIFIED |
 
 Note on F-14 → F-13: Duplicate is reachable from any transaction detail; the dependency on F-13 is only for the "Duplicate from favourites" entry point.

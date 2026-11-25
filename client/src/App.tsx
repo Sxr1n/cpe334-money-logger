@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage'
 import OverviewPage from './pages/OverviewPage'
 import PayPage from './pages/PayPage'
 import ReceiveMoneyPage from './pages/ReceiveMoneyPage'
+import ReportsPage from './pages/ReportsPage'
 import TransactionDetailPage from './pages/TransactionDetailPage'
 import UsersPage from './pages/UsersPage'
 
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/accounts" element={<AccountsPage />} />
             <Route path="/receive" element={<ReceiveMoneyPage />} />
             <Route path="/pay" element={<PayPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
           </Route>
           <Route element={<Layout role="ADMIN" />}>
             <Route path="/admin/users" element={<UsersPage />} />

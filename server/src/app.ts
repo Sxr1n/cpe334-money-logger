@@ -8,6 +8,7 @@ import adminRouter from './routes/admin'
 import authRouter from './routes/auth'
 import healthRouter from './routes/health'
 import overviewRouter from './routes/overview'
+import reportsRouter from './routes/reports'
 import transactionsRouter from './routes/transactions'
 
 const app = express()
@@ -20,7 +21,8 @@ app.use('/api', authRouter)
 
 // SDS §5: guards are mounted per route group, so every endpoint added under these prefixes inherits them.
 app.use('/api/admin', requireAuth, requireRole('ADMIN'), adminRouter)
-app.use(['/api/accounts', '/api/transactions', '/api/overview', '/api/summary'], requireAuth, requireRole('USER'))
+app.use(['/api/accounts', '/api/transactions', '/api/overview', '/api/summary', '/api/reports'], requireAuth, requireRole('USER'))
+app.use('/api/reports', reportsRouter)
 app.use('/api/accounts', accountsRouter)
 app.use('/api/transactions', transactionsRouter)
 app.use('/api', overviewRouter)
