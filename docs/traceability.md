@@ -153,14 +153,14 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F09-05 | Given card debt 0 and Wallet 0, a PAYMENT from Credit Card with a Wallet line 100000 → 201, debt 100000, Wallet … | TEST-F09-05 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-05` | PASS | c36a003 |
 | AC-F09-06 | A PAYMENT from Bank total 150000 with lines Dining 50000 + Wallet 100000 → 201, Bank −150000, Wallet +100000, and … | TEST-F09-06 | API-DB |  | `server/tests/f09-transfers.api.test.ts::TEST-F09-06` | PASS | c36a003 |
 | AC-F09-07 | In the browser, alice records a transfer Bank → Wallet on /pay using the "Transfer to my cash account" group; a … | TEST-F09-07 | E2E |  | `e2e/f09-transfers.spec.ts::TEST-F09-07` | PASS | c36a003 |
-| AC-F10-01 | Given Bank 1000000 and "Loan to Ken" 0, a PAYMENT from Bank with a Ken line 200000 → 201, Bank 800000, Ken 200000, … | TEST-F10-01 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F10-02 | Given Ken 200000, a RECEIPT into Bank with a Ken line 150000 → 201, Ken 50000, income unchanged; then a Ken line … | TEST-F10-02 | unit + API-DB | yes | — | NOT RUN | — |
-| AC-F10-03 | Given "Loan from Mom" 0, a RECEIPT into Bank with a Mom line 500000 → 201, Mom debt 500000, Bank +500000, income … | TEST-F10-03 | API-DB |  | — | NOT RUN | — |
-| AC-F10-04 | A RECEIPT into Bank total 3050000 with Salary 3000000 + Ken 50000 (Ken owes 50000) → 201, income +3000000 exactly, … | TEST-F10-04 | API-DB | yes | — | NOT RUN | — |
-| AC-F10-05 | A PAYMENT from Bank total 100000 with lines Dining 10000 + Credit Card 20000 (debt ≥ 20000) + Ken 30000 + Wallet … | TEST-F10-05 | API-DB |  | — | NOT RUN | — |
-| AC-F10-06 | Every (form, primary type, line type) combination outside SRS §4.2 → 422 RULE_VIOLATION, including RECEIPT with an … | TEST-F10-06 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F10-07 | After AC-F10-01 and AC-F10-03, GET /api/overview shows loanGiven.total = 200000 and loanTaken includes Loan from … | TEST-F10-07 | API-DB |  | — | NOT RUN | — |
-| AC-F10-08 | In the browser, on /receive alice records Salary + a repayment from Ken in one transaction; the footer shows the … | TEST-F10-08 | E2E |  | — | NOT RUN | — |
+| AC-F10-01 | Given Bank 1000000 and "Loan to Ken" 0, a PAYMENT from Bank with a Ken line 200000 → 201, Bank 800000, Ken 200000, … | TEST-F10-01 | unit + API-DB |  | `server/tests/f10-loans.unit.test.ts::TEST-F10-01`, `server/tests/f10-loans.api.test.ts::TEST-F10-01` | PASS | e98d37d |
+| AC-F10-02 | Given Ken 200000, a RECEIPT into Bank with a Ken line 150000 → 201, Ken 50000, income unchanged; then a Ken line … | TEST-F10-02 | unit + API-DB | yes | `server/tests/f10-loans.unit.test.ts::TEST-F10-02`, `server/tests/f10-loans.api.test.ts::TEST-F10-02` | PASS | e98d37d |
+| AC-F10-03 | Given "Loan from Mom" 0, a RECEIPT into Bank with a Mom line 500000 → 201, Mom debt 500000, Bank +500000, income … | TEST-F10-03 | API-DB |  | `server/tests/f10-loans.api.test.ts::TEST-F10-03` | PASS | e98d37d |
+| AC-F10-04 | A RECEIPT into Bank total 3050000 with Salary 3000000 + Ken 50000 (Ken owes 50000) → 201, income +3000000 exactly, … | TEST-F10-04 | API-DB | yes | `server/tests/f10-loans.api.test.ts::TEST-F10-04` | PASS | e98d37d |
+| AC-F10-05 | A PAYMENT from Bank total 100000 with lines Dining 10000 + Credit Card 20000 (debt ≥ 20000) + Ken 30000 + Wallet … | TEST-F10-05 | API-DB |  | `server/tests/f10-loans.api.test.ts::TEST-F10-05` | PASS | e98d37d |
+| AC-F10-06 | Every (form, primary type, line type) combination outside SRS §4.2 → 422 RULE_VIOLATION, including RECEIPT with an … | TEST-F10-06 | unit + API-DB |  | `server/tests/f10-loans.unit.test.ts::TEST-F10-06`, `server/tests/f10-loans.api.test.ts::TEST-F10-06` | PASS | e98d37d |
+| AC-F10-07 | After AC-F10-01 and AC-F10-03, GET /api/overview shows loanGiven.total = 200000 and loanTaken includes Loan from … | TEST-F10-07 | API-DB |  | `server/tests/f10-loans.api.test.ts::TEST-F10-07` | PASS | e98d37d |
+| AC-F10-08 | In the browser, on /receive alice records Salary + a repayment from Ken in one transaction; the footer shows the … | TEST-F10-08 | E2E |  | `e2e/f10-loans.spec.ts::TEST-F10-08` | PASS | e98d37d |
 | AC-F11-01 | Given a PAYMENT from Credit Card total 120000 (Dining 70000 + Groceries 50000) and debt 120000, editing it to … | TEST-F11-01 | unit + API-DB | yes | — | NOT RUN | — |
 | AC-F11-02 | Given a RECEIPT of 500000 into Bank (Salary line), editing the primary to Wallet and the date and note → 200, Bank … | TEST-F11-02 | API-DB |  | — | NOT RUN | — |
 | AC-F11-03 | Editing with lines ≠ total, a future date, a changed form, or a line equal to the primary → 422; the transaction, … | TEST-F11-03 | API-DB |  | — | NOT RUN | — |
@@ -241,3 +241,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.13 | 2026-11-26 | F-16 results: AC-F16-01..06 PASS on `c5d7c81` | D2-S7 |
 | 0.14 | 2026-11-26 | F-13 results: AC-F13-01..05 PASS on `748556f` | D2-S8 |
 | 0.15 | 2026-11-26 | F-09 results: AC-F09-01..07 PASS on `c36a003` (including E2E fix and F-05/F04 test updates) | D2-S9 |
+| 0.16 | 2026-11-26 | F-10 results: AC-F10-01..08 PASS on `e98d37d` (50-case allowed-lines matrix) | D2-S10 |

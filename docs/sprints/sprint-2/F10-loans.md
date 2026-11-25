@@ -1,5 +1,5 @@
 # F-10 Loans given and taken — Sprint 2
-Linked: FR-15, FR-16, FR-17, FR-24, BR-01, BR-03, BR-04, BR-05, BR-06, BR-08, BR-11, BR-12, NFR-01, NFR-02, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
+Linked: FR-15, FR-16, FR-17, FR-24, BR-01, BR-03, BR-04, BR-05, BR-06, BR-08, BR-11, BR-12, NFR-01, NFR-02, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-04, F-05, F-07 (LOAN_GIVEN accounts); merges after F-09 (same allowed-lines table). Design references: SRS §4.2–4.3, `docs/system-sds.md` §2.4
 
 ## 1 Behavior & workflow
@@ -79,9 +79,17 @@ No change.
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F10-01 … AC-F10-08 | — | NOT RUN | — |
+| AC-F10-01 | `server/tests/f10-loans.unit.test.ts::TEST-F10-01`, `server/tests/f10-loans.api.test.ts::TEST-F10-01` | PASS | e98d37d |
+| AC-F10-02 | `server/tests/f10-loans.unit.test.ts::TEST-F10-02`, `server/tests/f10-loans.api.test.ts::TEST-F10-02` | PASS | e98d37d |
+| AC-F10-03 | `server/tests/f10-loans.api.test.ts::TEST-F10-03` | PASS | e98d37d |
+| AC-F10-04 | `server/tests/f10-loans.api.test.ts::TEST-F10-04` | PASS | e98d37d |
+| AC-F10-05 | `server/tests/f10-loans.api.test.ts::TEST-F10-05` | PASS | e98d37d |
+| AC-F10-06 | `server/tests/f10-loans.unit.test.ts::TEST-F10-06`, `server/tests/f10-loans.api.test.ts::TEST-F10-06` | PASS | e98d37d |
+| AC-F10-07 | `server/tests/f10-loans.api.test.ts::TEST-F10-07` | PASS | e98d37d |
+| AC-F10-08 | `e2e/f10-loans.spec.ts::TEST-F10-08` | PASS | e98d37d |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. Completes the SRS §4.2 allowed-lines table; BR-08 applies to RECEIPT LOAN_GIVEN lines. | D2-S1 |
+| 0.2 | 2026-11-26 | Implemented; all AC PASS (red `cbf9735`, green `e98d37d`, `evidence/d2/F10-*.txt`). Status → TESTED. | D2-S10 |
