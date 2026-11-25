@@ -1,12 +1,12 @@
 import { Router, type Request, type Response } from 'express'
-import { AccountType, TxnForm, TxnStatus } from '../../generated/prisma/client'
+import { AccountType, Prisma, TxnForm, TxnStatus } from '../../generated/prisma/client'
 import {
   calculateTxnEffects,
   validateAllowedAccountTypes,
   validateTxnInput,
   type CreateTxnInput,
 } from '../lib/ledger'
-import { parsePaging, sendValidationFailed } from '../lib/query'
+import { escapeLike, parsePaging, parseTxnFilter, sendValidationFailed } from '../lib/query'
 import { prisma } from '../prisma'
 
 const router = Router()
@@ -58,8 +58,26 @@ const withAccounts = { primaryAccount: true, lines: { include: { account: true }
 router.get('/', async (req: Request, res: Response) => {
   const paging = parsePaging(req.query)
   if ('error' in paging) return sendValidationFailed(res, paging.error)
+  const parsed = parseTxnFilter(req.query)
+  if ('error' in parsed) return sendValidationFailed(res, parsed.error)
+  const f = parsed.filter
 
-  const where = { userId: req.user!.id }
+  // F-12: filters AND together; the account filter matches the primary or any line (D-13).
+  const where: Prisma.TxnWhereInput = {
+    userId: req.user!.id,
+    txnDate: {
+      ...(f.from ? { gte: new Date(`${f.from}T00:00:00Z`) } : {}),
+      ...(f.to ? { lte: new Date(`${f.to}T00:00:00Z`) } : {}),
+    },
+    total: {
+      ...(f.minAmount !== undefined ? { gte: f.minAmount } : {}),
+      ...(f.maxAmount !== undefined ? { lte: f.maxAmount } : {}),
+    },
+    ...(f.form ? { form: f.form } : {}),
+    ...(f.status ? { status: f.status } : {}),
+    ...(f.q ? { note: { contains: escapeLike(f.q), mode: 'insensitive' as const } } : {}),
+    ...(f.accountId ? { OR: [{ primaryAccountId: f.accountId }, { lines: { some: { accountId: f.accountId } } }] } : {}),
+  }
   const [items, total] = await Promise.all([
     prisma.txn.findMany({
       where,
