@@ -22,7 +22,7 @@
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
 | F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
-| F-13 | Favourite transactions | 3 | TESTED | Sxr1n | sprint-3/F13-favourites.md | #62 / PR pending | red `c4b8f42`, green `748556f` (evidence/d2/F13-*.txt) |
+| F-13 | Favourite transactions | 3 | TESTED | Sxr1n | sprint-3/F13-favourites.md | #62 / PR #66 | red `c4b8f42`, green `748556f` (evidence/d2/F13-*.txt) |
 | F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | #60 | — |
 | F-15 | Category spending | 3 | TESTED | Sxr1n | sprint-3/F15-category-spending.md | #61 / PR #64 | red `7f2ea52`, green `0e291ae` (evidence/d2/F15-*.txt) |
 | F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR #65 | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
