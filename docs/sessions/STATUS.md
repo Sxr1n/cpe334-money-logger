@@ -25,7 +25,7 @@
 | F-13 | Favourite transactions | 3 | SPECIFIED | Sxr1n | sprint-3/F13-favourites.md | #62 | — |
 | F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | #60 | — |
 | F-15 | Category spending | 3 | TESTED | Sxr1n | sprint-3/F15-category-spending.md | #61 / PR #64 | red `7f2ea52`, green `0e291ae` (evidence/d2/F15-*.txt) |
-| F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR pending | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
+| F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR #65 | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
 
 ## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
 | วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
