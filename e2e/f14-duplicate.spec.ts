@@ -28,7 +28,7 @@ const txnCount = async (page: Page) => (await (await page.request.get('/api/tran
 test('TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged', async ({ page }) => {
   await login(page, 'alice')
   const id = await accountIds(page)
-  await post(page, { form: 'RECEIPT', primaryAccountId: id('Bank'), date: '2026-11-01', total: 200000, lines: [{ accountId: id('Salary'), amount: 200000 }], note: 'F14 funds' })
+  await post(page, { form: 'RECEIPT', primaryAccountId: id('Bank'), date: '2026-11-01', total: 300000, lines: [{ accountId: id('Salary'), amount: 300000 }], note: 'F14 funds' }) // enough for the source and its duplicate (BR-07)
   const source = await post(page, {
     form: 'PAYMENT', primaryAccountId: id('Bank'), date: '2026-11-01', total: 120000,
     lines: [{ accountId: id('Dining'), amount: 70000 }, { accountId: id('Groceries'), amount: 50000 }], note: 'Weekend F14',

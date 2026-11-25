@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
+import DuplicateBanner from '../components/DuplicateBanner'
+import { loadDuplicate, toAmountStr, type LoadedDuplicate } from '../duplicate'
 
 export interface AccountItem {
   id: number
@@ -63,15 +65,38 @@ export default function PayPage() {
   const [pending, setPending] = useState(false)
   const [successTxn, setSuccessTxn] = useState<any | null>(null)
 
+  // F-14: /pay?duplicate=:id pre-fills the form from an own PAYMENT
+  const duplicateId = useSearchParams()[0].get('duplicate')
+  const [duplicate, setDuplicate] = useState<LoadedDuplicate | null>(null)
+  const [duplicateError, setDuplicateError] = useState<string | null>(null)
+
   useEffect(() => {
-    loadAccounts()
+    loadAccounts().then((active) => {
+      if (duplicateId && active) applyDuplicate(duplicateId, active)
+    })
   }, [])
+
+  async function applyDuplicate(id: string, active: AccountItem[]) {
+    try {
+      const loaded = await loadDuplicate(id, 'PAYMENT', active.map((a) => a.id), getTodayInBangkok())
+      const { draft } = loaded
+      setPrimaryAccountId(draft.primaryAccountId)
+      setDateStr(draft.date)
+      setTotalStr(toAmountStr(draft.total))
+      setNoteStr(draft.note ?? '')
+      setLines(draft.lines.map((l, i) => ({ id: `dup-${i}`, accountId: l.accountId, amountStr: toAmountStr(l.amount) })))
+      setDuplicate(loaded)
+    } catch (err) {
+      setDuplicateError(err instanceof Error ? err.message : 'Something went wrong.')
+    }
+  }
 
   async function loadAccounts() {
     try {
       setLoading(true)
       const res = await api<{ items: AccountItem[] }>('/accounts')
-      setAccounts(res.items.filter((a) => !a.archived)) // F-07: archived accounts take no new transactions
+      const active = res.items.filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+      setAccounts(active)
 
       const paying = res.items.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN')
       const expense = res.items.filter((a) => a.type === 'EXPENSE')
@@ -82,6 +107,7 @@ export default function PayPage() {
       if (defaultLineAcc) {
         setLines([{ id: 'line-1', accountId: defaultLineAcc, amountStr: '' }])
       }
+      return active
     } catch (err) {
       setFetchError(err instanceof ApiError ? err.message : 'Failed to load accounts.')
     } finally {
@@ -165,7 +191,9 @@ export default function PayPage() {
       } else if (p.satang !== null) {
         payloadLines.push({ accountId: l.accountId, amount: p.satang })
       }
-      if (l.accountId === primaryAccountId) {
+      if (!l.accountId) {
+        errors[`lines[${idx}].accountId`] = 'Choose an account'
+      } else if (l.accountId === primaryAccountId) {
         errors[`lines[${idx}].accountId`] = 'Line account cannot be the same as paying account'
       }
     })
@@ -254,6 +282,8 @@ export default function PayPage() {
         </Link>
       </div>
 
+      {!successTxn && <DuplicateBanner loaded={duplicate} error={duplicateError} />}
+
       {successTxn && (
         <div className="alert alert-success" role="alert">
           <h5 className="alert-heading">Payment recorded successfully!</h5>
@@ -300,6 +330,7 @@ export default function PayPage() {
                 value={primaryAccountId}
                 onChange={(e) => setPrimaryAccountId(Number(e.target.value))}
               >
+                {primaryAccountId === 0 && <option value={0}>Choose an account</option>}
                 {payingAccounts.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name} ({a.type === 'CASH' ? 'Cash/Bank' : 'Credit/Debt'}) — Balance: {formatTHB(a.balance)}
@@ -385,10 +416,12 @@ export default function PayPage() {
                   <div className="col-md-7">
                     <label className="form-label small text-muted">Category / Debt account</label>
                     <select
+                      aria-label="Category / Debt account"
                       className={`form-select ${lineError ? 'is-invalid' : ''}`}
                       value={line.accountId}
                       onChange={(e) => updateLine(line.id, { accountId: Number(e.target.value) })}
                     >
+                      {line.accountId === 0 && <option value={0}>Choose an account</option>}
                       <optgroup label="Spending">
                         {expenseAccounts.map((a) => (
                           <option key={a.id} value={a.id} disabled={a.id === primaryAccountId}>
