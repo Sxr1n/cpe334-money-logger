@@ -1,5 +1,5 @@
 # F-09 Transfers between own cash accounts — Sprint 2
-Linked: FR-14, FR-17, BR-01, BR-03, BR-04, BR-05, BR-06, BR-07, BR-11, BR-12, NFR-01, NFR-02, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
+Linked: FR-14, FR-17, BR-01, BR-03, BR-04, BR-05, BR-06, BR-07, BR-11, BR-12, NFR-01, NFR-02, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-04, F-05 (engine), F-07 (second CASH account). Design references: SRS §4.2–4.3, `docs/system-sds.md` §2.4, F-04 §2 and §5
 
 ## 1 Behavior & workflow
@@ -82,9 +82,16 @@ No change.
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F09-01 … AC-F09-07 | — | NOT RUN | — |
+| AC-F09-01 | `server/tests/f09-transfers.unit.test.ts::TEST-F09-01`, `server/tests/f09-transfers.api.test.ts::TEST-F09-01` | PASS | 7c530d1 |
+| AC-F09-02 | `server/tests/f09-transfers.unit.test.ts::TEST-F09-02`, `server/tests/f09-transfers.api.test.ts::TEST-F09-02` | PASS | 7c530d1 |
+| AC-F09-03 | `server/tests/f09-transfers.unit.test.ts::TEST-F09-03`, `server/tests/f09-transfers.api.test.ts::TEST-F09-03` | PASS | 7c530d1 |
+| AC-F09-04 | `server/tests/f09-transfers.api.test.ts::TEST-F09-04` | PASS | 7c530d1 |
+| AC-F09-05 | `server/tests/f09-transfers.api.test.ts::TEST-F09-05` | PASS | 7c530d1 |
+| AC-F09-06 | `server/tests/f09-transfers.api.test.ts::TEST-F09-06` | PASS | 7c530d1 |
+| AC-F09-07 | `e2e/f09-transfers.spec.ts::TEST-F09-07` | PASS | 7c530d1 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. CASH lines on both forms; BR-07 also applies to RECEIPT CASH lines. | D2-S1 |
+| 0.2 | 2026-11-26 | Implemented; all AC PASS (red `769742f`, green `7c530d1`, `evidence/d2/F09-*.txt`). Status → TESTED. | D2-S6 |
