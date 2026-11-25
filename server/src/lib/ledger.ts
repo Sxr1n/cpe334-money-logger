@@ -25,7 +25,7 @@ export function getTodayBangkok(now: Date = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' }).format(now)
 }
 
-// Allowed lines table for Sprint 1 (contract §2)
+// Allowed lines table (F-09 extends both forms with CASH lines; SRS §4.2)
 export function validateAllowedAccountTypes(
   form: 'RECEIPT' | 'PAYMENT',
   primaryType: AccountType,
@@ -38,9 +38,9 @@ export function validateAllowedAccountTypes(
       details.primaryAccountId = 'Receiving account must be CASH'
     }
     lineTypes.forEach((type, idx) => {
-      if (type !== AccountType.INCOME) {
-        details.lines = 'Receipt lines must be INCOME accounts'
-        details[`lines[${idx}]`] = 'Receipt lines must be INCOME accounts'
+      if (type !== AccountType.INCOME && type !== AccountType.CASH) {
+        details.lines = 'Receipt lines must be INCOME or CASH accounts'
+        details[`lines[${idx}]`] = 'Receipt lines must be INCOME or CASH accounts'
       }
     })
   } else if (form === 'PAYMENT') {
@@ -48,8 +48,8 @@ export function validateAllowedAccountTypes(
       details.primaryAccountId = 'Paying account must be CASH or LOAN_TAKEN'
     }
     lineTypes.forEach((type, idx) => {
-      if (type !== AccountType.EXPENSE && type !== AccountType.LOAN_TAKEN) {
-        details[`lines[${idx}]`] = 'Payment lines must be EXPENSE or LOAN_TAKEN accounts'
+      if (type !== AccountType.EXPENSE && type !== AccountType.LOAN_TAKEN && type !== AccountType.CASH) {
+        details[`lines[${idx}]`] = 'Payment lines must be EXPENSE, LOAN_TAKEN, or CASH accounts'
       }
     })
   }
@@ -214,7 +214,22 @@ export function calculateTxnEffects(
     if (primaryAccount.type === AccountType.CASH) {
       deltas.push({ accountId: primaryAccount.id, delta: total })
     }
-    // Lines: INCOME accounts don't store balance
+    // Lines: BR-05 & BR-07 for CASH lines; INCOME lines don't store balance
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+      if (line.account.type === AccountType.CASH) {
+        if (line.amount > line.account.balance) {
+          return {
+            valid: false,
+            errorType: 'RULE_VIOLATION',
+            details: {
+              [`lines[${i}].amount`]: `Not enough money in ${line.account.name} (balance ฿${formatBaht(line.account.balance)})`,
+            },
+          }
+        }
+        deltas.push({ accountId: line.account.id, delta: -line.amount })
+      }
+    }
     return { valid: true, deltas }
   }
 
@@ -235,7 +250,7 @@ export function calculateTxnEffects(
       deltas.push({ accountId: primaryAccount.id, delta: total })
     }
 
-    // Lines: BR-05 & BR-08: each LOAN_TAKEN line balance -= amount; EXPENSE lines no change
+    // Lines: BR-05 & BR-08: LOAN_TAKEN line balance -= amount; CASH line balance += amount; EXPENSE lines no change
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
       if (line.account.type === AccountType.LOAN_TAKEN) {
@@ -249,6 +264,8 @@ export function calculateTxnEffects(
           }
         }
         deltas.push({ accountId: line.account.id, delta: -line.amount })
+      } else if (line.account.type === AccountType.CASH) {
+        deltas.push({ accountId: line.account.id, delta: line.amount })
       }
     }
 

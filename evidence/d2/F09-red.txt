@@ -1,0 +1,20 @@
+# F-09 RED — tests written before implementation (branch feature/F09-transfers, base staging/sprint-2)
+# Command: cd server && npx vitest run tests/f09-transfers.unit.test.ts tests/f09-transfers.api.test.ts
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ❯ tests/f09-transfers.api.test.ts (6 tests | 5 failed) 2412ms
+     × TEST-F09-01 PAYMENT transfer moves balances and leaves income/expense unchanged 612ms
+     × TEST-F09-02 RECEIPT transfer pulls from CASH line and leaves income/expense unchanged 384ms
+     × TEST-F09-03 BR-07 rejects RECEIPT CASH line over balance, accepts exact balance, rejects PAYMENT overdraft 353ms
+     ✓ TEST-F09-04 rejects self-transfer (422), other user CASH line (404), archived CASH line (404) 367ms
+     × TEST-F09-05 card cash advance increases Credit Card debt and Wallet without changing expense 353ms
+     × TEST-F09-06 mixed PAYMENT counts only EXPENSE line toward expense 339ms
+ ❯ tests/f09-transfers.unit.test.ts (3 tests | 3 failed) 8ms
+     × TEST-F09-01 PAYMENT from CASH with CASH line is allowed and computes Bank -, Wallet + 5ms
+     × TEST-F09-02 RECEIPT into CASH with CASH line is allowed and computes Wallet +, Bank - 1ms
+     × TEST-F09-03 BR-07 rejects RECEIPT CASH line exceeding line balance and accepts exact balance 0ms
+
+ Test Files  2 failed (2)
+      Tests  8 failed | 1 passed (9)
+   Duration  7.65s
