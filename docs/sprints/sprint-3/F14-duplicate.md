@@ -65,3 +65,4 @@ No change.
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-25 | Initial contract. No new endpoint; BR-17 in a client mapping function with a client unit test. VOID can be duplicated (D-15). | D2-S5 |
+| 0.2 | 2026-11-26 | TEST-F14-01 runs with Vitest added to `client/` (`npm test`, also in the CI job "Client build"). TEST-F14-03 sets the source receipt to VOID through `server/prisma/e2e-void.ts` because the void endpoint (F-11) does not exist yet; switch to the F-11 API once it merges. A `?duplicate=` id of the other form (e.g. a receipt on `/pay`) is treated as not found. | D2-S9 (Sxr1n): F-11 not started |
