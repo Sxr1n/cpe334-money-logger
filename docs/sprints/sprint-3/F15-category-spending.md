@@ -1,5 +1,5 @@
 # F-15 Category spending — Sprint 3
-Linked: FR-26, BR-06, BR-11, BR-12, NFR-01, NFR-02   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-26, BR-06, BR-11, BR-12, NFR-01, NFR-02   Status: TESTED   Owner: Sxr1n
 Depends on: F-06 (`lib/summary.ts`, `parsePeriod`). Design references: `docs/system-sds.md` §2.4 (INCOME/EXPENSE totals are summed from lines, not stored), §4.3; decision D-16 (this is the Sprint 3 workflow in `v0.3.0-rc1` for D2)
 
 ## 1 Behavior & workflow
@@ -76,9 +76,15 @@ No schema change.
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F15-01 … AC-F15-06 | — | NOT RUN | — |
+| AC-F15-01 | `server/tests/f15-categories.api.test.ts::TEST-F15-01`, `server/tests/f15-categories.unit.test.ts::TEST-F15-01` | PASS | 0e291ae |
+| AC-F15-02 | `server/tests/f15-categories.api.test.ts::TEST-F15-02` | PASS | 0e291ae |
+| AC-F15-03 | `server/tests/f15-categories.api.test.ts::TEST-F15-03` | PASS | 0e291ae |
+| AC-F15-04 | `server/tests/f15-categories.api.test.ts::TEST-F15-04` | PASS | 0e291ae |
+| AC-F15-05 | `server/tests/f15-categories.api.test.ts::TEST-F15-05` | PASS | 0e291ae |
+| AC-F15-06 | `e2e/f15-reports.spec.ts::TEST-F15-06` | PASS | 0e291ae |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-25 | Initial contract. Chosen as the Sprint 3 workflow for `v0.3.0-rc1` (D-16). | D2-S5 |
+| 0.2 | 2026-11-25 | Implemented; all AC PASS (red `7f2ea52`, green `0e291ae`, `evidence/d2/F15-*.txt`). Status → TESTED. No behaviour change from v0.1. | D2-S6 |
