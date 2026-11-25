@@ -121,8 +121,9 @@ export default function AccountsPage() {
 
   function startSetOpening(acc: AccountItem) {
     setEditingAccount(acc)
-    setAmountStr('')
-    setDateStr(getTodayInBangkok())
+    // F-08: editing pre-fills the current opening amount and date
+    setAmountStr(acc.openingBalance === null ? '' : (acc.openingBalance / 100).toFixed(2))
+    setDateStr(acc.openingDate ?? getTodayInBangkok())
     setFieldErrors({})
     setFormError(null)
   }
@@ -174,13 +175,14 @@ export default function AccountsPage() {
 
     try {
       const updated = await api<AccountItem>(`/accounts/${editingAccount.id}/opening-balance`, {
-        method: 'PUT',
+        method: editingAccount.openingBalance === null ? 'PUT' : 'PATCH',
         body: { amount: satang, date: dateStr },
       })
-      setAccounts((prev) => prev?.map((a) => (a.id === updated.id ? updated : a)) ?? null)
+      replaceAccount(updated)
       setEditingAccount(null)
     } catch (err) {
-      setFormError(err instanceof ApiError ? err.message : 'Something went wrong.')
+      if (err instanceof ApiError && err.details) setFieldErrors(err.details)
+      else setFormError(err instanceof ApiError ? err.message : 'Something went wrong.')
     } finally {
       setPending(false)
     }
@@ -256,7 +258,7 @@ export default function AccountsPage() {
       {editingAccount && (
         <div className="card mb-4 border-primary">
           <div className="card-header bg-primary text-white">
-            Set opening balance for <strong>{editingAccount.name}</strong> ({editingAccount.type})
+            {editingAccount.openingBalance === null ? 'Set' : 'Edit'} opening balance for <strong>{editingAccount.name}</strong> ({editingAccount.type})
           </div>
           <div className="card-body">
             {formError && <div className="alert alert-danger py-2">{formError}</div>}
@@ -374,13 +376,13 @@ export default function AccountsPage() {
                               </td>
                             )}
                             <td className="text-end">
-                              {isCashOrLoan && acc.openingBalance === null && (
+                              {isCashOrLoan && (
                                 <button
                                   className="btn btn-sm btn-outline-primary"
                                   onClick={() => startSetOpening(acc)}
                                   disabled={editingAccount?.id === acc.id}
                                 >
-                                  Set opening balance
+                                  {acc.openingBalance === null ? 'Set opening balance' : 'Edit opening balance'}
                                 </button>
                               )}
                               <div className="btn-group btn-group-sm ms-1">

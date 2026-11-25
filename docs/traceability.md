@@ -139,12 +139,12 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F07-06 | Given Telecom is archived, a PAYMENT with a Telecom line, or a RECEIPT into an archived Wallet, → 404 and nothing … | TEST-F07-06 | API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-06` | PASS | 3a75c2f |
 | AC-F07-07 | Without a session POST /api/accounts and PATCH /api/accounts/:id → 401; as admin → 403; alice PATCH on bob's Bank … | TEST-F07-07 | API-DB |  | `server/tests/f07-accounts.api.test.ts::TEST-F07-07` | PASS | 3a75c2f |
 | AC-F07-08 | In the browser on /accounts, alice creates "Wallet" (Cash) and sees it under Cash; creating "wallet" again shows … | TEST-F07-08 | E2E |  | `e2e/f07-accounts.spec.ts::TEST-F07-08` | PASS | 3a75c2f |
-| AC-F08-01 | Given Bank opening 1000000 and a RECEIPT of 500000 (Bank 1500000), when alice patches the opening balance to … | TEST-F08-01 | API-DB |  | — | NOT RUN | — |
-| AC-F08-02 | Given Bank opening 1000000 and a PAYMENT of 800000 (Bank 200000), patching the opening balance to 799999 → 422 … | TEST-F08-02 | unit + API-DB | yes | — | NOT RUN | — |
-| AC-F08-03 | Given Credit Card opening debt 500000 and a repayment of 300000 (debt 200000), patching the opening to 299999 → … | TEST-F08-03 | API-DB | yes | — | NOT RUN | — |
-| AC-F08-04 | Amount −1, 1.5 or 100000000000, or date "2026-02-30" → 422 VALIDATION_FAILED; Salary (INCOME) → 422 … | TEST-F08-04 | API-DB |  | — | NOT RUN | — |
-| AC-F08-05 | Without a session → 401; as admin → 403; alice patching bob's Bank → 404 and bob's Bank is unchanged. | TEST-F08-05 | API-DB |  | — | NOT RUN | — |
-| AC-F08-06 | In the browser on /accounts, "Edit opening balance" on Bank opens the form with the current amount and date; … | TEST-F08-06 | E2E |  | — | NOT RUN | — |
+| AC-F08-01 | Given Bank opening 1000000 and a RECEIPT of 500000 (Bank 1500000), when alice patches the opening balance to … | TEST-F08-01 | API-DB |  | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-01` | PASS | c341d6d |
+| AC-F08-02 | Given Bank opening 1000000 and a PAYMENT of 800000 (Bank 200000), patching the opening balance to 799999 → 422 … | TEST-F08-02 | unit + API-DB | yes | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-02`, `server/tests/f08-opening-balance.unit.test.ts::TEST-F08-02` | PASS | c341d6d |
+| AC-F08-03 | Given Credit Card opening debt 500000 and a repayment of 300000 (debt 200000), patching the opening to 299999 → … | TEST-F08-03 | API-DB | yes | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-03` | PASS | c341d6d |
+| AC-F08-04 | Amount −1, 1.5 or 100000000000, or date "2026-02-30" → 422 VALIDATION_FAILED; Salary (INCOME) → 422 … | TEST-F08-04 | API-DB |  | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-04` | PASS | c341d6d |
+| AC-F08-05 | Without a session → 401; as admin → 403; alice patching bob's Bank → 404 and bob's Bank is unchanged. | TEST-F08-05 | API-DB |  | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-05` | PASS | c341d6d |
+| AC-F08-06 | In the browser on /accounts, "Edit opening balance" on Bank opens the form with the current amount and date; … | TEST-F08-06 | E2E |  | `e2e/f08-opening-balance.spec.ts::TEST-F08-06` | PASS | c341d6d |
 | AC-F08-07 | (NFR-05) After a seeded run of 1,000 random valid operations covering every form, every allowed line type, … | TEST-NFR05-01 | API-DB |  | — | NOT RUN | — |
 | AC-F09-01 | Given Bank 1000000 and Wallet 0, a PAYMENT from Bank with one Wallet line 300000 → 201, Bank 700000, Wallet … | TEST-F09-01 | unit + API-DB | yes | — | NOT RUN | — |
 | AC-F09-02 | Given Bank 700000 and Wallet 300000, a RECEIPT into Wallet with one Bank line 200000 → 201, Bank 500000, Wallet … | TEST-F09-02 | unit + API-DB |  | — | NOT RUN | — |
@@ -207,3 +207,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.6 | 2026-11-14 | Add AC-F05-08 / TEST-F05-08 to NFR-10 and Sprint 1 table; record commit 6f52657 for F-05 | PR #18 review |
 | 0.7 | 2026-11-22 | Sprint 2 contracts (F-07–F-12): AC/TEST IDs for FR-08–10, FR-14–17, FR-19–21, BR-14–16, NFR-05; new §2b; Q-03 and line-type gaps closed | D2-S1 |
 | 0.8 | 2026-11-23 | F-07 results: AC-F07-01..08 PASS on `3a75c2f` | D2-S2 |
+| 0.9 | 2026-11-23 | F-08 results: AC-F08-01..06 PASS on `c341d6d`; AC-F08-07 NOT RUN (needs F-09–F-11) | D2-S3 |

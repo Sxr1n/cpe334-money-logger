@@ -1,0 +1,149 @@
+# F-08 RED — tests written before implementation (branch feature/F08-opening-balance-management, base bca9352)
+# Command: cd server && npx vitest run tests/f08-opening-balance.api.test.ts tests/f08-opening-balance.unit.test.ts
+# Note: TEST-F08-05 already passes: 401/403 come from the existing requireAuth/requireRole mount and the missing PATCH route answers 404.
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ❯ tests/f08-opening-balance.api.test.ts (5 tests | 4 failed) 6777ms
+     × TEST-F08-01 raising the opening balance moves the balance by new − old; no transaction, income unchanged 2159ms
+     × TEST-F08-02 lowering below what later payments used is rejected; exactly 0 is accepted (CASH) 1134ms
+     × TEST-F08-03 same rule for a LOAN_TAKEN debt after a repayment 1106ms
+     × TEST-F08-04 validation, type, archived and not-set cases leave the row unchanged 1079ms
+ ❯ tests/f08-opening-balance.unit.test.ts (1 test | 1 failed) 3ms
+     × TEST-F08-02 new balance = balance + (new − old); negative results are rejected 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f08-opening-balance.api.test.ts > F-08 Opening balance management > TEST-F08-01 raising the opening balance moves the balance by new − old; no transaction, income unchanged
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ tests/f08-opening-balance.api.test.ts:48:24
+     46|
+     47|     const res = await editOpening(acc.Bank, { amount: 2000000, date: '…
+     48|     expect(res.status).toBe(200)
+       |                        ^
+     49|     expect(res.body).toMatchObject({ id: acc.Bank, balance: 2500000, o…
+     50|     expect(await prisma.txn.count()).toBe(txnCount)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/f08-opening-balance.api.test.ts > F-08 Opening balance management > TEST-F08-02 lowering below what later payments used is rejected; exactly 0 is accepted (CASH)
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f08-opening-balance.api.test.ts:60:24
+     58|
+     59|     const low = await editOpening(acc.Bank, { amount: 799999, date: '2…
+     60|     expect(low.status).toBe(422)
+       |                        ^
+     61|     expect(low.body.error.code).toBe('RULE_VIOLATION')
+     62|     expect(low.body.error.details.amount).toBe('Too low: the balance w…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/f08-opening-balance.api.test.ts > F-08 Opening balance management > TEST-F08-03 same rule for a LOAN_TAKEN debt after a repayment
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f08-opening-balance.api.test.ts:75:100
+     73|     expect((await txn({ form: 'PAYMENT', primaryAccountId: acc.Bank, t…
+     74|
+     75|     expect((await editOpening(acc['Credit Card'], { amount: 299999, da…
+       |                                                                                                    ^
+     76|     expect((await account(acc['Credit Card'])).balance).toBe(200000n)
+     77|     const ok = await editOpening(acc['Credit Card'], { amount: 300000,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/f08-opening-balance.api.test.ts > F-08 Opening balance management > TEST-F08-04 validation, type, archived and not-set cases leave the row unchanged
+AssertionError: expected 404 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 404
+
+ ❯ tests/f08-opening-balance.api.test.ts:92:26
+     90|     ]) {
+     91|       const res = await editOpening(acc.Bank, body)
+     92|       expect(res.status).toBe(422)
+       |                          ^
+     93|       expect(res.body.error.code).toBe('VALIDATION_FAILED')
+     94|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/f08-opening-balance.unit.test.ts > F-08 opening balance change (unit) > TEST-F08-02 new balance = balance + (new − old); negative results are rejected
+TypeError: balanceAfterOpeningChange is not a function
+ ❯ tests/f08-opening-balance.unit.test.ts:7:12
+      5|   it('TEST-F08-02 new balance = balance + (new − old); negative result…
+      6|     // Bank: opening 1,000,000, then a payment of 800,000 → balance 20…
+      7|     expect(balanceAfterOpeningChange(200000n, 1000000n, 799999n)).toBe…
+       |            ^
+      8|     expect(balanceAfterOpeningChange(200000n, 1000000n, 800000n)).toBe…
+      9|     expect(balanceAfterOpeningChange(1500000n, 1000000n, 2000000n)).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  5 failed | 1 passed (6)
+   Start at  23:28:33
+   Duration  21.71s (transform 966ms, setup 86ms, import 6.36s, tests 6.78s, environment 0ms)
+
+
+# Command: PW_CHANNEL=chrome npx playwright test e2e/f08-opening-balance.spec.ts
+
+Running 1 test using 1 worker
+
+  x  1 [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves (30.6s)
+
+
+  1) [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('row', { name: /Savings F08/ }).getByRole('button', { name: 'Edit opening balance' })
+
+
+      23 |   const row = page.getByRole('row', { name: /Savings F08/ })
+      24 |   await expect(row).toContainText('฿200.00')
+    > 25 |   await row.getByRole('button', { name: 'Edit opening balance' }).click()
+         |                                                                   ^
+      26 |   await expect(page.locator('#openingAmount')).toHaveValue('1000.00')
+      27 |   await expect(page.locator('#openingDate')).toHaveValue('2026-11-01')
+      28 |
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\f08-opening-balance.spec.ts:25:67
+
+    Error Context: test-results\f08-opening-balance-TEST-F-f8bac--the-value-valid-edit-saves-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\f08-opening-balance-TEST-F-f8bac--the-value-valid-edit-saves-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\f08-opening-balance-TEST-F-f8bac--the-value-valid-edit-saves-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves 

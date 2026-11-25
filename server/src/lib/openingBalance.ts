@@ -38,3 +38,8 @@ export function validateOpeningBalanceInput(body: unknown): {
   }
   return { valid: true }
 }
+
+// F-08 / D-10: editing the opening amount shifts the current balance by (new − old); callers reject a negative result.
+export function balanceAfterOpeningChange(balance: bigint, oldOpening: bigint, newOpening: bigint): bigint {
+  return balance + newOpening - oldOpening
+}
