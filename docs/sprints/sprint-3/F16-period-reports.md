@@ -1,5 +1,5 @@
 # F-16 Period reports — Sprint 3
-Linked: FR-27, BR-06, BR-11, BR-12, NFR-01, NFR-02   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-27, BR-06, BR-11, BR-12, NFR-01, NFR-02   Status: TESTED   Owner: Sxr1n
 Depends on: F-06 (`summarize`), F-15 (Reports page and `/api/reports` mount). Design references: `docs/system-sds.md` §2.4, §4.3; decision D-14
 
 ## 1 Behavior & workflow
@@ -70,9 +70,15 @@ No schema change. At most 12 `summarize` calls per request.
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F16-01 … AC-F16-06 | — | NOT RUN | — |
+| AC-F16-01 | `server/tests/f16-monthly.api.test.ts::TEST-F16-01` | PASS | c5d7c81 |
+| AC-F16-02 | `server/tests/f16-monthly.api.test.ts::TEST-F16-02` | PASS | c5d7c81 |
+| AC-F16-03 | `server/tests/f16-monthly.api.test.ts::TEST-F16-03` | PASS | c5d7c81 |
+| AC-F16-04 | `server/tests/f16-monthly.api.test.ts::TEST-F16-04`, `server/tests/f16-monthly.unit.test.ts::TEST-F16-04` | PASS | c5d7c81 |
+| AC-F16-05 | `server/tests/f16-monthly.api.test.ts::TEST-F16-05` | PASS | c5d7c81 |
+| AC-F16-06 | `e2e/f16-monthly.spec.ts::TEST-F16-06` | PASS | c5d7c81 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-25 | Initial contract (D-14: at most 12 months, default last 6). | D2-S5 |
+| 0.2 | 2026-11-26 | Implemented; all AC PASS (red `a82b171`, green `c5d7c81`, `evidence/d2/F16-*.txt`). Status → TESTED. No behaviour change from v0.1. | D2-S7 |

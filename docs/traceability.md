@@ -199,12 +199,12 @@ Short descriptions; full wording in `docs/sprints/sprint-3/` (v0.1, D2-S5). F-15
 | AC-F15-04 | from=2026-11-30&to=2026-11-01 or from=2026-13-01 → 422 VALIDATION_FAILED naming the parameter. | TEST-F15-04 | API-DB |  | `server/tests/f15-categories.api.test.ts::TEST-F15-04` | PASS | 0e291ae |
 | AC-F15-05 | Without a session → 401; as admin → 403; bob's spending never appears in alice's result. | TEST-F15-05 | API-DB |  | `server/tests/f15-categories.api.test.ts::TEST-F15-05` | PASS | 0e291ae |
 | AC-F15-06 | In the browser, alice opens Reports and sees her category rows with amounts and percentages for the current month; … | TEST-F15-06 | E2E |  | `e2e/f15-reports.spec.ts::TEST-F15-06` | PASS | 0e291ae |
-| AC-F16-01 | Given a Salary receipt 3000000 on 2026-11-05 and a card purchase 120000 on 2026-11-06, … | TEST-F16-01 | API-DB | yes | — | NOT RUN | — |
-| AC-F16-02 | A card repayment, a transfer, an opening balance and a VOID transaction in November do not change November's … | TEST-F16-02 | API-DB | yes | — | NOT RUN | — |
-| AC-F16-03 | A transaction dated 2026-10-31 counts in October and one dated 2026-11-01 counts in November. | TEST-F16-03 | API-DB |  | — | NOT RUN | — |
-| AC-F16-04 | fromMonth=2025-12&toMonth=2026-11 (12 months) → 200 with 12 items; fromMonth=2025-11&toMonth=2026-11 (13) → 422; … | TEST-F16-04 | unit + API-DB |  | — | NOT RUN | — |
-| AC-F16-05 | Without a session → 401; as admin → 403; bob's transactions never change alice's figures. | TEST-F16-05 | API-DB |  | — | NOT RUN | — |
-| AC-F16-06 | In the browser, alice opens Reports and sees the default 6-month table with the current month's income and … | TEST-F16-06 | E2E |  | — | NOT RUN | — |
+| AC-F16-01 | Given a Salary receipt 3000000 on 2026-11-05 and a card purchase 120000 on 2026-11-06, … | TEST-F16-01 | API-DB | yes | `server/tests/f16-monthly.api.test.ts::TEST-F16-01` | PASS | c5d7c81 |
+| AC-F16-02 | A card repayment, a transfer, an opening balance and a VOID transaction in November do not change November's … | TEST-F16-02 | API-DB | yes | `server/tests/f16-monthly.api.test.ts::TEST-F16-02` | PASS | c5d7c81 |
+| AC-F16-03 | A transaction dated 2026-10-31 counts in October and one dated 2026-11-01 counts in November. | TEST-F16-03 | API-DB |  | `server/tests/f16-monthly.api.test.ts::TEST-F16-03` | PASS | c5d7c81 |
+| AC-F16-04 | fromMonth=2025-12&toMonth=2026-11 (12 months) → 200 with 12 items; fromMonth=2025-11&toMonth=2026-11 (13) → 422; … | TEST-F16-04 | unit + API-DB |  | `server/tests/f16-monthly.api.test.ts::TEST-F16-04`, `server/tests/f16-monthly.unit.test.ts::TEST-F16-04` | PASS | c5d7c81 |
+| AC-F16-05 | Without a session → 401; as admin → 403; bob's transactions never change alice's figures. | TEST-F16-05 | API-DB |  | `server/tests/f16-monthly.api.test.ts::TEST-F16-05` | PASS | c5d7c81 |
+| AC-F16-06 | In the browser, alice opens Reports and sees the default 6-month table with the current month's income and … | TEST-F16-06 | E2E |  | `e2e/f16-monthly.spec.ts::TEST-F16-06` | PASS | c5d7c81 |
 
 ## 3. Coverage gaps
 | Gap | Affects | Plan |
@@ -238,3 +238,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.10 | 2026-11-24 | F-12 results: AC-F12-01..07 PASS on `63d377b` | D2-S4 |
 | 0.11 | 2026-11-25 | Sprint 3 contracts (F-13–F-16): AC/TEST IDs for FR-22, FR-23, FR-26, FR-27, BR-17; new §2c (21 rows) | D2-S5 |
 | 0.12 | 2026-11-25 | F-15 results: AC-F15-01..06 PASS on `0e291ae` | D2-S6 |
+| 0.13 | 2026-11-26 | F-16 results: AC-F16-01..06 PASS on `c5d7c81` | D2-S7 |
