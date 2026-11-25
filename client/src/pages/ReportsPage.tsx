@@ -104,11 +104,117 @@ function CategorySpending() {
   )
 }
 
+interface MonthRow {
+  income: number
+  expense: number
+  net: number
+}
+interface MonthlyReport {
+  fromMonth: string
+  toMonth: string
+  items: (MonthRow & { month: string })[]
+  total: MonthRow
+}
+
+const monthLabel = (m: string) =>
+  new Date(`${m}-01T00:00:00Z`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+
+// F-16 FR-27: income / expense / net per month; the server picks the default 6 months (D-14).
+function MonthlyReportSection() {
+  const [range, setRange] = useState({ fromMonth: '', toMonth: '' })
+  const [query, setQuery] = useState('')
+  const [data, setData] = useState<MonthlyReport | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setError(null)
+    api<MonthlyReport>(`/reports/monthly${query}`)
+      .then((res) => {
+        setData(res)
+        setErrors({})
+        setRange({ fromMonth: res.fromMonth, toMonth: res.toMonth })
+      })
+      .catch((err) => {
+        if (err instanceof ApiError && err.details) setErrors(err.details)
+        else setError(err instanceof ApiError ? err.message : 'Something went wrong.')
+      })
+  }, [query])
+
+  const money = (v: number) => <span className={v < 0 ? 'text-danger' : undefined}>{v < 0 ? `−${formatTHB(-v)}` : formatTHB(v)}</span>
+
+  return (
+    <section className="card shadow-sm mb-4">
+      <div className="card-body">
+        <h2 className="h5">Monthly report</h2>
+        <form
+          className="row g-2 align-items-end mb-3"
+          onSubmit={(e) => {
+            e.preventDefault()
+            setQuery(`?fromMonth=${range.fromMonth}&toMonth=${range.toMonth}`)
+          }}
+        >
+          {(['fromMonth', 'toMonth'] as const).map((k) => (
+            <div className="col-auto" key={k}>
+              <label htmlFor={`mon-${k}`} className="form-label small mb-1">{k === 'fromMonth' ? 'From month' : 'To month'}</label>
+              <input
+                id={`mon-${k}`}
+                type="month"
+                className={`form-control form-control-sm ${errors[k] ? 'is-invalid' : ''}`}
+                value={range[k]}
+                onChange={(e) => setRange({ ...range, [k]: e.target.value })}
+              />
+              {errors[k] && <div className="invalid-feedback">{errors[k]}</div>}
+            </div>
+          ))}
+          <div className="col-auto">
+            <button type="submit" className="btn btn-primary btn-sm" disabled={!data && !error && Object.keys(errors).length === 0}>Show</button>
+          </div>
+        </form>
+
+        {error && <div className="alert alert-danger">{error}</div>}
+        {!data && !error && <div className="spinner-border" role="status" aria-label="Loading" />}
+        {data && (
+          <table className="table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th className="text-end">Income</th>
+                <th className="text-end">Expense</th>
+                <th className="text-end">Net</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.items.map((i) => (
+                <tr key={i.month}>
+                  <td>{monthLabel(i.month)}</td>
+                  <td className="text-end font-monospace">{money(i.income)}</td>
+                  <td className="text-end font-monospace">{money(i.expense)}</td>
+                  <td className="text-end font-monospace">{money(i.net)}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total</th>
+                <th className="text-end font-monospace">{money(data.total.income)}</th>
+                <th className="text-end font-monospace">{money(data.total.expense)}</th>
+                <th className="text-end font-monospace">{money(data.total.net)}</th>
+              </tr>
+            </tfoot>
+          </table>
+        )}
+      </div>
+    </section>
+  )
+}
+
 export default function ReportsPage() {
   return (
     <>
       <h1 className="h4 mb-3">Reports</h1>
       <CategorySpending />
+      <MonthlyReportSection />
     </>
   )
 }
