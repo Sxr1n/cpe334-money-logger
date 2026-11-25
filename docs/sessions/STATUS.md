@@ -22,10 +22,10 @@
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
 | F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
-| F-13 | Favourite transactions | 3 | SPECIFIED | Sxr1n | sprint-3/F13-favourites.md | — | — |
-| F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | — | — |
-| F-15 | Category spending | 3 | SPECIFIED | Sxr1n | sprint-3/F15-category-spending.md | — | — |
-| F-16 | Period reports | 3 | SPECIFIED | Sxr1n | sprint-3/F16-period-reports.md | — | — |
+| F-13 | Favourite transactions | 3 | SPECIFIED | Sxr1n | sprint-3/F13-favourites.md | #62 | — |
+| F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | #60 | — |
+| F-15 | Category spending | 3 | SPECIFIED | Sxr1n | sprint-3/F15-category-spending.md | #61 | — |
+| F-16 | Period reports | 3 | SPECIFIED | Sxr1n | sprint-3/F16-period-reports.md | #63 | — |
 
 ## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
 | วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
@@ -48,7 +48,7 @@
 ## Session log (ใหม่สุดอยู่บนสุด)
 ### 2026-11-25 — D2-S5 Sprint 3 contracts — Claude + Sxr1n
 - Done: contracts F-13–F-16 in `docs/sprints/sprint-3/` (21 AC, 21 STS rows, SPECIFIED); SRS v0.6 (D-14–D-16); features v0.4; plan v0.4 (F-15 first, Sxr1n owns F-13–F-16); traceability v0.11 (§2c); SDS v0.8
-- Evidence: branch `spec/sprint-3-contracts` (spec commits per feature)
+- Evidence: branch `spec/sprint-3-contracts` (spec commits per feature), PR #59; Issues #60–#63
 - Decisions (Sxr1n, 2026-11-25): D-14 period report ≤ 12 months, default last 6; D-15 VOID cannot be favourited (hidden from list) but can be duplicated; D-16 F-15 is the Sprint 3 workflow in `v0.3.0-rc1`; Sxr1n owns all Sprint 3 features
 - Open issues: PR #57 approved but merging from this session was blocked by the permission classifier → Sxr1n merges; F-14 unit test needs Vitest for a pure client module (decide in F-14: client dev dependency or server Vitest include)
 - Next session: F-15 Category spending
