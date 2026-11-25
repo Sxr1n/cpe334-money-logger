@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-13 → F-14 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-14 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -22,7 +22,7 @@
 | F-10 | Loans given and taken | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | — |
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
 | F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
-| F-13 | Favourite transactions | 3 | SPECIFIED | Sxr1n | sprint-3/F13-favourites.md | #62 | — |
+| F-13 | Favourite transactions | 3 | TESTED | Sxr1n | sprint-3/F13-favourites.md | #62 / PR #66 | red `c4b8f42`, green `748556f` (evidence/d2/F13-*.txt) |
 | F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | #60 | — |
 | F-15 | Category spending | 3 | TESTED | Sxr1n | sprint-3/F15-category-spending.md | #61 / PR #64 | red `7f2ea52`, green `0e291ae` (evidence/d2/F15-*.txt) |
 | F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR #65 | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-26 — D2-S8 F-13 Favourite transactions — Claude + Sxr1n
+- Done: `PUT /api/transactions/:id/favorite` (VOID → 422, D-15); `favorite=true` filter (POSTED favourites only); `isFavorite` in the transaction shape; detail-page toggle (`aria-pressed`), Favourites page + nav link
+- Evidence: red `c4b8f42` → `evidence/d2/F13-red.txt` (5 fail); green `748556f` → `evidence/d2/F13-green.txt` (tsc OK, server 25 files / 98 tests, client build OK, E2E 12/12)
+- Decisions: none new; the check-then-update for VOID is not locked, which is harmless because the list itself filters POSTED
+- Open issues: PR chain #58 → #59 → #64 → #65 → this one
+- Next session: F-14 Duplicate
 ### 2026-11-26 — D2-S7 F-16 Period reports — Claude + Sxr1n
 - Done: `GET /api/reports/monthly` (income/expense/net per Bangkok month via `summarize`, empty months listed, total row); `parseMonthRange` + `monthBounds` in `lib/period.ts` (≤ 12 months, default last 6, D-14); Reports page Monthly report section
 - Evidence: red `a82b171` → `evidence/d2/F16-red.txt` (6 fail); green `c5d7c81` → `evidence/d2/F16-green.txt` (tsc OK, server 23 files / 93 tests, client build OK, E2E 11/11)

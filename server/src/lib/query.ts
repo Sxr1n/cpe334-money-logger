@@ -42,6 +42,7 @@ export interface TxnFilter {
   minAmount?: bigint
   maxAmount?: bigint
   q?: string
+  favorite?: true
 }
 
 // F-12 §2: every parameter optional; each invalid one is reported under its own name.
@@ -83,6 +84,13 @@ export function parseTxnFilter(query: Record<string, unknown>): Invalid | { filt
   }
   if (filter.minAmount !== undefined && filter.maxAmount !== undefined && filter.minAmount > filter.maxAmount) {
     error.minAmount = 'Must not be more than maxAmount'
+  }
+
+  // F-13: only "true" is meaningful; the list then shows POSTED favourites (D-15).
+  const favorite = str('favorite')
+  if (favorite !== undefined) {
+    if (favorite === 'true') filter.favorite = true
+    else error.favorite = 'Must be true'
   }
 
   const q = str('q')?.trim()
