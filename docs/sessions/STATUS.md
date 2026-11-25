@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-14 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-09 (PR #67, conflict in traceability.md) → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -23,7 +23,7 @@
 | F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
 | F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
 | F-13 | Favourite transactions | 3 | TESTED | Sxr1n | sprint-3/F13-favourites.md | #62 / PR #66 | red `c4b8f42`, green `748556f` (evidence/d2/F13-*.txt) |
-| F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | #60 | — |
+| F-14 | Duplicate transaction | 3 | TESTED | Sxr1n | sprint-3/F14-duplicate.md | #60 | red `255be65`, green `b5cc4a3` (evidence/d2/F14-*.txt) |
 | F-15 | Category spending | 3 | TESTED | Sxr1n | sprint-3/F15-category-spending.md | #61 / PR #64 | red `7f2ea52`, green `0e291ae` (evidence/d2/F15-*.txt) |
 | F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR #65 | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
 
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-26 — D2-S9 F-14 Duplicate transaction — Claude + Sxr1n
+- Done: local `.git` repaired (OneDrive zeroed HEAD, index, the `spec/sprint-3-contracts` ref and 4 working files; restored from origin, nothing lost); PR #64 head was stuck after the GitHub outage → empty commit `d2eefa8`; #64, #65, #66 merged into `staging/sprint-2` (`982a93e`, CI success). F-14: `toDuplicateDraft`/`loadDuplicate` in `client/src/duplicate.ts`, `DuplicateBanner`, `?duplicate=` on Pay/Receive, Duplicate link on the detail page (POSTED and VOID) and Favourites rows; empty account selects show "Choose an account"
+- Evidence: red `255be65` → `evidence/d2/F14-red.txt` (unit module missing, E2E 3 fail); green `b5cc4a3` → `evidence/d2/F14-green.txt` (server tsc OK, 25 files / 98 tests; client 1 test + build OK; E2E 15/15)
+- Decisions (Sxr1n, 2026-11-26): Vitest added to `client/` (+ `npm test` in CI "Client build"); TEST-F14-03 sets VOID through `server/prisma/e2e-void.ts` until F-11 (contract v0.2)
+- Open issues: replace `e2e-void.ts` with the F-11 void API when F-11 merges; PR #67 (F-09) conflicts with staging in `docs/traceability.md`; the repo lives in OneDrive — move it out or pause sync
+- Next session: Leviathan-c137 F-09–F-11; release prep for D2
 ### 2026-11-26 — D2-S8 F-13 Favourite transactions — Claude + Sxr1n
 - Done: `PUT /api/transactions/:id/favorite` (VOID → 422, D-15); `favorite=true` filter (POSTED favourites only); `isFavorite` in the transaction shape; detail-page toggle (`aria-pressed`), Favourites page + nav link
 - Evidence: red `c4b8f42` → `evidence/d2/F13-red.txt` (5 fail); green `748556f` → `evidence/d2/F13-green.txt` (tsc OK, server 25 files / 98 tests, client build OK, E2E 12/12)

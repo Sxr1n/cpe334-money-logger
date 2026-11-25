@@ -1,5 +1,5 @@
 # F-14 Duplicate transaction — Sprint 3
-Linked: FR-23, BR-01–BR-09, BR-11, BR-17, NFR-02, NFR-10   Status: SPECIFIED   Owner: Sxr1n
+Linked: FR-23, BR-01–BR-09, BR-11, BR-17, NFR-02, NFR-10   Status: TESTED   Owner: Sxr1n
 Depends on: F-04, F-05 (forms), F-06 (detail), F-13 (Favourites entry point). Design references: SRS BR-17; decision D-15 (VOID may be duplicated)
 
 ## 1 Behavior & workflow
@@ -59,10 +59,16 @@ No change.
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F14-01 … AC-F14-04 | — | NOT RUN | — |
+| AC-F14-01 | `client/src/duplicate.test.ts::TEST-F14-01` | PASS | b5cc4a3 |
+| AC-F14-02 | `e2e/f14-duplicate.spec.ts::TEST-F14-02` | PASS | b5cc4a3 |
+| AC-F14-03 | `e2e/f14-duplicate.spec.ts::TEST-F14-03` | PASS | b5cc4a3 |
+| AC-F14-04 | `e2e/f14-duplicate.spec.ts::TEST-F14-04` | PASS | b5cc4a3 |
+
+Red `255be65` → `evidence/d2/F14-red.txt` (unit: module missing; E2E 3 fail: no Duplicate link / banner). Green `b5cc4a3` → `evidence/d2/F14-green.txt` (server tsc OK, 25 files / 98 tests; client 1 test, build OK; E2E 15/15). The feat commit also raised TEST-F14-02's starting receipt from ฿2,000 to ฿3,000: the duplicate was correctly rejected by BR-07 because the test had not funded both payments; no assertion changed.
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-25 | Initial contract. No new endpoint; BR-17 in a client mapping function with a client unit test. VOID can be duplicated (D-15). | D2-S5 |
 | 0.2 | 2026-11-26 | TEST-F14-01 runs with Vitest added to `client/` (`npm test`, also in the CI job "Client build"). TEST-F14-03 sets the source receipt to VOID through `server/prisma/e2e-void.ts` because the void endpoint (F-11) does not exist yet; switch to the F-11 API once it merges. A `?duplicate=` id of the other form (e.g. a receipt on `/pay`) is treated as not found. | D2-S9 (Sxr1n): F-11 not started |
+| 0.3 | 2026-11-26 | Status TESTED; done evidence filled. Archived/empty account selects show "Choose an account" and block Save. | D2-S9 |
