@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-13 / F-16 / F-14 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-13 → F-14 (Sxr1n) · F-09 → F-10 → F-11 (Leviathan-c137) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -25,7 +25,7 @@
 | F-13 | Favourite transactions | 3 | SPECIFIED | Sxr1n | sprint-3/F13-favourites.md | #62 | — |
 | F-14 | Duplicate transaction | 3 | SPECIFIED | Sxr1n | sprint-3/F14-duplicate.md | #60 | — |
 | F-15 | Category spending | 3 | TESTED | Sxr1n | sprint-3/F15-category-spending.md | #61 / PR #64 | red `7f2ea52`, green `0e291ae` (evidence/d2/F15-*.txt) |
-| F-16 | Period reports | 3 | SPECIFIED | Sxr1n | sprint-3/F16-period-reports.md | #63 | — |
+| F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR pending | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
 
 ## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
 | วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-26 — D2-S7 F-16 Period reports — Claude + Sxr1n
+- Done: `GET /api/reports/monthly` (income/expense/net per Bangkok month via `summarize`, empty months listed, total row); `parseMonthRange` + `monthBounds` in `lib/period.ts` (≤ 12 months, default last 6, D-14); Reports page Monthly report section
+- Evidence: red `a82b171` → `evidence/d2/F16-red.txt` (6 fail); green `c5d7c81` → `evidence/d2/F16-green.txt` (tsc OK, server 23 files / 93 tests, client build OK, E2E 11/11)
+- Decisions: none new
+- Open issues: PR chain #58 → #59 → #64 → this one; F-09–F-11 still not started
+- Next session: F-13 Favourites
 ### 2026-11-25 — D2-S6 F-15 Category spending — Claude + Sxr1n
 - Done: `GET /api/reports/categories` (`routes/reports.ts`, `percentOf` in `lib/summary.ts`, `/api/reports` behind the USER guard); Reports page + nav link with the Category spending section
 - Evidence: red `7f2ea52` → `evidence/d2/F15-red.txt` (6 fail, no route); green `0e291ae` → `evidence/d2/F15-green.txt` (tsc OK, server 21 files / 87 tests, client build OK, E2E 10/10)

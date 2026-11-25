@@ -26,3 +26,4 @@
 | 2026-11-24 | D2-S4 F-12 | Claude | Wrote the F-12 tests (red first), implemented the filter parser, query and History filter bar, fixed its own test data (lunch_box), ran the full regression | Sxr1n checks the evidence; Leviathan-c137 reviews the PR |
 | 2026-11-25 | D2-S5 Sprint 3 contracts | Claude | Drafted contracts F-13–F-16 from the SRS and current code; generated the Sprint 3 traceability rows; updated SRS decisions, features, plan and SDS | Sxr1n chose D-14–D-16 and the owner split; Leviathan-c137 reviews the PR |
 | 2026-11-25 | D2-S6 F-15 | Claude | Wrote the F-15 tests (red first), implemented the categories report and Reports page, ran the full regression | Sxr1n checks the evidence; Leviathan-c137 reviews the PR |
+| 2026-11-26 | D2-S7 F-16 | Claude | Wrote the F-16 tests (red first), implemented the monthly report and its Reports section, ran the full regression | Sxr1n checks the evidence; Leviathan-c137 reviews the PR |
