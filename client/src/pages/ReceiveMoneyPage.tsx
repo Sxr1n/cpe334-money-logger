@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
+import DuplicateBanner from '../components/DuplicateBanner'
+import { loadDuplicate, toAmountStr, type LoadedDuplicate } from '../duplicate'
 
 export interface AccountItem {
   id: number
@@ -63,15 +65,38 @@ export default function ReceiveMoneyPage() {
   const [pending, setPending] = useState(false)
   const [successTxn, setSuccessTxn] = useState<any | null>(null)
 
+  // F-14: /receive?duplicate=:id pre-fills the form from an own RECEIPT
+  const duplicateId = useSearchParams()[0].get('duplicate')
+  const [duplicate, setDuplicate] = useState<LoadedDuplicate | null>(null)
+  const [duplicateError, setDuplicateError] = useState<string | null>(null)
+
   useEffect(() => {
-    loadAccounts()
+    loadAccounts().then((active) => {
+      if (duplicateId && active) applyDuplicate(duplicateId, active)
+    })
   }, [])
+
+  async function applyDuplicate(id: string, active: AccountItem[]) {
+    try {
+      const loaded = await loadDuplicate(id, 'RECEIPT', active.map((a) => a.id), getTodayInBangkok())
+      const { draft } = loaded
+      setPrimaryAccountId(draft.primaryAccountId)
+      setDateStr(draft.date)
+      setTotalStr(toAmountStr(draft.total))
+      setNoteStr(draft.note ?? '')
+      setLines(draft.lines.map((l, i) => ({ id: `dup-${i}`, accountId: l.accountId, amountStr: toAmountStr(l.amount) })))
+      setDuplicate(loaded)
+    } catch (err) {
+      setDuplicateError(err instanceof Error ? err.message : 'Something went wrong.')
+    }
+  }
 
   async function loadAccounts() {
     try {
       setLoading(true)
       const res = await api<{ items: AccountItem[] }>('/accounts')
-      setAccounts(res.items.filter((a) => !a.archived)) // F-07: archived accounts take no new transactions
+      const active = res.items.filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+      setAccounts(active)
 
       const cash = res.items.filter((a) => a.type === 'CASH')
       const income = res.items.filter((a) => a.type === 'INCOME')
@@ -80,6 +105,7 @@ export default function ReceiveMoneyPage() {
       if (income.length > 0) {
         setLines([{ id: 'line-1', accountId: income[0].id, amountStr: '' }])
       }
+      return active
     } catch (err) {
       setFetchError(err instanceof ApiError ? err.message : 'Failed to load accounts.')
     } finally {
@@ -131,7 +157,13 @@ export default function ReceiveMoneyPage() {
   const isMatch = isTotalValid && allLinesHaveValidSatang && linesSumSatang === targetTotalSatang
 
   const isSaveDisabled =
-    !isMatch || hasDuplicateLineAccounts || isFutureDate || isBefore2000 || primaryAccountId === 0 || lines.length === 0
+    !isMatch ||
+    hasDuplicateLineAccounts ||
+    isFutureDate ||
+    isBefore2000 ||
+    primaryAccountId === 0 ||
+    lines.length === 0 ||
+    lines.some((l) => l.accountId === 0) // F-14: archived source account left empty
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -247,6 +279,8 @@ export default function ReceiveMoneyPage() {
         </div>
       )}
 
+      {!successTxn && <DuplicateBanner loaded={duplicate} error={duplicateError} />}
+
       {formError && <div className="alert alert-danger">{formError}</div>}
 
       <form onSubmit={handleSubmit} noValidate>
@@ -262,6 +296,7 @@ export default function ReceiveMoneyPage() {
             onChange={(e) => setPrimaryAccountId(Number(e.target.value))}
             disabled={pending}
           >
+            {primaryAccountId === 0 && <option value={0}>Choose an account</option>}
             {cashAccounts.map((acc) => (
               <option key={acc.id} value={acc.id}>
                 {acc.name} ({formatTHB(acc.balance)})
@@ -349,7 +384,9 @@ export default function ReceiveMoneyPage() {
                         value={l.accountId}
                         onChange={(e) => updateLine(l.id, 'accountId', e.target.value)}
                         disabled={pending}
+                        aria-label="Line account"
                       >
+                        {l.accountId === 0 && <option value={0}>Choose an account</option>}
                         <optgroup label="Income">
                           {incomeAccounts.map((inc) => (
                             <option key={inc.id} value={inc.id}>

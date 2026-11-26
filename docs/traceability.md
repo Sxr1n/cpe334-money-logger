@@ -189,10 +189,10 @@ Short descriptions; full wording in `docs/sprints/sprint-3/` (v0.1, D2-S5). F-15
 | AC-F13-03 | favorite=yes → 422 naming favorite; body { "favorite": "true" } → 400. | TEST-F13-03 | unit + API-DB |  | `server/tests/f13-favourites.api.test.ts::TEST-F13-03`, `server/tests/f13-favourites.unit.test.ts::TEST-F13-03` | PASS | 748556f |
 | AC-F13-04 | Without a session → 401; as admin → 403; alice marking bob's transaction → 404 and bob's flag is unchanged; bob's … | TEST-F13-04 | API-DB |  | `server/tests/f13-favourites.api.test.ts::TEST-F13-04` | PASS | 748556f |
 | AC-F13-05 | In the browser, alice adds a transaction to favourites from its detail page, sees it on Favourites, removes it, … | TEST-F13-05 | E2E |  | `e2e/f13-favourites.spec.ts::TEST-F13-05` | PASS | 748556f |
-| AC-F14-01 | toDuplicateDraft of a PAYMENT dated 2026-11-01 with lines Dining 70000 + Groceries 50000, note "Weekend" and … | TEST-F14-01 | unit | yes | — | NOT RUN | — |
-| AC-F14-02 | In the browser, Duplicate on a payment opens /pay?duplicate=:id with the values pre-filled and today's date; … | TEST-F14-02 | E2E |  | — | NOT RUN | — |
-| AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | — | NOT RUN | — |
-| AC-F14-04 | When the source uses an archived account, the form leaves that field empty and lists the archived name in the … | TEST-F14-04 | E2E |  | — | NOT RUN | — |
+| AC-F14-01 | toDuplicateDraft of a PAYMENT dated 2026-11-01 with lines Dining 70000 + Groceries 50000, note "Weekend" and … | TEST-F14-01 | unit | yes | `client/src/duplicate.test.ts::TEST-F14-01` | PASS | b5cc4a3 |
+| AC-F14-02 | In the browser, Duplicate on a payment opens /pay?duplicate=:id with the values pre-filled and today's date; … | TEST-F14-02 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-02` | PASS | b5cc4a3 |
+| AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-03` (VOID set by `server/prisma/e2e-void.ts` until F-11) | PASS | b5cc4a3 |
+| AC-F14-04 | When the source uses an archived account, the form leaves that field empty and lists the archived name in the … | TEST-F14-04 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-04` | PASS | b5cc4a3 |
 | AC-F15-01 | Given alice's card purchase in November with Dining 70000 + Groceries 50000, GET … | TEST-F15-01 | unit + API-DB | yes | `server/tests/f15-categories.api.test.ts::TEST-F15-01`, `server/tests/f15-categories.unit.test.ts::TEST-F15-01` | PASS | 0e291ae |
 | AC-F15-02 | In the same period alice also records a card repayment from Bank, a Salary receipt and a VOID payment with a … | TEST-F15-02 | API-DB | yes | `server/tests/f15-categories.api.test.ts::TEST-F15-02` | PASS | 0e291ae |
 | AC-F15-03 | Lines dated 2026-10-31 and 2026-12-01 are excluded and lines dated 2026-11-01 and 2026-11-30 are included; an … | TEST-F15-03 | API-DB |  | `server/tests/f15-categories.api.test.ts::TEST-F15-03` | PASS | 0e291ae |
@@ -241,3 +241,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.13 | 2026-11-26 | F-16 results: AC-F16-01..06 PASS on `c5d7c81` | D2-S7 |
 | 0.14 | 2026-11-26 | F-13 results: AC-F13-01..05 PASS on `748556f` | D2-S8 |
 | 0.15 | 2026-11-26 | F-09 results: AC-F09-01..07 PASS on `c36a003` (including E2E fix and F-05/F04 test updates) | D2-S9 |
+| 0.16 | 2026-11-26 | F-14 results: AC-F14-01..04 PASS on `b5cc4a3` | D2-S9 (F-14) |
