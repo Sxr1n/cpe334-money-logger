@@ -115,6 +115,8 @@ export default function ReceiveMoneyPage() {
 
   const cashAccounts = accounts?.filter((a) => a.type === 'CASH') ?? []
   const incomeAccounts = accounts?.filter((a) => a.type === 'INCOME') ?? []
+  const loanGivenAccounts = accounts?.filter((a) => a.type === 'LOAN_GIVEN') ?? []
+  const loanTakenAccounts = accounts?.filter((a) => a.type === 'LOAN_TAKEN') ?? []
 
   function addLine() {
     const defaultAccId = incomeAccounts[0]?.id ?? 0
@@ -391,6 +393,20 @@ export default function ReceiveMoneyPage() {
                           {incomeAccounts.map((inc) => (
                             <option key={inc.id} value={inc.id}>
                               {inc.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="Repayment to me">
+                          {loanGivenAccounts.map((lg) => (
+                            <option key={lg.id} value={lg.id}>
+                              {lg.name} (Owed to me: {formatTHB(lg.balance)})
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="Borrow">
+                          {loanTakenAccounts.map((lt) => (
+                            <option key={lt.id} value={lt.id}>
+                              {lt.name} (Current debt: {formatTHB(lt.balance)})
                             </option>
                           ))}
                         </optgroup>
