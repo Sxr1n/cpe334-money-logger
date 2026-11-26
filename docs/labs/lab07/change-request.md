@@ -102,7 +102,7 @@ The full server, client and E2E suites run on every PR (CI `test-and-docker`).
 ## 4 Sequence evidence (filled as it happens)
 | Step | Commit / PR | Date |
 |---|---|---|
-| Change request + revised contract (`spec(CHG-01)`) | TO FILL | 2026-11-27 |
+| Change request + revised contract (`spec(CHG-01)`) | Issue #72, commit `d090196` | 2026-11-27 |
 | Teammate review of the contract | TO FILL (PR review) | |
 | Failing tests (`test(CHG-01): red`) | TO FILL → `evidence/lab7/CHG01-red.txt` | |
 | Implementation (`feat(CHG-01)`) | TO FILL → `evidence/lab7/CHG01-green.txt` | |
