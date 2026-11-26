@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-10 → F-11 (Leviathan-c137; F-09 merged in #67) · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-27 — D2-P (start) PDF builder — Claude + Sxr1n
+- Done: #68 (F-14) approved and merged by Leviathan-c137 (`b2c57ee`, CI success); #69 (F-10) merged; PR #70 merges `staging/sprint-1` (#48, Lab 5 Part 0) into `staging/sprint-2` (STATUS conflict resolved); `submission/d2/build_pdf.py` (reuses the D1 renderer; cover reads the deployed version from `/api/health` and flags a mismatch with the tag) + `part-a/b/c/e.md` skeletons following D2 §4.1 (all results marked TO FILL)
+- Evidence: test build `D2-v0.3.0-rc1.pdf` 69 pages = cover 1 + [1, 25, 12, 29, 1]; cover shows deployed `0831d0b` flagged as not matching (no RC tag yet)
+- Decisions (Sxr1n, 2026-11-27): F-11 stays with Leviathan-c137; Lab 6 partner team is known (details to be added); Lab 7 change waits for the instructor's announcement
+- Open issues: PR #70 and the D2 PDF PR need review; F-11 not started; Lab 6 partner details and Lab 7 change not in the repo yet
+- Next session: Lab 6 partner UAT / Lab 7 change once the details arrive · F-11 → release `v0.2.0-sprint2` → RC `v0.3.0-rc1` → fill Parts A–E
 ### 2026-11-26 — D2-S9 F-14 Duplicate transaction — Claude + Sxr1n
 - Done: local `.git` repaired (OneDrive zeroed HEAD, index, the `spec/sprint-3-contracts` ref and 4 working files; restored from origin, nothing lost); PR #64 head was stuck after the GitHub outage → empty commit `d2eefa8`; #64, #65, #66 merged into `staging/sprint-2` (`982a93e`, CI success). F-14: `toDuplicateDraft`/`loadDuplicate` in `client/src/duplicate.ts`, `DuplicateBanner`, `?duplicate=` on Pay/Receive, Duplicate link on the detail page (POSTED and VOID) and Favourites rows; empty account selects show "Choose an account"
 - Evidence: red `255be65` → `evidence/d2/F14-red.txt` (unit module missing, E2E 3 fail); green `b5cc4a3` → `evidence/d2/F14-green.txt` (server tsc OK, 25 files / 98 tests; client 1 test + build OK; E2E 15/15)
