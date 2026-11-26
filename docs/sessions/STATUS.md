@@ -1,7 +1,7 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: D1 and Lab 5 submitted. **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
+- Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
 - Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
