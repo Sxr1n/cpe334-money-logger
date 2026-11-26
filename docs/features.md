@@ -25,7 +25,7 @@ Feature IDs are stable. A feature that is dropped is marked `WITHDRAWN (CHG-xx)`
 | F-11 | Transaction corrections | Edit a transaction's date, note, primary account and lines (all rules re-validated, balances recomputed); void a transaction (kept in history marked VOID, excluded from balances and summaries). | FR-20, FR-21 | BR-01–BR-09, BR-16 | NFR-02, NFR-06 | F-04, F-05, F-06 | 2 | SPECIFIED |
 | F-12 | Search and filter history | Filter history by date range, account, form, amount range and note text. | FR-19 | BR-11 | NFR-02, NFR-08 | F-06 | 2 | TESTED |
 | F-13 | Favourite transactions | Mark/unmark a transaction as favourite and list favourites. | FR-22 | BR-11 | NFR-02 | F-06 | 3 | TESTED |
-| F-14 | Duplicate transaction | Open a new editable form pre-filled from an existing transaction (date = today, favourite not copied); nothing stored until submitted. | FR-23 | BR-17 | NFR-02 | F-04, F-05, F-13 | 3 | SPECIFIED |
+| F-14 | Duplicate transaction | Open a new editable form pre-filled from an existing transaction (date = today, favourite not copied); nothing stored until submitted. | FR-23 | BR-17 | NFR-02 | F-04, F-05, F-13 | 3 | TESTED |
 | F-15 | Category spending | Per-EXPENSE-account totals and percentage of all expenses for a period. | FR-26 | BR-06, BR-11 | NFR-02 | F-06 | 3 | TESTED |
 | F-16 | Period reports | Monthly income, expense and net for a selected range of months (Asia/Bangkok month boundaries). | FR-27 | BR-06, BR-11 | NFR-02 | F-06 | 3 | TESTED |
 
@@ -49,3 +49,4 @@ Requirements that apply to every feature are owned by a named system responsibil
 | 0.2 | 2026-11-07 | F-03 also delivers the basic account list (needed by F-04/F-05); FR-06 display stays in F-06 | D1-S4 contracts |
 | 0.3 | 2026-11-22 | Status sync: F-01–F-06 TESTED (`v0.1.0-sprint1`, see STATUS/traceability); F-07–F-12 SPECIFIED (Sprint 2 contracts) | D2-S1 |
 | 0.4 | 2026-11-25 | F-13–F-16 SPECIFIED (Sprint 3 contracts) | D2-S5 |
+| 0.5 | 2026-11-26 | F-14 TESTED (AC-F14-01..04 PASS on `b5cc4a3`) | D2-S9 |

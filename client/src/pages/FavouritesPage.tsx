@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, ApiError } from '../api'
+import { duplicateHref } from '../duplicate'
 import { formatDisplayDate, formatTHB, formLabel, type TxnView } from '../format'
 
 // F-13 FR-22: POSTED favourites, newest first (the server applies D-15).
@@ -31,6 +32,9 @@ export default function FavouritesPage() {
               <th>Account</th>
               <th>Note</th>
               <th className="text-end">Total</th>
+              <th>
+                <span className="visually-hidden">Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -43,6 +47,11 @@ export default function FavouritesPage() {
                 <td>{t.primaryAccount.name}</td>
                 <td>{t.note ?? ''}</td>
                 <td className="text-end font-monospace">{formatTHB(t.total)}</td>
+                <td className="text-end">
+                  <Link to={duplicateHref(t)} className="btn btn-sm btn-outline-primary">
+                    Duplicate
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
+import { duplicateHref } from '../duplicate'
 import { formatDisplayDate, formatTHB, formLabel, type TxnView } from '../format'
 
 export default function TransactionDetailPage() {
@@ -51,6 +52,10 @@ export default function TransactionDetailPage() {
             {txn.isFavorite ? '★ Favourite' : '☆ Add to favourites'}
           </button>
         )}
+        {/* F-14: POSTED and VOID can be duplicated (D-15) */}
+        <Link to={duplicateHref(txn)} className="btn btn-sm btn-outline-primary">
+          Duplicate
+        </Link>
       </div>
       {favError && <div className="alert alert-danger py-2">{favError}</div>}
       <dl className="row">
