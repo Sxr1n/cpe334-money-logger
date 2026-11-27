@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 code PR, then deploy it · Lab 7 metrics, readiness and retrospective · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 code PR, then deploy it · both students confirm the Lab 7 retrospective draft · release + deploy by 29 Nov 12:00 (Lab 7 action) · Lab 7 PDF · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -46,6 +46,26 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
+- Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
+  - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;
+  - an interpretation of 92 words (limit 100);
+  - the readiness checklist (verdict **NOT READY** at the snapshot: CHG-01 not on main or deployed, partner UAT not run);
+  - the technical debt table and a DRAFT retrospective.
+- Evidence: snapshot 2026-11-27 18:58 UTC, window from 2026-11-22.
+  - M-1: 0 Issues closed.
+  - M-2: 15 PRs merged, 0 of them to main.
+  - M-3: run 46051342340 on `5e5c97c`: 127 + 1 + 18 passed, 0 failed, 0 skipped.
+  - M-4: 0 UAT defects (UAT not run).
+  - M-5: 44 CI runs, 43 success, 1 failure (45667938623, F-09 E2E); 0 deploy runs.
+- Decisions: none.
+- Open issues:
+  - The retrospective must be confirmed by both students.
+  - Readiness and the version table must be updated after the release and deploy.
+  - Handout: the red for the TEST-F05-10 unit test is a missing function (`validateCreditLimit is not a function`). The behavioural red evidence is the 7 API assertions and the TEST-F05-11/12 unit assertions; say so in the PDF.
+  - The Receive-page stale-balance display issue should be registered as DEF-01.
+  - Leviathan-c137 pushed `feature/F11-transaction-corrections` on 2026-11-27.
+- Next session: release + deploy (Lab 7 action) · Lab 7 PDF · D2 PDF parts
 ### 2026-11-28 — L7-S2 CHG-01 credit limit (TDD) — Claude + Sxr1n
 - Done:
   - Leviathan-c137 approved the contract (#73) on 2026-11-27, before any code; #70, #71 and #73 are merged.
