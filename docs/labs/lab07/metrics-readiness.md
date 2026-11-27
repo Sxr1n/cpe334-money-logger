@@ -126,3 +126,25 @@ Staging is healthy (15 PRs merged, 43/44 CI runs green, 146 tests pass on the CH
 - **What helped:** Contract-first plus the required CI check. Run 45667938623 blocked a broken F-09 E2E before merge, and CHG-01 went contract-review (#73) → red `f8a9b70` → green `1660d08` in one day with no regression.
 - **What hurt:** Work piled up on staging. Sprint 2 features F-09–F-11 started late (24–27 Nov), and nothing reached `main` for a week (M-2, M-5), so the CHG-01 deploy and the partner UAT are squeezed into the deadline day.
 - **What will change for the Final release:** Each finished sprint or change goes to `main` and is deployed within one day of its last merge (owner: Sxr1n). Feature Issues are closed by that release PR. First action: release `v0.2.0-sprint2` / RC before 29 Nov 12:00.
+
+## D.4 Readiness update after the release (2026-11-27 21:19 UTC)
+
+The snapshot above is kept unchanged. After it was taken:
+- PR #74 (CHG-01) and PR #75 (F-11) merged into staging;
+- PR #77 released staging to `main` as `76aaabc`, tagged `v0.2.0-sprint2`;
+- Deploy demo run 46064946596 deployed revision `s87ce2df5-00006-bbr` and passed smoke 4/4.
+
+| Item | Status after release |
+|---|---|
+| Submitted / deployed version | `v0.2.0-sprint2` = `76aaabc`; `/api/health` reports `76aaabc…` on revision `s87ce2df5-00006-bbr` |
+| Automated tests | `evidence/d2/release-v0.2.0-sprint2.txt` on `22acd51` (the release tree minus the evidence commit): server 33 files / 139 passed, client 1 passed, E2E 19 passed, Docker build OK; 0 failed, 0 skipped |
+| Post-deploy checks (manual run of a script) | `evidence/lab7/post-deploy-v0.2.0-sprint2.txt`: 11/11 PASS. Changed behaviour: PD-02..06. Preserved Sprint 1 paths: PD-07 BR-07, PD-08 401, PD-09/10 admin 403, PD-11 cross-user 404 |
+| Defects | Unchanged: no registered DEF; the Receive-page stale-balance display issue still needs DEF-01 |
+| Selected user tests | Lab 6 partner UAT **still not executed** |
+
+**Verdict after release: READY** for the maintained Sprint 1 scope, which means the approved CHG-01 change plus the unaffected Sprint 1 behaviour. Reasons:
+- the change is released and deployed;
+- automated regression and the post-deploy checks of the changed and preserved paths pass;
+- known items are non-blocking: the minor display issue (DEF-01 to register) and the pending partner UAT re-test (owner: both, Lab 6).
+
+This verdict covers only the maintained Sprint 1 scope, not the whole three-sprint product. F-08 AC-F08-07 is still open.
