@@ -37,3 +37,9 @@ Running 18 tests using 1 worker
   ok 18 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (572ms)
 
   18 passed (36.8s)
+
+=== Defect TDD Green (PR #75 review fixes) ===
+- server tsc --noEmit: exit 0
+- server vitest run: 33 passed (33), 139 passed (139) — including TEST-F11-11 (concurrency) & TEST-F11-12 (BR-18)
+- client vitest run: 1 passed (1), build: exit 0
+- playwright test (chrome): 19 passed (44.8s)

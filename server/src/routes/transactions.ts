@@ -313,15 +313,15 @@ function toEffectInput(txn: {
   }
 }
 
-// F-11 §2: Lock txn FOR UPDATE (must be POSTED), lock union of affected accounts in ascending id order,
-// verify archived & non-negative invariants (D-12), and return locked account map.
+// F-11 §2: Lock txn FOR UPDATE (must be POSTED), re-read locked txn to compute net deltas inside tx,
+// lock union of affected accounts in ascending id order, and verify archived, D-12, and BR-18 invariants.
 async function lockAndValidateCorrection(
   tx: any,
   txnId: number,
   userId: number,
-  accountIdsToLock: number[],
-  netDeltas: AccountDelta[],
-) {
+  newEffectInput: TxnEffectInput | null,
+  newAccountIds: number[],
+): Promise<AccountDelta[]> {
   const txnRows: any[] = await tx.$queryRawUnsafe(
     `SELECT id, status FROM transactions WHERE id = $1 AND user_id = $2 FOR UPDATE`,
     txnId,
@@ -332,17 +332,35 @@ async function lockAndValidateCorrection(
     throw Object.assign(new Error('This transaction is void'), { code: 'RULE_VIOLATION', customMessage: 'This transaction is void.' })
   }
 
+  const lockedTxn = await tx.txn.findUniqueOrThrow({ where: { id: txnId }, include: withAccounts })
+  const netDeltas = computeNetDeltas(toEffectInput(lockedTxn), newEffectInput)
+  const accountIdsToLock = [
+    lockedTxn.primaryAccountId,
+    ...lockedTxn.lines.map((l: { accountId: number }) => l.accountId),
+    ...newAccountIds,
+  ]
+
   const sortedIds = [...new Set(accountIdsToLock)].sort((a, b) => a - b)
-  const lockedMap = new Map<number, { id: number; name: string; balance: bigint; type: AccountType; archivedAt: Date | null }>()
+  const lockedMap = new Map<
+    number,
+    { id: number; name: string; balance: bigint; type: AccountType; archivedAt: Date | null; creditLimit: bigint | null }
+  >()
   for (const accId of sortedIds) {
     const rows: any[] = await tx.$queryRawUnsafe(
-      `SELECT id, name, balance, type, archived_at FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE`,
+      `SELECT id, name, balance, type, archived_at, credit_limit FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE`,
       accId,
       userId,
     )
     if (rows.length === 0) throw Object.assign(new Error('NOT_FOUND'), { code: 'NOT_FOUND' })
     const r = rows[0]
-    lockedMap.set(r.id, { id: r.id, name: r.name, balance: BigInt(r.balance), type: r.type as AccountType, archivedAt: r.archived_at })
+    lockedMap.set(r.id, {
+      id: r.id,
+      name: r.name,
+      balance: BigInt(r.balance),
+      type: r.type as AccountType,
+      archivedAt: r.archived_at,
+      creditLimit: r.credit_limit === null || r.credit_limit === undefined ? null : BigInt(r.credit_limit),
+    })
   }
 
   for (const d of netDeltas) {
@@ -361,7 +379,15 @@ async function lockAndValidateCorrection(
         details: { total: `${acc.name} would go below ฿0.00 (−฿${formatBaht(-nextBalance)})` },
       })
     }
+    if (acc.type === AccountType.LOAN_TAKEN && acc.creditLimit !== null && nextBalance > acc.creditLimit) {
+      throw Object.assign(new Error('RULE_VIOLATION'), {
+        code: 'RULE_VIOLATION',
+        details: { total: `Over the credit limit of ${acc.name} (available ฿${formatBaht(acc.creditLimit - acc.balance)})` },
+      })
+    }
   }
+
+  return netDeltas
 }
 
 function handleCorrectionError(err: any, res: Response, label: string) {
@@ -431,19 +457,16 @@ router.put('/:id', async (req: Request, res: Response) => {
     return res.status(422).json({ error: { code: 'RULE_VIOLATION', message: 'Business rule violation.', details: typeValidation.details } })
   }
 
-  const oldEffectInput = toEffectInput(existing)
   const newEffectInput: TxnEffectInput = {
     form: body.form,
     primaryAccount: { id: newPrimary.id, type: newPrimary.type },
     lines: body.lines.map((l) => ({ account: { id: l.accountId, type: newAccountMap.get(l.accountId)!.type }, amount: BigInt(l.amount) })),
     total: BigInt(body.total),
   }
-  const netDeltas = computeNetDeltas(oldEffectInput, newEffectInput)
-  const unionIds = [existing.primaryAccountId, ...existing.lines.map((l) => l.accountId), ...allNewIds]
 
   try {
     const updatedTxn = await prisma.$transaction(async (tx) => {
-      await lockAndValidateCorrection(tx, id, userId, unionIds, netDeltas)
+      const netDeltas = await lockAndValidateCorrection(tx, id, userId, newEffectInput, allNewIds)
       await tx.txnLine.deleteMany({ where: { txnId: id } })
       const txn = await tx.txn.update({
         where: { id },
@@ -476,12 +499,9 @@ router.post('/:id/void', async (req: Request, res: Response) => {
     : null
   if (!existing) return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Not found.' } })
 
-  const negatedDeltas = computeNetDeltas(toEffectInput(existing), null)
-  const affectedIds = [existing.primaryAccountId, ...existing.lines.map((l) => l.accountId)]
-
   try {
     const voidedTxn = await prisma.$transaction(async (tx) => {
-      await lockAndValidateCorrection(tx, id, userId, affectedIds, negatedDeltas)
+      const negatedDeltas = await lockAndValidateCorrection(tx, id, userId, null, [])
       const txn = await tx.txn.update({
         where: { id },
         data: { status: TxnStatus.VOID },
