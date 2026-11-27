@@ -10,6 +10,7 @@ export interface AccountItem {
   type: string
   balance: number
   archived: boolean
+  availableCredit?: number | null // CHG-01
 }
 
 interface FormLine {
@@ -335,7 +336,9 @@ export default function PayPage() {
                 {primaryAccountId === 0 && <option value={0}>Choose an account</option>}
                 {payingAccounts.map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.name} ({a.type === 'CASH' ? 'Cash/Bank' : 'Credit/Debt'}) — Balance: {formatTHB(a.balance)}
+                    {a.availableCredit != null
+                      ? `${a.name} (debt ${formatTHB(a.balance)} · available ${formatTHB(a.availableCredit)})` // CHG-01
+                      : <>{a.name} ({a.type === 'CASH' ? 'Cash/Bank' : 'Credit/Debt'}) — Balance: {formatTHB(a.balance)}</>}
                   </option>
                 ))}
               </select>

@@ -28,3 +28,13 @@ export function validateAccountInput(body: unknown): AccountInputResult {
   if (Object.keys(details).length > 0) return { ok: false, details }
   return { ok: true, name: name.trim(), type: type as AccountType }
 }
+
+export type CreditLimitResult = { ok: true; value: bigint | null } | { ok: false; badRequest: true } | { ok: false; error: string }
+
+// CHG-01 FR-28: integer satang in the BR-02 range, or null to remove. Non-integers → 400; out of range → 422.
+export function validateCreditLimit(value: unknown): CreditLimitResult {
+  if (value === null) return { ok: true, value: null }
+  if (typeof value !== 'number' || !Number.isInteger(value)) return { ok: false, badRequest: true }
+  if (value < 1 || value > 99999999999) return { ok: false, error: 'Credit limit must be between ฿0.01 and ฿999,999,999.99' }
+  return { ok: true, value: BigInt(value) }
+}

@@ -1,5 +1,5 @@
 # F-05 Make a payment or record a charge — Sprint 1
-Linked: FR-12, FR-13, FR-28 (CHG-01), BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, BR-18 (CHG-01), NFR-02, NFR-05, NFR-06, NFR-10   Status: IN PROGRESS (AC-F05-01..08 TESTED; CHG-01 AC-F05-09..16 SPECIFIED)   Owner: Leviathan-c137 (CHG-01: Sxr1n)
+Linked: FR-12, FR-13, FR-28 (CHG-01), BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, BR-18 (CHG-01), NFR-02, NFR-05, NFR-06, NFR-10   Status: TESTED (AC-F05-01..08 Sprint 1; AC-F05-09..16 CHG-01)   Owner: Leviathan-c137 (CHG-01: Sxr1n)
 Depends on: F-04 (transaction engine). Design references: `docs/system-sds.md` §2.4, F-04 contract §2 and §5
 
 ## 1 Behavior & workflow
@@ -138,14 +138,14 @@ CHG-01: migration `add_credit_limit` adds `accounts.credit_limit BIGINT NULL` (s
 | AC-F05-06 | `server/tests/f05-transactions.api.test.ts::TEST-F05-06`, `server/tests/f05-ledger.unit.test.ts::TEST-F05-06` | PASS | 6f52657 |
 | AC-F05-07 | `server/tests/f05-transactions.api.test.ts::TEST-F05-07` | PASS | 6f52657 |
 | AC-F05-08 | `e2e/f05-pay.spec.ts::TEST-F05-08` | PASS | 6f52657 |
-| AC-F05-09 | — | NOT RUN | — |
-| AC-F05-10 | — | NOT RUN | — |
-| AC-F05-11 | — | NOT RUN | — |
-| AC-F05-12 | — | NOT RUN | — |
-| AC-F05-13 | — | NOT RUN | — |
-| AC-F05-14 | — | NOT RUN | — |
-| AC-F05-15 | — | NOT RUN | — |
-| AC-F05-16 | — | NOT RUN | — |
+| AC-F05-09 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-09` | PASS | 1660d08 |
+| AC-F05-10 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-10`, `server/tests/chg01-credit-limit.unit.test.ts::TEST-F05-10` | PASS | 1660d08 |
+| AC-F05-11 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-11`, `server/tests/chg01-credit-limit.unit.test.ts::TEST-F05-11` | PASS | 1660d08 |
+| AC-F05-12 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-12`, `server/tests/chg01-credit-limit.unit.test.ts::TEST-F05-12` | PASS | 1660d08 |
+| AC-F05-13 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-13` | PASS | 1660d08 |
+| AC-F05-14 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-14` | PASS | 1660d08 |
+| AC-F05-15 | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-15` | PASS | 1660d08 |
+| AC-F05-16 | `e2e/chg01-credit-limit.spec.ts::TEST-F05-16` | PASS | 1660d08 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
@@ -156,3 +156,4 @@ CHG-01: migration `add_credit_limit` adds `accounts.credit_limit BIGINT NULL` (s
 | 0.4 | 2026-11-14 | Address PR #18 review: add AC-F05-08 + TEST-F05-08 to contract, record commit SHA 6f52657 in §9. | PR #18 review |
 | 0.5 | 2026-11-26 | F-09 supersedes the "a line to another CASH account → 422" part of AC-F05-04 (CASH lines are now valid transfers; TEST-F05-04 checks INCOME line instead). | F-09 / PR #67 review |
 | 0.6 | 2026-11-27 | CHG-01 credit limit. FR-28 and BR-18 linked. §1: "no credit limit" superseded for cards that have a limit. §2: rules + DB backstop. §3: PATCH permission. §4: Accounts/Pay UI. §5: `creditLimit`/`availableCredit`. §6: migration. AC-F05-09..16 + TEST-F05-09..16 added (SPECIFIED). Change owner: Sxr1n; Leviathan-c137 reviews this contract before any code. | CHG-01 (Lab 7) |
+| 0.7 | 2026-11-28 | CHG-01 implemented: AC-F05-09..16 PASS on `1660d08` (red `f8a9b70`). TEST-F05-12 also has a unit check of the borrow path; TEST-F05-16 uses a fresh card "Card CHG01" so it does not depend on other specs. No AC changed. | CHG-01 |

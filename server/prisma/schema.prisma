@@ -51,6 +51,7 @@ model Account {
   balance        BigInt      @default(0)
   openingBalance BigInt?     @map("opening_balance")
   openingDate    DateTime?   @map("opening_date") @db.Date
+  creditLimit    BigInt?     @map("credit_limit") // CHG-01: satang, LOAN_TAKEN only; NULL = no limit
   archivedAt     DateTime?   @map("archived_at") @db.Timestamptz(6)
   createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
 
