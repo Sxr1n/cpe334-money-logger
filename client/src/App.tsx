@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth'
 import Layout from './components/Layout'
 import AccountsPage from './pages/AccountsPage'
+import EditTransactionPage from './pages/EditTransactionPage'
 import FavouritesPage from './pages/FavouritesPage'
 import HistoryPage from './pages/HistoryPage'
 import LoginPage from './pages/LoginPage'
@@ -34,6 +35,7 @@ export default function App() {
             <Route path="/overview" element={<OverviewPage />} />
             <Route path="/transactions" element={<HistoryPage />} />
             <Route path="/transactions/:id" element={<TransactionDetailPage />} />
+            <Route path="/transactions/:id/edit" element={<EditTransactionPage />} />
             <Route path="/accounts" element={<AccountsPage />} />
             <Route path="/receive" element={<ReceiveMoneyPage />} />
             <Route path="/pay" element={<PayPage />} />

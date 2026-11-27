@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
 import { duplicateHref } from '../duplicate'
 import { formatDisplayDate, formatTHB, formLabel, type TxnView } from '../format'
 
 export default function TransactionDetailPage() {
   const { id } = useParams()
+  const location = useLocation()
+  const flash = (location.state as { flash?: string } | null)?.flash ?? null
+
   const [txn, setTxn] = useState<TxnView | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [favPending, setFavPending] = useState(false)
   const [favError, setFavError] = useState<string | null>(null)
+  const [confirmVoid, setConfirmVoid] = useState(false)
+  const [voidPending, setVoidPending] = useState(false)
+  const [voidError, setVoidError] = useState<string | null>(null)
 
   async function toggleFavorite() {
     if (!txn) return
@@ -21,6 +27,25 @@ export default function TransactionDetailPage() {
       setFavError(err instanceof ApiError ? err.message : 'Something went wrong.')
     } finally {
       setFavPending(false)
+    }
+  }
+
+  async function handleVoid() {
+    if (!txn) return
+    setVoidPending(true)
+    setVoidError(null)
+    try {
+      const updated = await api<TxnView>(`/transactions/${txn.id}/void`, { method: 'POST' })
+      setTxn(updated)
+      setConfirmVoid(false)
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setVoidError(err.details?.total ?? err.message)
+      } else {
+        setVoidError('Something went wrong.')
+      }
+    } finally {
+      setVoidPending(false)
     }
   }
 
@@ -38,26 +63,56 @@ export default function TransactionDetailPage() {
       <Link to="/transactions" className="small">
         ← Back to history
       </Link>
-      <div className="d-flex align-items-center gap-3 my-3">
-        <h1 className="h4 mb-0">
+      {flash && (
+        <div className="alert alert-success py-2 mt-2" role="status">
+          {flash}
+        </div>
+      )}
+      <div className="d-flex align-items-center gap-2 flex-wrap my-3">
+        <h1 className="h4 mb-0 me-2">
           {formLabel(txn.form)} {formatTHB(txn.total)}
         </h1>
+        {txn.status === 'VOID' && <span className="badge bg-secondary">Void</span>}
         {txn.status !== 'VOID' && (
-          <button
-            className={`btn btn-sm ${txn.isFavorite ? 'btn-warning' : 'btn-outline-secondary'}`}
-            aria-pressed={txn.isFavorite}
-            onClick={toggleFavorite}
-            disabled={favPending}
-          >
-            {txn.isFavorite ? '★ Favourite' : '☆ Add to favourites'}
-          </button>
+          <>
+            <button
+              className={`btn btn-sm ${txn.isFavorite ? 'btn-warning' : 'btn-outline-secondary'}`}
+              aria-pressed={txn.isFavorite}
+              onClick={toggleFavorite}
+              disabled={favPending}
+            >
+              {txn.isFavorite ? '★ Favourite' : '☆ Add to favourites'}
+            </button>
+            <Link to={`/transactions/${txn.id}/edit`} className="btn btn-sm btn-outline-secondary">
+              Edit
+            </Link>
+            <button className="btn btn-sm btn-outline-danger" onClick={() => setConfirmVoid(true)} disabled={confirmVoid}>
+              Void
+            </button>
+          </>
         )}
         {/* F-14: POSTED and VOID can be duplicated (D-15) */}
         <Link to={duplicateHref(txn)} className="btn btn-sm btn-outline-primary">
           Duplicate
         </Link>
       </div>
+
+      {confirmVoid && txn.status !== 'VOID' && (
+        <div className="alert alert-warning d-flex justify-content-between align-items-center" role="region">
+          <span>Void this transaction? Balances will be restored.</span>
+          <div className="d-flex gap-2">
+            <button className="btn btn-sm btn-danger" onClick={handleVoid} disabled={voidPending}>
+              {voidPending ? 'Voiding...' : 'Confirm void'}
+            </button>
+            <button className="btn btn-sm btn-outline-secondary" onClick={() => setConfirmVoid(false)} disabled={voidPending}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {favError && <div className="alert alert-danger py-2">{favError}</div>}
+      {voidError && <div className="alert alert-danger py-2">{voidError}</div>}
       <dl className="row">
         <dt className="col-sm-3">Date</dt>
         <dd className="col-sm-9">{formatDisplayDate(txn.date)}</dd>

@@ -76,7 +76,7 @@ test('TEST-F11-10 edit a payment from detail, verify updated Overview balance, t
   await expect(page.getByRole('link', { name: 'Edit' })).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Void' })).toHaveCount(0)
 
-  await page.getByRole('link', { name: 'History' }).click()
+  await page.getByRole('link', { name: 'History', exact: true }).click()
   const row = page.locator('tbody tr', { hasText: 'F11 initial' }).first()
   await expect(row).toContainText('Void')
 })

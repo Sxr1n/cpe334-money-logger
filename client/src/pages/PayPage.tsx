@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
 import DuplicateBanner from '../components/DuplicateBanner'
 import { loadDuplicate, toAmountStr, type LoadedDuplicate } from '../duplicate'
+import { preEditBalance, type TxnView } from '../format'
 
 export interface AccountItem {
   id: number
@@ -47,17 +48,22 @@ function parseSatang(val: string): { satang: number | null; error?: string } {
   return { satang }
 }
 
-export default function PayPage() {
+export default function PayPage({ editTxn }: { editTxn?: TxnView } = {}) {
+  const navigate = useNavigate()
   const [accounts, setAccounts] = useState<AccountItem[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
 
   // Form inputs
-  const [primaryAccountId, setPrimaryAccountId] = useState<number>(0)
-  const [dateStr, setDateStr] = useState<string>(getTodayInBangkok())
-  const [totalStr, setTotalStr] = useState<string>('')
-  const [noteStr, setNoteStr] = useState<string>('')
-  const [lines, setLines] = useState<FormLine[]>([])
+  const [primaryAccountId, setPrimaryAccountId] = useState<number>(editTxn?.primaryAccount.id ?? 0)
+  const [dateStr, setDateStr] = useState<string>(editTxn?.date ?? getTodayInBangkok())
+  const [totalStr, setTotalStr] = useState<string>(editTxn ? toAmountStr(editTxn.total) : '')
+  const [noteStr, setNoteStr] = useState<string>(editTxn?.note ?? '')
+  const [lines, setLines] = useState<FormLine[]>(
+    editTxn
+      ? editTxn.lines.map((l, i) => ({ id: `edit-${i}`, accountId: l.account.id, amountStr: toAmountStr(l.amount) }))
+      : [],
+  )
 
   // Errors & submission state
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -72,7 +78,7 @@ export default function PayPage() {
 
   useEffect(() => {
     loadAccounts().then((active) => {
-      if (duplicateId && active) applyDuplicate(duplicateId, active)
+      if (!editTxn && duplicateId && active) applyDuplicate(duplicateId, active)
     })
   }, [])
 
@@ -95,17 +101,21 @@ export default function PayPage() {
     try {
       setLoading(true)
       const res = await api<{ items: AccountItem[] }>('/accounts')
-      const active = res.items.filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+      const active = res.items
+        .filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+        .map((a) => ({ ...a, balance: preEditBalance(a.id, a.balance, editTxn) }))
       setAccounts(active)
 
-      const paying = res.items.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN')
-      const expense = res.items.filter((a) => a.type === 'EXPENSE')
-      const loanTaken = res.items.filter((a) => a.type === 'LOAN_TAKEN')
+      const paying = active.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN')
+      const expense = active.filter((a) => a.type === 'EXPENSE')
+      const loanTaken = active.filter((a) => a.type === 'LOAN_TAKEN')
 
-      if (paying.length > 0) setPrimaryAccountId(paying[0].id)
-      const defaultLineAcc = expense[0]?.id ?? loanTaken[0]?.id ?? 0
-      if (defaultLineAcc) {
-        setLines([{ id: 'line-1', accountId: defaultLineAcc, amountStr: '' }])
+      if (!editTxn) {
+        if (paying.length > 0) setPrimaryAccountId(paying[0].id)
+        const defaultLineAcc = expense[0]?.id ?? loanTaken[0]?.id ?? 0
+        if (defaultLineAcc) {
+          setLines([{ id: 'line-1', accountId: defaultLineAcc, amountStr: '' }])
+        }
       }
       return active
     } catch (err) {
@@ -221,6 +231,14 @@ export default function PayPage() {
 
     setPending(true)
     try {
+      if (editTxn) {
+        await api<TxnView>(`/transactions/${editTxn.id}`, {
+          method: 'PUT',
+          body: payload,
+        })
+        navigate(`/transactions/${editTxn.id}`, { state: { flash: 'Transaction updated' } })
+        return
+      }
       const created = await api<any>('/transactions', {
         method: 'POST',
         body: payload,
@@ -278,9 +296,9 @@ export default function PayPage() {
   return (
     <div className="container py-4" style={{ maxWidth: 800 }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Make a payment</h2>
-        <Link to="/accounts" className="btn btn-outline-secondary btn-sm">
-          Back to Accounts
+        <h2>{editTxn ? 'Edit payment' : 'Make a payment'}</h2>
+        <Link to={editTxn ? `/transactions/${editTxn.id}` : '/accounts'} className="btn btn-outline-secondary btn-sm">
+          {editTxn ? 'Back to detail' : 'Back to Accounts'}
         </Link>
       </div>
 
@@ -521,6 +539,8 @@ export default function PayPage() {
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
                 Saving...
               </>
+            ) : editTxn ? (
+              'Save changes'
             ) : (
               'Save Payment'
             )}
