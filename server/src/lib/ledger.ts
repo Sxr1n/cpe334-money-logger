@@ -202,7 +202,6 @@ export function formatBaht(satang: bigint | number): string {
   })
 }
 
-<<<<<<< HEAD
 export interface TxnEffectInput {
   form: 'RECEIPT' | 'PAYMENT'
   primaryAccount: { id: number; type: AccountType }
