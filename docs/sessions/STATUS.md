@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 contract (#73), then CHG-01 red → green (Sxr1n, Lab 7) · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 code PR, then deploy it · Lab 7 metrics, readiness and retrospective · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -46,6 +46,24 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — L7-S2 CHG-01 credit limit (TDD) — Claude + Sxr1n
+- Done:
+  - Leviathan-c137 approved the contract (#73) on 2026-11-27, before any code; #70, #71 and #73 are merged.
+  - Migration `add_credit_limit` adds a nullable `credit_limit` column and a check constraint.
+  - `validateCreditLimit` and the `creditLimit` field on `PATCH /api/accounts/:id` (checked under a row lock; cannot be set below the debt).
+  - The account shape now includes `creditLimit` and `availableCredit`.
+  - BR-18 in `calculateTxnEffects` covers charges and borrows; the F-08 opening-balance change also checks the limit.
+  - Accounts page: limit text and a Credit limit form. Pay page: the card option shows the available credit.
+- Evidence:
+  - red `f8a9b70` → `evidence/lab7/CHG01-red.txt` (unit 3 fail, API 7 fail, E2E 1 fail). Before committing the red, one test expectation was corrected (PUT opening balance returns 200, not 201); every failure in the committed red is real.
+  - green `1660d08` → `evidence/lab7/CHG01-green.txt` (server tsc OK, 31 files / 127 tests; client 1 test + build OK; E2E 18/18; 0 failed, 0 skipped).
+- Decisions: none new (contract v0.6 → v0.7 records the results only).
+- Open issues:
+  - The code PR needs Leviathan-c137's review.
+  - Deploy waits for the next release to main.
+  - The CHECK violation fallback in `POST /api/transactions` still says "Balance cannot be negative" for every constraint; it is reached only in a race.
+  - F-11 edits must re-validate BR-18.
+- Next session: L7-S3 metrics, readiness and retrospective · release `v0.2.0-sprint2` / RC · D2 PDF parts
 ### 2026-11-27 — L7-S1 CHG-01 change request — Claude + Sxr1n
 - Done: change request Issue #72 and contract PR #73. Credit limit on LOAN_TAKEN accounts: FR-28, BR-18, D-04 revised. Docs: `docs/labs/lab07/change-request.md` (baseline `e1747cb`, pre-change code, impact table, regression protection); F-05 contract v0.6 with AC-F05-09..16 and TEST-F05-09..16; SRS v0.7; SDS v0.9; features v0.6; traceability v0.18; CHG-01 in `docs/changes.md`
 - Evidence: spec commit `d090196` on `spec/CHG01-credit-limit`
