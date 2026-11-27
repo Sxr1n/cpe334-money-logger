@@ -38,8 +38,206 @@ Running 18 tests using 1 worker
 
   18 passed (36.8s)
 
-=== Defect TDD Green (PR #75 review fixes) ===
-- server tsc --noEmit: exit 0
-- server vitest run: 33 passed (33), 139 passed (139) — including TEST-F11-11 (concurrency) & TEST-F11-12 (BR-18)
-- client vitest run: 1 passed (1), build: exit 0
-- playwright test (chrome): 19 passed (44.8s)
+
+# Defect TDD Green (post-review fix, server + client):
+Command exited with code 1.
+
+Command output:
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+stderr | tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-09 (NFR-06) failure on 2nd balance update rolls back edit atomically
+Failed to edit transaction: Error: Simulated 2nd balance update failure
+    at C:/Users/admin/Desktop/Deliverable/server/tests/f11-corrections.api.test.ts:305:73
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///C:/Users/admin/Desktop/Deliverable/server/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+ ✓ tests/f11-corrections.api.test.ts (11 tests) 6575ms
+     ✓ TEST-F11-01 editing card payment replaces lines, adjusts debt by net delta, and updates category totals  759ms
+     ✓ TEST-F11-02 editing receipt primary from Bank to Wallet moves balances and updates date/note  485ms
+     ✓ TEST-F11-03 invalid edits (lines mismatch, future date, changed form, same primary/line) return 422 leaving DB unchanged  491ms
+     ✓ TEST-F11-04 D-12 rejects edit that leaves Bank negative (399999 -> 422), accepts exact 400000 (Bank = 0)  471ms
+     ✓ TEST-F11-05 voiding a PAYMENT restores Bank balance, removes expense, and keeps transaction in history/detail as VOID  528ms
+     ✓ TEST-F11-06 voiding receipt whose cash was spent returns 422 naming Bank; voiding or editing VOID returns 422  569ms
+     ✓ TEST-F11-07 voiding a payment on an archived Wallet returns 422 Unarchive Wallet first  569ms
+     ✓ TEST-F11-08 401 / 403 / cross-user 404 on PUT and void  721ms
+     ✓ TEST-F11-09 (NFR-06) failure on 2nd balance update rolls back edit atomically  642ms
+     ✓ TEST-F11-11 (concurrency) parallel identical PUTs and parallel PUT + void keep balances exact  701ms
+     ✓ TEST-F11-12 (BR-18) editing a Credit Card payment over its creditLimit is rejected with 422  635ms
+ ✓ tests/f07-accounts.api.test.ts (7 tests) 4477ms
+     ✓ TEST-F07-01 creates accounts of all five types, listed and usable  902ms
+     ✓ TEST-F07-02 validates name and type  616ms
+     ✓ TEST-F07-03 rejects duplicate names per user and type, ignoring case  673ms
+     ✓ TEST-F07-04 rename shows the new name on earlier transactions  514ms
+     ✓ TEST-F07-05 archive needs a zero balance for CASH/LOAN; EXPENSE keeps its history  682ms
+     ✓ TEST-F07-06 archived accounts cannot be used until unarchived  540ms
+     ✓ TEST-F07-07 401 / 403 / cross-user 404; identity only from the session  545ms
+ ✓ tests/chg01-credit-limit.api.test.ts (7 tests) 3241ms
+     ✓ TEST-F05-09 set, change to the debt, and remove a credit limit; available credit is listed  636ms
+     ✓ TEST-F05-10 invalid limits are rejected and the stored limit is unchanged  461ms
+     ✓ TEST-F05-11 a charge over the limit is rejected; a charge to exactly the limit is accepted (BR-18)  448ms
+     ✓ TEST-F05-12 borrowing over the limit is rejected; repayment is not blocked; then borrowing up to the limit works  437ms
+     ✓ TEST-F05-13 a card without a limit keeps the baseline; a limit never changes income or expense  408ms
+     ✓ TEST-F05-14 an opening-balance change that would exceed the limit is rejected (BR-18 × F-08)  401ms
+     ✓ TEST-F05-15 credit limit access: 401 without session, 403 for admin, 404 for another user  446ms
+ ✓ tests/f06-overview.api.test.ts (6 tests) 3525ms
+     ✓ TEST-F06-01 accounts are grouped by type with balances and this month's INCOME/EXPENSE totals  637ms
+     ✓ TEST-F06-02 overview shows cash balances, card debt, loans given and the month summary  444ms
+     ✓ TEST-F06-03 month summary counts salary and spending only, not the opening balance or card repayment  423ms
+     ✓ TEST-F06-04 (inclusion) a period includes its first and last day and excludes the day before  517ms
+     ✓ TEST-F06-05 history is newest first, 50 per page, and the detail includes lines  884ms
+     ✓ TEST-F06-06 another user's transaction is 404 and the admin gets 403 on overview, summary and history  616ms
+ ✓ tests/f12-search.api.test.ts (6 tests) 3907ms
+     ✓ TEST-F12-01 date range is inclusive on both bounds  802ms
+     ✓ TEST-F12-02 account filter matches the primary account or any line (D-13)  646ms
+     ✓ TEST-F12-03 form, status and inclusive amount range  415ms
+     ✓ TEST-F12-04 note text is case-insensitive and literal; filters combine with AND; total counts the filtered set  661ms
+     ✓ TEST-F12-05 invalid parameters → 422 naming the parameter  720ms
+     ✓ TEST-F12-06 401 / 403 / other users are never matched  659ms
+ ✓ tests/f10-loans.api.test.ts (7 tests) 4322ms
+     ✓ TEST-F10-01 lending from Bank increases LOAN_GIVEN without changing expense  807ms
+     ✓ TEST-F10-02 LOAN_GIVEN repayment enforces BR-08 (150000 ok, 50001 rejected, 50000 ok)  748ms
+     ✓ TEST-F10-03 borrowing via RECEIPT LOAN_TAKEN increases debt and Bank without changing income  550ms
+     ✓ TEST-F10-04 mixed RECEIPT (Salary + Ken repayment) counts only Salary as income  483ms
+     ✓ TEST-F10-05 4-line PAYMENT (Dining + Credit Card + Ken + Wallet) applies all effects and counts only Dining as expense  569ms
+     ✓ TEST-F10-06 rejects invalid form/account combinations (422) and cross-user loan line (404)  664ms
+     ✓ TEST-F10-07 GET /api/overview reflects Loan to Ken and Loan from Mom totals  497ms
+ ✓ tests/f09-transfers.api.test.ts (6 tests) 2738ms
+     ✓ TEST-F09-01 PAYMENT transfer moves balances and leaves income/expense unchanged  742ms
+     ✓ TEST-F09-02 RECEIPT transfer pulls from CASH line and leaves income/expense unchanged  409ms
+     ✓ TEST-F09-03 BR-07 rejects RECEIPT CASH line over balance, accepts exact balance, rejects PAYMENT overdraft  403ms
+     ✓ TEST-F09-04 rejects self-transfer (422), other user CASH line (404), archived CASH line (404)  395ms
+     ✓ TEST-F09-05 card cash advance increases Credit Card debt and Wallet without changing expense  391ms
+     ✓ TEST-F09-06 mixed PAYMENT counts only EXPENSE line toward expense  394ms
+ ✓ tests/f16-monthly.api.test.ts (5 tests) 2308ms
+     ✓ TEST-F16-01 one row per month (empty months included) plus a total row  622ms
+     ✓ TEST-F16-02 repayments, transfers, opening balances and VOID are not income or expense (BR-06)  400ms
+     ✓ TEST-F16-03 Bangkok calendar months: 10-31 is October, 11-01 is November  377ms
+     ✓ TEST-F16-04 at most 12 months; reversed or invalid months rejected; default last 6 months  459ms
+     ✓ TEST-F16-05 401 / 403 / only own figures  445ms
+ ✓ tests/f08-opening-balance.api.test.ts (5 tests) 2381ms
+     ✓ TEST-F08-01 raising the opening balance moves the balance by new − old; no transaction, income unchanged  727ms
+     ✓ TEST-F08-02 lowering below what later payments used is rejected; exactly 0 is accepted (CASH)  433ms
+     ✓ TEST-F08-03 same rule for a LOAN_TAKEN debt after a repayment  389ms
+     ✓ TEST-F08-04 validation, type, archived and not-set cases leave the row unchanged  387ms
+     ✓ TEST-F08-05 401 / 403 / cross-user 404  441ms
+ ✓ tests/f02-admin.api.test.ts (7 tests) 2467ms
+     ✓ TEST-F02-01 admin lists all users with exactly the six non-financial fields  503ms
+     ✓ TEST-F02-02 disabling a user rejects their existing session and login; re-enabling restores login  465ms
+     ✓ TEST-F02-03 admin cannot disable their own account  301ms
+     ✓ TEST-F02-03 (errors) unknown user id gives 404 and an invalid status gives 422  311ms
+     ✓ TEST-F02-04 admin gets 403 with no data from every Sprint 1 financial endpoint  333ms
+     ✓ TEST-F02-05 a USER gets 403 from admin endpoints and cannot change another user  312ms
+ ✓ tests/f05-transactions.api.test.ts (7 tests) 2349ms
+     ✓ TEST-F05-01 alice posts PAYMENT from Credit Card (debt 0) total 120000 lines Dining 70000 + Groceries 50000 (AC-F05-01)  508ms
+     ✓ TEST-F05-02 alice repays card debt from Bank: Bank -= 120000, card debt becomes 0, expense sum unchanged (AC-F05-02)  344ms
+     ✓ TEST-F05-04 invalid account combinations rejected with 422 RULE_VIOLATION (AC-F05-04)  301ms
+     ✓ TEST-F05-05 overspending CASH balance rejected with 422, exact balance accepted (AC-F05-05, BR-07)  311ms
+     ✓ TEST-F05-06 repayment line exceeding debt rejected with 422, exact debt accepted (AC-F05-06, BR-08)  317ms
+stderr | tests/f04-transactions.api.test.ts > F-04 Receive money > TEST-F04-06 atomicity: failure during posting rolls back transaction and line inserts (NFR-06)
+Failed to post transaction: Error: Simulated balance update failure
+    at C:/Users/admin/Desktop/Deliverable/server/tests/f04-transactions.api.test.ts:364:30
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///C:/Users/admin/Desktop/Deliverable/server/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+ ✓ tests/f04-transactions.api.test.ts (7 tests) 2309ms
+     ✓ TEST-F04-01 alice posts RECEIPT Bank <- Salary 3000000; Bank balance becomes 3500000 and status is POSTED  523ms
+     ✓ TEST-F04-03 rejected if primary is not CASH or lines are not INCOME (BR-03)  302ms
+     ✓ TEST-F04-04 rejects invalid satang amounts, future date, ancient date; accepts today (BR-02, BR-09)  343ms
+ ✓ tests/f15-categories.api.test.ts (5 tests) 2128ms
+     ✓ TEST-F15-01 totals and percentages per EXPENSE account, largest first  573ms
+     ✓ TEST-F15-02 repayments, income and VOID transactions are not spending (BR-06)  379ms
+     ✓ TEST-F15-03 inclusive bounds, archived accounts listed, empty period  395ms
+     ✓ TEST-F15-04 invalid periods → 422 naming the parameter  349ms
+     ✓ TEST-F15-05 401 / 403 / only own spending  427ms
+ ✓ tests/f03-accounts.api.test.ts (6 tests) 1909ms
+     ✓ TEST-F03-01 alice sets opening balance on Bank; verified on GET /api/accounts  519ms
+     ✓ TEST-F03-05 cross-user isolation: alice cannot set opening balance or view bob accounts  309ms
+ ✓ tests/f13-favourites.api.test.ts (4 tests) 1939ms
+     ✓ TEST-F13-01 mark, list, mark again, unmark  648ms
+     ✓ TEST-F13-02 VOID cannot be marked; a voided favourite leaves the list; unmarking VOID is allowed (D-15)  388ms
+     ✓ TEST-F13-03 invalid favorite parameter / body  366ms
+     ✓ TEST-F13-04 401 / 403 / cross-user 404; lists are separate  532ms
+ ✓ tests/f01-auth.api.test.ts (6 tests) 1525ms
+     ✓ TEST-F01-01 valid login sets an httpOnly session cookie and /me returns the same identity  362ms
+     ✓ TEST-F01-02 wrong password and unknown username both get the same generic 401 and no cookie  307ms
+     ✓ TEST-F01-06 seeded passwords are stored as bcrypt (cost >= 10) and never returned  444ms
+ ✓ tests/seed.api.test.ts (1 test) 790ms
+     ✓ re-running the seed keeps existing users unchanged, including an admin disable  787ms
+ ✓ tests/f04-ledger.unit.test.ts (3 tests) 18ms
+ ✓ tests/chg01-credit-limit.unit.test.ts (3 tests) 19ms
+ ✓ tests/app.api.test.ts (5 tests) 134ms
+ ✓ tests/f10-loans.unit.test.ts (3 tests) 17ms
+ ✓ tests/f09-transfers.unit.test.ts (3 tests) 16ms
+ ✓ tests/f05-ledger.unit.test.ts (5 tests) 20ms
+ ✓ tests/f01-session.unit.test.ts (1 test) 6ms
+ ✓ tests/f06-period.unit.test.ts (3 tests) 5ms
+ ✓ tests/f16-monthly.unit.test.ts (1 test) 4ms
+ ✓ tests/f12-search.unit.test.ts (3 tests) 4ms
+ ✓ tests/f03-accounts.unit.test.ts (1 test) 3ms
+ ✓ tests/f07-accounts.unit.test.ts (1 test) 3ms
+ ✓ tests/f13-favourites.unit.test.ts (1 test) 3ms
+ ✓ tests/f11-corrections.unit.test.ts (1 test) 3ms
+ ✓ tests/f15-categories.unit.test.ts (1 test) 2ms
+ ✓ tests/f08-opening-balance.unit.test.ts (1 test) 4ms
+
+ Test Files  33 passed (33)
+      Tests  139 passed (139)
+   Start at  02:29:27
+   Duration  72.94s (transform 697ms, setup 646ms, import 11.89s, tests 49.15s, environment 3ms)
+
+
+> client@0.0.0 test
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/client
+
+ ✓ src/duplicate.test.ts (1 test) 5ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  02:30:42
+   Duration  506ms (transform 46ms, setup 0ms, import 66ms, tests 5ms, environment 0ms)
+
+
+> client@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.6 building client environment for production...
+transforming...
+✓ 40 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.40 kB │ gzip:  0.27 kB
+dist/assets/index-CqLr8KVv.css  230.06 kB │ gzip: 30.68 kB
+dist/assets/index-DPz2_ePa.js   322.05 kB │ gzip: 95.29 kB
+
+✓ built in 710ms
+C:\Users\admin\Desktop\Deliverable\server\node_modules\@prisma\client\src\runtime\RequestHandler.ts:238
+
+# Defect TDD Green (post-review fix, Playwright E2E):
+
+Running 19 tests using 1 worker
+
+  ok  1 [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it (3.4s)
+  ok  2 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (1.3s)
+  ok  3 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (865ms)
+  ok  4 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (1.4s)
+  ok  5 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (1.5s)
+  ok  6 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (3.6s)
+  ok  7 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (2.0s)
+  ok  8 [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves (1.5s)
+  ok  9 [desktop] › e2e\f09-transfers.spec.ts:9:1 › TEST-F09-07 record a cash transfer on /pay using Transfer to my cash account; Overview updates balances without changing expense (1.4s)
+  ok 10 [desktop] › e2e\f10-loans.spec.ts:9:1 › TEST-F10-08 mixed RECEIPT (Salary + Repayment to me) reduces Owed to me total on Overview (1.5s)
+  ok 11 [desktop] › e2e\f11-corrections.spec.ts:9:1 › TEST-F11-10 edit a payment from detail, verify updated Overview balance, then void and see Void badge in detail and History (2.1s)
+  ok 12 [desktop] › e2e\f12-search.spec.ts:6:1 › TEST-F12-07 filter History by account and text; filters survive reload; Clear shows everything (1.7s)
+  ok 13 [desktop] › e2e\f13-favourites.spec.ts:6:1 › TEST-F13-05 add a favourite from the detail page, see it on Favourites, remove it (1.7s)
+  ok 14 [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged (1.6s)
+  ok 15 [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt (4.4s)
+  ok 16 [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found (2.3s)
+  ok 17 [desktop] › e2e\f15-reports.spec.ts:6:1 › TEST-F15-06 Reports shows category spending for the month and an empty range (1.1s)
+  ok 18 [desktop] › e2e\f16-monthly.spec.ts:6:1 › TEST-F16-06 monthly report: default 6 months, 13-month range rejected with inputs kept (1.2s)
+  ok 19 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (621ms)
+
+  19 passed (44.8s)

@@ -1,5 +1,5 @@
 # F-11 Transaction corrections (edit and void) — Sprint 2
-Linked: FR-20, FR-21, BR-01–BR-09, BR-11, BR-12, BR-16, NFR-01, NFR-02, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
+Linked: FR-20, FR-21, BR-01–BR-09, BR-11, BR-12, BR-16, BR-18, NFR-01, NFR-02, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-04, F-05, F-06; uses the full allowed-lines table from F-09/F-10 when merged. Design references: `docs/system-sds.md` §2.4 ("Edit and void reverse the old deltas and apply the new ones"); decisions D-06, D-12
 
 ## 1 Behavior & workflow
@@ -48,6 +48,7 @@ The form (PAYMENT or RECEIPT) cannot change. Date, note, primary account, total 
 | form | body `form` = stored form | 422 `RULE_VIOLATION` (`details.form` = "The form cannot be changed; void and record a new transaction") |
 | BR-01–04, BR-09, note | as F-04/F-05/F-09/F-10 | 400 / 404 / 422 as there |
 | BR-07/BR-08, D-12 | after the net deltas, every affected CASH, LOAN_TAKEN and LOAN_GIVEN balance ≥ 0 | 422 `RULE_VIOLATION` (`details.total` = "<account> would go below ฿0.00 (−฿x)") |
+| BR-18 | after the net deltas, every affected LOAN_TAKEN account with a credit limit has balance ≤ creditLimit | 422 `RULE_VIOLATION` (`details.total` = "Over the credit limit of <account> (available ฿x)") |
 | archived | no affected stored-balance account is archived | 422 `RULE_VIOLATION` ("Unarchive <name> first") |
 | BR-05 / NFR-06 | all writes in one DB transaction; any failure rolls back everything | — |
 
@@ -96,6 +97,8 @@ No schema change (`transactions.status` POSTED/VOID and `updated_at` exist). Lin
 | AC-F11-08 | Without a session `PUT` and void → 401; as admin → 403; alice editing or voiding bob's transaction → 404 and bob's transaction and balances are unchanged; alice editing her transaction to use bob's account → 404. |
 | AC-F11-09 | (NFR-06) When the balance update step throws during an edit (test spy on `postingSteps`), the response is 500 and the transaction, its lines and every balance equal their values before the request. |
 | AC-F11-10 | In the browser, alice opens a payment's detail, edits the amount, sees the updated detail and Overview balance; then voids it through the confirmation panel and sees the "Void" badge in detail and History. |
+| AC-F11-11 | Concurrent identical `PUT`s (e.g. double-click Save) and concurrent `PUT` + `void` compute net deltas inside the transaction from the locked row so final balances equal a single edit (for parallel `PUT`s) or a clean void (for `PUT` + `void`). |
+| AC-F11-12 | (BR-18) Editing a Credit Card (`LOAN_TAKEN`) payment so the resulting debt would exceed its `creditLimit` → 422 `RULE_VIOLATION` (`details.total` contains "Over the credit limit"), leaving the transaction and card balance unchanged. |
 
 ## 8 STS
 | TEST ID | AC | Level | Precondition / Input | Action | Expected |
@@ -110,6 +113,8 @@ No schema change (`transactions.status` POSTED/VOID and `updated_at` exist). Lin
 | TEST-F11-08 | AC-F11-08 | API-DB | no cookie; admin; bob's transaction; bob's account | Each request | 401; 403; 404 with bob unchanged; 404 |
 | TEST-F11-09 | AC-F11-09 | API-DB | spy makes `postingSteps.updateAccountBalance` throw on the 2nd call | `PUT` | 500; snapshot unchanged |
 | TEST-F11-10 | AC-F11-10 | E2E | alice with a payment recorded | Detail → Edit → change amount → save → Overview → detail → Void → Confirm → History | Updated detail and balance; Void badge on detail and History |
+| TEST-F11-11 | AC-F11-11 | API-DB (defect TDD) | posted card payment 120000; posted Bank payment 100000 | `Promise.all` two identical `PUT`s to 100000; `Promise.all` `PUT` + `void` | Card debt 100000 (not 80000); Bank 500000 and status VOID |
+| TEST-F11-12 | AC-F11-12 | API-DB (TDD) | Credit Card with `creditLimit` 150000 and posted payment 100000 | `PUT` total to 160000 | 422 `RULE_VIOLATION` ("Over the credit limit"); debt stays 100000 |
 
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
@@ -124,9 +129,12 @@ No schema change (`transactions.status` POSTED/VOID and `updated_at` exist). Lin
 | AC-F11-08 | `server/tests/f11-corrections.api.test.ts::TEST-F11-08` | PASS | fb0336f |
 | AC-F11-09 | `server/tests/f11-corrections.api.test.ts::TEST-F11-09` | PASS | fb0336f |
 | AC-F11-10 | `e2e/f11-corrections.spec.ts::TEST-F11-10` | PASS | fb0336f |
+| AC-F11-11 | `server/tests/f11-corrections.api.test.ts::TEST-F11-11` | PASS | ce2ae73 |
+| AC-F11-12 | `server/tests/f11-corrections.api.test.ts::TEST-F11-12` | PASS | ce2ae73 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. Edit keeps the form; edit/void rejected when a balance would go negative (D-12) or an affected stored-balance account is archived. | D2-S1 |
 | 0.2 | 2026-11-28 | Implemented; all AC PASS (red `7888ac1`, green `fb0336f`, `evidence/d2/F11-*.txt`). Status → TESTED. | D2-S11 |
+| 0.3 | 2026-11-28 | Compute net deltas inside the transaction from the locked row (concurrency fix) and enforce BR-18 credit limit on edit; added AC-F11-11/12 and TEST-F11-11/12 (red `8de8d03`, green `ce2ae73`). | CHG-01 / PR #75 review |

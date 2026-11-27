@@ -20,8 +20,76 @@
       Tests  9 failed | 1 passed (10)
    Duration  15.45s
 
-=== Defect TDD Red (PR #75 review: race condition + BR-18 creditLimit) ===
-Command: cd server && npx.cmd vitest run tests/f11-corrections.api.test.ts
-Result: 2 failed | 9 passed (11)
-- FAIL TEST-F11-11 (concurrency): AssertionError: expected 80000n to be 100000n
-- FAIL TEST-F11-12 (BR-18): Expected "Over the credit limit", Received "Account balance cannot be negative"
+
+# Defect TDD Red (commit 8de8d03): cd server && npx vitest run tests/f11-corrections.api.test.ts
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.1) to .\generated\prisma in 80ms
+
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+stderr | tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-09 (NFR-06) failure on 2nd balance update rolls back edit atomically
+Failed to edit transaction: Error: Simulated 2nd balance update failure
+    at C:/Users/admin/Desktop/Deliverable/server/tests/f11-corrections.api.test.ts:305:73
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async file:///C:/Users/admin/Desktop/Deliverable/server/node_modules/@vitest/runner/dist/chunk-artifact.js:1903:20
+
+ ❯ tests/f11-corrections.api.test.ts (11 tests | 2 failed) 6691ms
+     ✓ TEST-F11-01 editing card payment replaces lines, adjusts debt by net delta, and updates category totals  759ms
+     ✓ TEST-F11-02 editing receipt primary from Bank to Wallet moves balances and updates date/note  501ms
+     ✓ TEST-F11-03 invalid edits (lines mismatch, future date, changed form, same primary/line) return 422 leaving DB unchanged  569ms
+     ✓ TEST-F11-04 D-12 rejects edit that leaves Bank negative (399999 -> 422), accepts exact 400000 (Bank = 0)  656ms
+     ✓ TEST-F11-05 voiding a PAYMENT restores Bank balance, removes expense, and keeps transaction in history/detail as VOID  587ms
+     ✓ TEST-F11-06 voiding receipt whose cash was spent returns 422 naming Bank; voiding or editing VOID returns 422  640ms
+     ✓ TEST-F11-07 voiding a payment on an archived Wallet returns 422 Unarchive Wallet first  582ms
+     ✓ TEST-F11-08 401 / 403 / cross-user 404 on PUT and void  687ms
+     ✓ TEST-F11-09 (NFR-06) failure on 2nd balance update rolls back edit atomically  677ms
+     × TEST-F11-11 (concurrency) parallel identical PUTs and parallel PUT + void keep balances exact 549ms
+     × TEST-F11-12 (BR-18) editing a Credit Card payment over its creditLimit is rejected with 422 482ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-11 (concurrency) parallel identical PUTs and parallel PUT + void keep balances exact
+AssertionError: expected 80000n to be 100000n // Object.is equality
+
+- Expected
++ Received
+
+- 100000n
++ 80000n
+
+ ❯ tests/f11-corrections.api.test.ts:341:57
+    339|     expect(r1.status).toBe(200)
+    340|     expect(r2.status).toBe(200)
+    341|     expect((await account(acc['Credit Card'])).balance).toBe(100000n)
+       |                                                         ^
+    342|
+    343|     await setOpening(acc.Bank, 500000)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-12 (BR-18) editing a Credit Card payment over its creditLimit is rejected with 422
+AssertionError: expected 'Account balance cannot be negative' to contain 'Over the credit limit'
+
+Expected: "Over the credit limit"
+Received: "Account balance cannot be negative"
+
+ ❯ tests/f11-corrections.api.test.ts:381:43
+    379|     expect(over.status).toBe(422)
+    380|     expect(over.body.error.code).toBe('RULE_VIOLATION')
+    381|     expect(over.body.error.details.total).toContain('Over the credit l…
+       |                                           ^
+    382|     expect((await account(acc['Credit Card'])).balance).toBe(100000n)
+    383|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 9 passed (11)
+   Start at  02:27:59
+   Duration  11.76s (transform 307ms, setup 38ms, import 954ms, tests 6.69s, environment 0ms)
+

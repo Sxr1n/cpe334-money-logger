@@ -74,7 +74,7 @@
 | BR-18 (new) | F-05 (charge) | SRS §6 BR-18; F-05 §1, §2; SDS §2.3 (constraint), §2.4 | AC-F05-11, AC-F05-13 | TEST-F05-11, -13 | `server/src/lib/ledger.ts` `calculateTxnEffects`, `server/src/routes/transactions.ts` (backstop error mapping), `client/src/pages/PayPage.tsx` |
 | BR-18 | F-10 (borrow) | F-05 §2 (rule applies to all LOAN_TAKEN increases) | AC-F05-12 | TEST-F05-12 | `server/src/lib/ledger.ts` (RECEIPT LOAN_TAKEN line) |
 | BR-18 | F-08 (opening balance change) | F-05 §2 | AC-F05-14 | TEST-F05-14 | `server/src/routes/accounts.ts` (`PATCH /:id/opening-balance`) |
-| BR-18 | F-11 (edit) | F-11 contract re-validates BR-01–BR-09 → must also re-validate BR-18 | — (F-11 owner adds the AC when F-11 lands) | — | F-11 code uses `calculateTxnEffects`; the DB check is the backstop until then |
+| BR-18 | F-11 (edit) | F-11 contract re-validates BR-01–BR-09 → must also re-validate BR-18 | AC-F11-12 | TEST-F11-12 | `server/src/routes/transactions.ts` (`lockAndValidateCorrection`) |
 | Data | — | SDS §2.2, §2.3, §2.5 | AC-F05-09 | TEST-F05-09 | Prisma `Account.creditLimit` + migration `add_credit_limit` (nullable column, check constraint) |
 
 **Not applicable, with reasons:**
