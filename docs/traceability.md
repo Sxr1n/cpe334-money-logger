@@ -260,4 +260,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.19 | 2026-11-28 | CHG-01 results: AC-F05-09..16 PASS on `1660d08` | CHG-01 (Lab 7) |
 | 0.20 | 2026-11-28 | F-11 results: AC-F11-01..10 PASS on `fb0336f` | D2-S11 |
 | 0.21 | 2026-11-28 | F-11 concurrency (AC-F11-11) and CHG-01 BR-18 on edit (AC-F11-12) PASS on `ce2ae73` | CHG-01 / PR #75 |
-| 0.20 | 2026-11-28 | CHG-01 released in `v0.2.0-sprint2` and deployed (post-deploy 11/11 PASS) | CHG-01 (Lab 7) |
+| 0.22 | 2026-11-28 | CHG-01 released in `v0.2.0-sprint2` and deployed (post-deploy 11/11 PASS) | CHG-01 (Lab 7) |
