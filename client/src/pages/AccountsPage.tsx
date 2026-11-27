@@ -12,6 +12,8 @@ export interface AccountItem {
   openingDate: string | null
   periodTotal: number | null // F-06: this month's total for INCOME/EXPENSE, null otherwise
   archived: boolean // F-07
+  creditLimit: number | null // CHG-01: LOAN_TAKEN only
+  availableCredit: number | null
 }
 
 const TYPE_LABELS: Record<AccountType, string> = {
@@ -71,6 +73,10 @@ export default function AccountsPage() {
   const [rowErrors, setRowErrors] = useState<Record<number, string>>({})
   const [rowPending, setRowPending] = useState<number | null>(null)
 
+  // CHG-01: credit limit form per LOAN_TAKEN row
+  const [limitId, setLimitId] = useState<number | null>(null)
+  const [limitStr, setLimitStr] = useState('')
+
   const replaceAccount = (updated: AccountItem) =>
     setAccounts((prev) => prev?.map((a) => (a.id === updated.id ? { ...a, ...updated } : a)) ?? null)
 
@@ -95,15 +101,16 @@ export default function AccountsPage() {
     }
   }
 
-  async function patchAccount(acc: AccountItem, body: { name?: string; archived?: boolean }) {
+  async function patchAccount(acc: AccountItem, body: { name?: string; archived?: boolean; creditLimit?: number | null }) {
     setRowPending(acc.id)
     setRowErrors((prev) => ({ ...prev, [acc.id]: '' }))
     try {
       replaceAccount(await api<AccountItem>(`/accounts/${acc.id}`, { method: 'PATCH', body }))
       if (body.name !== undefined) setRenamingId(null)
+      if (body.creditLimit !== undefined) setLimitId(null)
     } catch (err) {
       const details = err instanceof ApiError ? err.details : undefined
-      setRowErrors((prev) => ({ ...prev, [acc.id]: details?.name ?? details?.archived ?? errorText(err) }))
+      setRowErrors((prev) => ({ ...prev, [acc.id]: details?.name ?? details?.archived ?? details?.creditLimit ?? errorText(err) }))
     } finally {
       setRowPending(null)
     }
@@ -358,6 +365,46 @@ export default function AccountsPage() {
                               ) : (
                                 <strong>{acc.name}</strong>
                               )}
+                              {type === 'LOAN_TAKEN' && (
+                                <div className="text-muted small">
+                                  {acc.creditLimit === null
+                                    ? 'No limit'
+                                    : `Limit ${formatTHB(acc.creditLimit)} · Available ${formatTHB(acc.availableCredit ?? 0)}`}
+                                </div>
+                              )}
+                              {limitId === acc.id && (
+                                <form
+                                  className="d-flex gap-2 mt-1 align-items-center"
+                                  onSubmit={(e) => {
+                                    e.preventDefault()
+                                    const satang = Math.round(Number(limitStr) * 100)
+                                    if (!limitStr || !Number.isFinite(satang) || satang < 1) {
+                                      setRowErrors((prev) => ({ ...prev, [acc.id]: 'Enter a limit of at least ฿0.01' }))
+                                      return
+                                    }
+                                    patchAccount(acc, { creditLimit: satang })
+                                  }}
+                                >
+                                  <label htmlFor={`limit-${acc.id}`} className="form-label small mb-0 text-nowrap">Credit limit (฿)</label>
+                                  <input
+                                    id={`limit-${acc.id}`}
+                                    type="number"
+                                    step="0.01"
+                                    min="0.01"
+                                    className="form-control form-control-sm"
+                                    value={limitStr}
+                                    onChange={(e) => setLimitStr(e.target.value)}
+                                    disabled={rowPending === acc.id}
+                                  />
+                                  <button type="submit" className="btn btn-sm btn-primary" disabled={rowPending === acc.id}>Save</button>
+                                  {acc.creditLimit !== null && (
+                                    <button type="button" className="btn btn-sm btn-outline-danger text-nowrap" onClick={() => patchAccount(acc, { creditLimit: null })} disabled={rowPending === acc.id}>
+                                      Remove limit
+                                    </button>
+                                  )}
+                                  <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setLimitId(null)}>Cancel</button>
+                                </form>
+                              )}
                               {rowErrors[acc.id] && <div className="text-danger small mt-1">{rowErrors[acc.id]}</div>}
                             </td>
                             {isCashOrLoan && (
@@ -386,6 +433,15 @@ export default function AccountsPage() {
                                 </button>
                               )}
                               <div className="btn-group btn-group-sm ms-1">
+                                {type === 'LOAN_TAKEN' && (
+                                  <button
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => { setLimitId(acc.id); setLimitStr(acc.creditLimit === null ? '' : (acc.creditLimit / 100).toFixed(2)) }}
+                                    disabled={rowPending === acc.id}
+                                  >
+                                    Credit limit
+                                  </button>
+                                )}
                                 <button
                                   className="btn btn-outline-secondary"
                                   onClick={() => { setRenamingId(acc.id); setRenameValue(acc.name) }}

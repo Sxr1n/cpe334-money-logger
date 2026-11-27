@@ -202,10 +202,19 @@ export function formatBaht(satang: bigint | number): string {
   })
 }
 
+// creditLimit (CHG-01) is optional so callers without a limit keep the baseline behaviour.
+type LedgerAccount = { id: number; name: string; type: AccountType; balance: bigint; creditLimit?: bigint | null }
+
+// BR-18: the debt a LOAN_TAKEN account would have after adding `amount` must not exceed its limit.
+function overCreditLimit(account: LedgerAccount, amount: bigint): string | null {
+  if (account.creditLimit == null || account.balance + amount <= account.creditLimit) return null
+  return `Over the credit limit of ${account.name} (available ฿${formatBaht(account.creditLimit - account.balance)})`
+}
+
 export function calculateTxnEffects(
   form: 'RECEIPT' | 'PAYMENT',
-  primaryAccount: { id: number; name: string; type: AccountType; balance: bigint },
-  lines: { account: { id: number; name: string; type: AccountType; balance: bigint }; amount: bigint }[],
+  primaryAccount: LedgerAccount,
+  lines: { account: LedgerAccount; amount: bigint }[],
   total: bigint,
 ): TxnEffectsResult {
   const deltas: AccountDelta[] = []
@@ -240,6 +249,8 @@ export function calculateTxnEffects(
         }
         deltas.push({ accountId: line.account.id, delta: -line.amount })
       } else if (line.account.type === AccountType.LOAN_TAKEN) {
+        const over = overCreditLimit(line.account, line.amount)
+        if (over) return { valid: false, errorType: 'RULE_VIOLATION', details: { [`lines[${i}].amount`]: over } }
         deltas.push({ accountId: line.account.id, delta: line.amount })
       }
     }
@@ -260,6 +271,8 @@ export function calculateTxnEffects(
       }
       deltas.push({ accountId: primaryAccount.id, delta: -total })
     } else if (primaryAccount.type === AccountType.LOAN_TAKEN) {
+      const over = overCreditLimit(primaryAccount, total)
+      if (over) return { valid: false, errorType: 'RULE_VIOLATION', details: { total: over } }
       deltas.push({ accountId: primaryAccount.id, delta: total })
     }
 
