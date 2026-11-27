@@ -321,4 +321,64 @@ describe('F-11 Transaction corrections (API-DB)', () => {
     expect((await account(acc.Bank)).balance).toBe(beforeBank)
     expect((await account(walletId)).balance).toBe(beforeWallet)
   })
+
+  it('TEST-F11-11 (concurrency) parallel identical PUTs and parallel PUT + void keep balances exact', async () => {
+    const cardTxn = await postTxn({
+      form: 'PAYMENT',
+      primaryAccountId: acc['Credit Card'],
+      total: 120000,
+      lines: [{ accountId: acc.Dining, amount: 120000 }],
+    })
+    const editBody = {
+      form: 'PAYMENT',
+      primaryAccountId: acc['Credit Card'],
+      total: 100000,
+      lines: [{ accountId: acc.Dining, amount: 100000 }],
+    }
+    const [r1, r2] = await Promise.all([putTxn(cardTxn.body.id, editBody), putTxn(cardTxn.body.id, editBody)])
+    expect(r1.status).toBe(200)
+    expect(r2.status).toBe(200)
+    expect((await account(acc['Credit Card'])).balance).toBe(100000n)
+
+    await setOpening(acc.Bank, 500000)
+    const bankTxn = await postTxn({
+      form: 'PAYMENT',
+      primaryAccountId: acc.Bank,
+      total: 100000,
+      lines: [{ accountId: acc.Dining, amount: 100000 }],
+    })
+    const [putRes, voidRes] = await Promise.all([
+      putTxn(bankTxn.body.id, {
+        form: 'PAYMENT',
+        primaryAccountId: acc.Bank,
+        total: 150000,
+        lines: [{ accountId: acc.Dining, amount: 150000 }],
+      }),
+      voidTxn(bankTxn.body.id),
+    ])
+    expect([200, 422]).toContain(putRes.status)
+    expect(voidRes.status).toBe(200)
+    expect((await prisma.txn.findUniqueOrThrow({ where: { id: bankTxn.body.id } })).status).toBe('VOID')
+    expect((await account(acc.Bank)).balance).toBe(500000n)
+  })
+
+  it('TEST-F11-12 (BR-18) editing a Credit Card payment over its creditLimit is rejected with 422', async () => {
+    expect((await request(app).patch(`/api/accounts/${acc['Credit Card']}`).set('Cookie', alice).send({ creditLimit: 150000 })).status).toBe(200)
+    const created = await postTxn({
+      form: 'PAYMENT',
+      primaryAccountId: acc['Credit Card'],
+      total: 100000,
+      lines: [{ accountId: acc.Dining, amount: 100000 }],
+    })
+    const over = await putTxn(created.body.id, {
+      form: 'PAYMENT',
+      primaryAccountId: acc['Credit Card'],
+      total: 150001,
+      lines: [{ accountId: acc.Dining, amount: 150001 }],
+    })
+    expect(over.status).toBe(422)
+    expect(over.body.error.code).toBe('RULE_VIOLATION')
+    expect(over.body.error.details.total).toContain('Over the credit limit')
+    expect((await account(acc['Credit Card'])).balance).toBe(100000n)
+  })
 })

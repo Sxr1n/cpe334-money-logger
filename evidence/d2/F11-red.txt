@@ -19,3 +19,9 @@
  Test Files  2 failed (2)
       Tests  9 failed | 1 passed (10)
    Duration  15.45s
+
+=== Defect TDD Red (PR #75 review: race condition + BR-18 creditLimit) ===
+Command: cd server && npx.cmd vitest run tests/f11-corrections.api.test.ts
+Result: 2 failed | 9 passed (11)
+- FAIL TEST-F11-11 (concurrency): AssertionError: expected 80000n to be 100000n
+- FAIL TEST-F11-12 (BR-18): Expected "Over the credit limit", Received "Account balance cannot be negative"
