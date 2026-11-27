@@ -22,3 +22,28 @@ export interface TxnView {
 }
 
 export const formLabel = (form: TxnView['form']) => (form === 'RECEIPT' ? 'Received' : 'Paid')
+
+// F-11: balance before editTxn took effect (current balance minus editTxn's signed delta).
+export function preEditBalance(accountId: number, currentBalance: number, editTxn?: TxnView): number {
+  if (!editTxn) return currentBalance
+  let effect = 0
+  if (editTxn.form === 'RECEIPT') {
+    if (editTxn.primaryAccount.id === accountId && editTxn.primaryAccount.type === 'CASH') effect += editTxn.total
+    for (const l of editTxn.lines) {
+      if (l.account.id !== accountId) continue
+      if (l.account.type === 'CASH' || l.account.type === 'LOAN_GIVEN') effect -= l.amount
+      else if (l.account.type === 'LOAN_TAKEN') effect += l.amount
+    }
+  } else {
+    if (editTxn.primaryAccount.id === accountId) {
+      if (editTxn.primaryAccount.type === 'CASH') effect -= editTxn.total
+      else if (editTxn.primaryAccount.type === 'LOAN_TAKEN') effect += editTxn.total
+    }
+    for (const l of editTxn.lines) {
+      if (l.account.id !== accountId) continue
+      if (l.account.type === 'LOAN_TAKEN') effect -= l.amount
+      else if (l.account.type === 'CASH' || l.account.type === 'LOAN_GIVEN') effect += l.amount
+    }
+  }
+  return currentBalance - effect
+}

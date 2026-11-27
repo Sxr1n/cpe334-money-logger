@@ -32,8 +32,8 @@ Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and re
 | FR-17 | F-10 Loans given and taken | 2 | AC-F10-04, AC-F10-05, AC-F10-08 | TEST-F10-04, TEST-F10-05, TEST-F10-08 |
 | FR-18 | F-06 Overview, summary and history | 1 | AC-F06-05 | TEST-F06-05 |
 | FR-19 | F-12 Search and filter history | 2 | AC-F12-01, AC-F12-02, AC-F12-03, AC-F12-04, AC-F12-07 | TEST-F12-01, TEST-F12-02, TEST-F12-03, TEST-F12-04, TEST-F12-07 |
-| FR-20 | F-11 Transaction corrections | 2 | AC-F11-01, AC-F11-02, AC-F11-03, AC-F11-04, AC-F11-10 | TEST-F11-01, TEST-F11-02, TEST-F11-03, TEST-F11-04, TEST-F11-10 |
-| FR-21 | F-11 Transaction corrections | 2 | AC-F11-05, AC-F11-06, AC-F11-10 | TEST-F11-05, TEST-F11-06, TEST-F11-10 |
+| FR-20 | F-11 Transaction corrections | 2 | AC-F11-01, AC-F11-02, AC-F11-03, AC-F11-04, AC-F11-10, AC-F11-11, AC-F11-12 | TEST-F11-01, TEST-F11-02, TEST-F11-03, TEST-F11-04, TEST-F11-10, TEST-F11-11, TEST-F11-12 |
+| FR-21 | F-11 Transaction corrections | 2 | AC-F11-05, AC-F11-06, AC-F11-10, AC-F11-11 | TEST-F11-05, TEST-F11-06, TEST-F11-10, TEST-F11-11 |
 | FR-22 | F-13 Favourite transactions | 3 | AC-F13-01, AC-F13-02, AC-F13-05 | TEST-F13-01, TEST-F13-02, TEST-F13-05 |
 | FR-23 | F-14 Duplicate transaction | 3 | AC-F14-01, AC-F14-02, AC-F14-03 | TEST-F14-01, TEST-F14-02, TEST-F14-03 |
 | FR-24 | F-06 Overview, summary and history | 1 | AC-F06-02, AC-F06-07 | TEST-F06-02, TEST-F06-07 |
@@ -64,7 +64,7 @@ A rule shared by several features is verified in Sprint 1 where it first applies
 | BR-15 | F-07 Account management | 2 | AC-F07-05, AC-F07-06 | TEST-F07-05, TEST-F07-06 (Sprint 2) |
 | BR-16 | F-11 Transaction corrections | 2 | AC-F11-03, AC-F11-05, AC-F11-06 | TEST-F11-03, TEST-F11-05, TEST-F11-06 (Sprint 2) |
 | BR-17 | F-14 Duplicate transaction | 3 | AC-F14-01, AC-F14-02 | TEST-F14-01, TEST-F14-02 |
-| BR-18 | F-05 (CHG-01); also F-08, F-10, F-11 paths | Lab 7 | AC-F05-11, AC-F05-12, AC-F05-13, AC-F05-14 | TEST-F05-11, TEST-F05-12, TEST-F05-13, TEST-F05-14 |
+| BR-18 | F-05 (CHG-01); also F-08, F-10, F-11 paths | Lab 7 | AC-F05-11, AC-F05-12, AC-F05-13, AC-F05-14, AC-F11-12 | TEST-F05-11, TEST-F05-12, TEST-F05-13, TEST-F05-14, TEST-F11-12 |
 
 ### 1.3 Non-functional requirements
 | REQ | Feature / responsibility | Sprint (establish / verify) | AC | TEST |
@@ -171,16 +171,18 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F10-06 | Every (form, primary type, line type) combination outside SRS §4.2 → 422 RULE_VIOLATION, including RECEIPT with an … | TEST-F10-06 | unit + API-DB |  | `server/tests/f10-loans.unit.test.ts::TEST-F10-06`, `server/tests/f10-loans.api.test.ts::TEST-F10-06` | PASS | e98d37d |
 | AC-F10-07 | After AC-F10-01 and AC-F10-03, GET /api/overview shows loanGiven.total = 200000 and loanTaken includes Loan from … | TEST-F10-07 | API-DB |  | `server/tests/f10-loans.api.test.ts::TEST-F10-07` | PASS | e98d37d |
 | AC-F10-08 | In the browser, on /receive alice records Salary + a repayment from Ken in one transaction; the footer shows the … | TEST-F10-08 | E2E |  | `e2e/f10-loans.spec.ts::TEST-F10-08` | PASS | e98d37d |
-| AC-F11-01 | Given a PAYMENT from Credit Card total 120000 (Dining 70000 + Groceries 50000) and debt 120000, editing it to … | TEST-F11-01 | unit + API-DB | yes | — | NOT RUN | — |
-| AC-F11-02 | Given a RECEIPT of 500000 into Bank (Salary line), editing the primary to Wallet and the date and note → 200, Bank … | TEST-F11-02 | API-DB |  | — | NOT RUN | — |
-| AC-F11-03 | Editing with lines ≠ total, a future date, a changed form, or a line equal to the primary → 422; the transaction, … | TEST-F11-03 | API-DB |  | — | NOT RUN | — |
-| AC-F11-04 | Given Bank opening 0, a RECEIPT 500000 into Bank, then a PAYMENT 400000 from Bank (Bank 100000): editing the … | TEST-F11-04 | API-DB | yes | — | NOT RUN | — |
-| AC-F11-05 | Voiding a PAYMENT of 120000 from Bank → 200 status: "VOID", Bank +120000, the month's expense drops by 120000, the … | TEST-F11-05 | API-DB | yes | — | NOT RUN | — |
-| AC-F11-06 | Given a RECEIPT 1000000 into Bank and a PAYMENT 800000 from Bank, voiding the receipt → 422 (details.total names … | TEST-F11-06 | API-DB | yes | — | NOT RUN | — |
-| AC-F11-07 | Given a PAYMENT from Wallet that was later balanced to 0 and archived, voiding that payment → 422 "Unarchive … | TEST-F11-07 | API-DB |  | — | NOT RUN | — |
-| AC-F11-08 | Without a session PUT and void → 401; as admin → 403; alice editing or voiding bob's transaction → 404 and bob's … | TEST-F11-08 | API-DB |  | — | NOT RUN | — |
-| AC-F11-09 | (NFR-06) When the balance update step throws during an edit (test spy on postingSteps), the response is 500 and … | TEST-F11-09 | API-DB |  | — | NOT RUN | — |
-| AC-F11-10 | In the browser, alice opens a payment's detail, edits the amount, sees the updated detail and Overview balance; … | TEST-F11-10 | E2E |  | — | NOT RUN | — |
+| AC-F11-01 | Given a PAYMENT from Credit Card total 120000 (Dining 70000 + Groceries 50000) and debt 120000, editing it to … | TEST-F11-01 | unit + API-DB | yes | `server/tests/f11-corrections.unit.test.ts::TEST-F11-01`, `server/tests/f11-corrections.api.test.ts::TEST-F11-01` | PASS | fb0336f |
+| AC-F11-02 | Given a RECEIPT of 500000 into Bank (Salary line), editing the primary to Wallet and the date and note → 200, Bank … | TEST-F11-02 | API-DB |  | `server/tests/f11-corrections.api.test.ts::TEST-F11-02` | PASS | fb0336f |
+| AC-F11-03 | Editing with lines ≠ total, a future date, a changed form, or a line equal to the primary → 422; the transaction, … | TEST-F11-03 | API-DB |  | `server/tests/f11-corrections.api.test.ts::TEST-F11-03` | PASS | fb0336f |
+| AC-F11-04 | Given Bank opening 0, a RECEIPT 500000 into Bank, then a PAYMENT 400000 from Bank (Bank 100000): editing the … | TEST-F11-04 | API-DB | yes | `server/tests/f11-corrections.api.test.ts::TEST-F11-04` | PASS | fb0336f |
+| AC-F11-05 | Voiding a PAYMENT of 120000 from Bank → 200 status: "VOID", Bank +120000, the month's expense drops by 120000, the … | TEST-F11-05 | API-DB | yes | `server/tests/f11-corrections.api.test.ts::TEST-F11-05` | PASS | fb0336f |
+| AC-F11-06 | Given a RECEIPT 1000000 into Bank and a PAYMENT 800000 from Bank, voiding the receipt → 422 (details.total names … | TEST-F11-06 | API-DB | yes | `server/tests/f11-corrections.api.test.ts::TEST-F11-06` | PASS | fb0336f |
+| AC-F11-07 | Given a PAYMENT from Wallet that was later balanced to 0 and archived, voiding that payment → 422 "Unarchive … | TEST-F11-07 | API-DB |  | `server/tests/f11-corrections.api.test.ts::TEST-F11-07` | PASS | fb0336f |
+| AC-F11-08 | Without a session PUT and void → 401; as admin → 403; alice editing or voiding bob's transaction → 404 and bob's … | TEST-F11-08 | API-DB |  | `server/tests/f11-corrections.api.test.ts::TEST-F11-08` | PASS | fb0336f |
+| AC-F11-09 | (NFR-06) When the balance update step throws during an edit (test spy on postingSteps), the response is 500 and … | TEST-F11-09 | API-DB |  | `server/tests/f11-corrections.api.test.ts::TEST-F11-09` | PASS | fb0336f |
+| AC-F11-10 | In the browser, alice opens a payment's detail, edits the amount, sees the updated detail and Overview balance; … | TEST-F11-10 | E2E |  | `e2e/f11-corrections.spec.ts::TEST-F11-10` | PASS | fb0336f |
+| AC-F11-11 | Concurrent identical `PUT`s and concurrent `PUT` + `void` compute net deltas from the locked txn inside the transaction … | TEST-F11-11 | API-DB | yes | `server/tests/f11-corrections.api.test.ts::TEST-F11-11` | PASS | ce2ae73 |
+| AC-F11-12 | (CHG-01 × F-11 / BR-18) Editing a Credit Card payment over its `creditLimit` is rejected with 422, balance unchanged | TEST-F11-12 | API-DB | yes | `server/tests/f11-corrections.api.test.ts::TEST-F11-12` | PASS | ce2ae73 |
 | AC-F12-01 | Given alice's transactions dated 2026-10-31, 2026-11-01, 2026-11-15 and 2026-11-30, from=2026-11-01&to=2026-11-30 … | TEST-F12-01 | API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-01` | PASS | 63d377b |
 | AC-F12-02 | accountId = Dining returns the card purchases that have a Dining line although their primary is Credit Card; … | TEST-F12-02 | API-DB | yes | `server/tests/f12-search.api.test.ts::TEST-F12-02` | PASS | 63d377b |
 | AC-F12-03 | form=RECEIPT returns only receipts; status=VOID returns only voided transactions; minAmount=50000&maxAmount=120000 … | TEST-F12-03 | API-DB |  | `server/tests/f12-search.api.test.ts::TEST-F12-03` | PASS | 63d377b |
@@ -256,3 +258,5 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.17 | 2026-11-26 | F-10 results: AC-F10-01..08 PASS on `e98d37d` (50-case allowed-lines matrix) | D2-S10 |
 | 0.18 | 2026-11-27 | CHG-01: FR-28, BR-18 rows; AC-F05-09..16 / TEST-F05-09..16 (NOT RUN); §4 approved change | CHG-01 (Lab 7) |
 | 0.19 | 2026-11-28 | CHG-01 results: AC-F05-09..16 PASS on `1660d08` | CHG-01 (Lab 7) |
+| 0.20 | 2026-11-28 | F-11 results: AC-F11-01..10 PASS on `fb0336f` | D2-S11 |
+| 0.21 | 2026-11-28 | F-11 concurrency (AC-F11-11) and CHG-01 BR-18 on edit (AC-F11-12) PASS on `ce2ae73` | CHG-01 / PR #75 |

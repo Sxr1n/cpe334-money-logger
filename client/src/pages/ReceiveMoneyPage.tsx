@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
 import DuplicateBanner from '../components/DuplicateBanner'
 import { loadDuplicate, toAmountStr, type LoadedDuplicate } from '../duplicate'
+import { preEditBalance, type TxnView } from '../format'
 
 export interface AccountItem {
   id: number
@@ -47,17 +48,22 @@ function parseSatang(val: string): { satang: number | null; error?: string } {
   return { satang }
 }
 
-export default function ReceiveMoneyPage() {
+export default function ReceiveMoneyPage({ editTxn }: { editTxn?: TxnView } = {}) {
+  const navigate = useNavigate()
   const [accounts, setAccounts] = useState<AccountItem[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
 
   // Form inputs
-  const [primaryAccountId, setPrimaryAccountId] = useState<number>(0)
-  const [dateStr, setDateStr] = useState<string>(getTodayInBangkok())
-  const [totalStr, setTotalStr] = useState<string>('')
-  const [noteStr, setNoteStr] = useState<string>('')
-  const [lines, setLines] = useState<FormLine[]>([])
+  const [primaryAccountId, setPrimaryAccountId] = useState<number>(editTxn?.primaryAccount.id ?? 0)
+  const [dateStr, setDateStr] = useState<string>(editTxn?.date ?? getTodayInBangkok())
+  const [totalStr, setTotalStr] = useState<string>(editTxn ? toAmountStr(editTxn.total) : '')
+  const [noteStr, setNoteStr] = useState<string>(editTxn?.note ?? '')
+  const [lines, setLines] = useState<FormLine[]>(
+    editTxn
+      ? editTxn.lines.map((l, i) => ({ id: `edit-${i}`, accountId: l.account.id, amountStr: toAmountStr(l.amount) }))
+      : [],
+  )
 
   // Errors & submission state
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -72,7 +78,7 @@ export default function ReceiveMoneyPage() {
 
   useEffect(() => {
     loadAccounts().then((active) => {
-      if (duplicateId && active) applyDuplicate(duplicateId, active)
+      if (!editTxn && duplicateId && active) applyDuplicate(duplicateId, active)
     })
   }, [])
 
@@ -95,15 +101,19 @@ export default function ReceiveMoneyPage() {
     try {
       setLoading(true)
       const res = await api<{ items: AccountItem[] }>('/accounts')
-      const active = res.items.filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+      const active = res.items
+        .filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+        .map((a) => ({ ...a, balance: preEditBalance(a.id, a.balance, editTxn) }))
       setAccounts(active)
 
-      const cash = res.items.filter((a) => a.type === 'CASH')
-      const income = res.items.filter((a) => a.type === 'INCOME')
+      const cash = active.filter((a) => a.type === 'CASH')
+      const income = active.filter((a) => a.type === 'INCOME')
 
-      if (cash.length > 0) setPrimaryAccountId(cash[0].id)
-      if (income.length > 0) {
-        setLines([{ id: 'line-1', accountId: income[0].id, amountStr: '' }])
+      if (!editTxn) {
+        if (cash.length > 0) setPrimaryAccountId(cash[0].id)
+        if (income.length > 0) {
+          setLines([{ id: 'line-1', accountId: income[0].id, amountStr: '' }])
+        }
       }
       return active
     } catch (err) {
@@ -215,6 +225,14 @@ export default function ReceiveMoneyPage() {
         })),
       }
 
+      if (editTxn) {
+        await api<TxnView>(`/transactions/${editTxn.id}`, {
+          method: 'PUT',
+          body: payload,
+        })
+        navigate(`/transactions/${editTxn.id}`, { state: { flash: 'Transaction updated' } })
+        return
+      }
       const res = await api<any>('/transactions', {
         method: 'POST',
         body: payload,
@@ -261,7 +279,7 @@ export default function ReceiveMoneyPage() {
 
   return (
     <div className="container py-4" style={{ maxWidth: '720px' }}>
-      <h1 className="h4 mb-3">Receive money</h1>
+      <h1 className="h4 mb-3">{editTxn ? 'Edit receipt' : 'Receive money'}</h1>
 
       {successTxn && (
         <div className="alert alert-success" role="alert">
@@ -488,6 +506,8 @@ export default function ReceiveMoneyPage() {
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
                 Saving...
               </>
+            ) : editTxn ? (
+              'Save changes'
             ) : (
               'Save'
             )}

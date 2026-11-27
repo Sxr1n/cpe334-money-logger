@@ -167,11 +167,16 @@ export default function HistoryPage() {
                 <tr key={t.id}>
                   <td>
                     <Link to={`/transactions/${t.id}`}>{formatDisplayDate(t.date)}</Link>
+                    {t.status === 'VOID' && <span className="badge bg-secondary ms-2">Void</span>}
                   </td>
                   <td>{formLabel(t.form)}</td>
                   <td>{t.primaryAccount.name}</td>
                   <td>{t.note ?? ''}</td>
-                  <td className="text-end font-monospace">{formatTHB(t.total)}</td>
+                  <td className="text-end font-monospace">
+                    <span className={t.status === 'VOID' ? 'text-decoration-line-through text-muted' : ''}>
+                      {formatTHB(t.total)}
+                    </span>
+                  </td>
                 </tr>
               ))}
             </tbody>

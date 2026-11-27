@@ -202,6 +202,49 @@ export function formatBaht(satang: bigint | number): string {
   })
 }
 
+export interface TxnEffectInput {
+  form: 'RECEIPT' | 'PAYMENT'
+  primaryAccount: { id: number; type: AccountType }
+  lines: { account: { id: number; type: AccountType }; amount: bigint }[]
+  total: bigint
+}
+
+// SRS §4.3: signed balance deltas for stored-balance accounts (CASH, LOAN_TAKEN, LOAN_GIVEN).
+export function computeRawTxnDeltas(txn: TxnEffectInput): Map<number, bigint> {
+  const map = new Map<number, bigint>()
+  const add = (id: number, d: bigint) => map.set(id, (map.get(id) ?? 0n) + d)
+
+  if (txn.form === 'RECEIPT') {
+    if (txn.primaryAccount.type === AccountType.CASH) add(txn.primaryAccount.id, txn.total)
+    for (const l of txn.lines) {
+      if (l.account.type === AccountType.CASH || l.account.type === AccountType.LOAN_GIVEN) add(l.account.id, -l.amount)
+      else if (l.account.type === AccountType.LOAN_TAKEN) add(l.account.id, l.amount)
+    }
+  } else {
+    if (txn.primaryAccount.type === AccountType.CASH) add(txn.primaryAccount.id, -txn.total)
+    else if (txn.primaryAccount.type === AccountType.LOAN_TAKEN) add(txn.primaryAccount.id, txn.total)
+    for (const l of txn.lines) {
+      if (l.account.type === AccountType.LOAN_TAKEN) add(l.account.id, -l.amount)
+      else if (l.account.type === AccountType.CASH || l.account.type === AccountType.LOAN_GIVEN) add(l.account.id, l.amount)
+    }
+  }
+  return map
+}
+
+// F-11: net deltas = -(old effects) + (new effects), or -(old effects) when voiding (newTxn = null).
+export function computeNetDeltas(oldTxn: TxnEffectInput, newTxn: TxnEffectInput | null): AccountDelta[] {
+  const net = new Map<number, bigint>()
+  for (const [id, d] of computeRawTxnDeltas(oldTxn)) net.set(id, -d)
+  if (newTxn) {
+    for (const [id, d] of computeRawTxnDeltas(newTxn)) net.set(id, (net.get(id) ?? 0n) + d)
+  }
+  const result: AccountDelta[] = []
+  for (const [accountId, delta] of net) {
+    if (delta !== 0n) result.push({ accountId, delta })
+  }
+  return result
+}
+
 // creditLimit (CHG-01) is optional so callers without a limit keep the baseline behaviour.
 type LedgerAccount = { id: number; name: string; type: AccountType; balance: bigint; creditLimit?: bigint | null }
 

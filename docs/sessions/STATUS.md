@@ -20,7 +20,7 @@
 | F-08 | Opening balance management | 2 | IN PROGRESS (01–06 PASS; 07 after F-09–F-11) | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR #57 | red `51eeffc`, green `c341d6d` (evidence/d2/F08-*.txt) |
 | F-09 | Transfers | 2 | TESTED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | red `769742f`, green `c36a003` (evidence/d2/F09-*.txt) |
 | F-10 | Loans given and taken | 2 | TESTED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | red `cbf9735`, green `e98d37d` (evidence/d2/F10-*.txt) |
-| F-11 | Transaction corrections | 2 | SPECIFIED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | — |
+| F-11 | Transaction corrections | 2 | TESTED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | red `7888ac1`, green `fb0336f` (evidence/d2/F11-*.txt) |
 | F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
 | F-13 | Favourite transactions | 3 | TESTED | Sxr1n | sprint-3/F13-favourites.md | #62 / PR #66 | red `c4b8f42`, green `748556f` (evidence/d2/F13-*.txt) |
 | F-14 | Duplicate transaction | 3 | TESTED | Sxr1n | sprint-3/F14-duplicate.md | #60 | red `255be65`, green `b5cc4a3` (evidence/d2/F14-*.txt) |
