@@ -2,7 +2,7 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 code PR, then deploy it · both students confirm the Lab 7 retrospective draft · release + deploy by 29 Nov 12:00 (Lab 7 action) · Lab 7 PDF · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
+- Next session: release PR `release/v0.2.0-sprint2` → main (Leviathan-c137 approves) → tag `v0.2.0-sprint2` → Deploy demo → post-deploy checks (CHG-01 + Sprint 1 isolation/admin 403) · #76 E2E flake fix · TEST-NFR05-01 (AC-F08-07) and TEST-F14-03 → F-11 void API · Lab 7 PDF · D2 PDF parts + RC `v0.3.0-rc1` · Lab 6 partner UAT · due 29 Nov 23:59
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
 - Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-R1 release v0.2.0-sprint2 (prep) — Claude + Sxr1n
+- Done: #74 (CHG-01) and #75 (F-11, after the race/BR-18 fixes and verbatim evidence) merged into `staging/sprint-2` (`22acd51`); E2E cold-start flake fixed in PR #76 (open); release branch `release/v0.2.0-sprint2` from `22acd51` with release evidence
+- Evidence: `evidence/d2/release-v0.2.0-sprint2.txt` on `22acd51`: server tsc OK, 33 files / 139 tests passed; client 1 test + build OK; E2E 19 passed; Docker image build OK; 0 failed, 0 skipped
+- Decisions: release now (Lab 7 needs the CHG-01 deploy) with F-08 still IN PROGRESS — AC-F08-07 (TEST-NFR05-01) is not written yet and is disclosed in the release PR; #76 joins the RC
+- Open issues: TEST-NFR05-01; TEST-F14-03 still uses `e2e-void.ts`; Issues #50–#55, #60–#63, #72 close with the release PR; Lab 6 UAT not run
+- Next session: tag + deploy + post-deploy checks after the release PR is approved
 ### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
 - Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
   - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;
