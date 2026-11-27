@@ -1,6 +1,6 @@
 import { AccountType, type Account } from '../../generated/prisma/client'
 import { Router, type Request, type Response } from 'express'
-import { validateAccountInput, validateName } from '../lib/accountInput'
+import { validateAccountInput, validateCreditLimit, validateName } from '../lib/accountInput'
 import { formatBaht } from '../lib/ledger'
 import { balanceAfterOpeningChange, validateOpeningBalanceInput } from '../lib/openingBalance'
 import { parsePeriod, sendValidationFailed } from '../lib/query'
@@ -26,6 +26,8 @@ function serializeAccount(acc: Account) {
     openingBalance: acc.openingBalance !== null ? Number(acc.openingBalance) : null,
     openingDate: acc.openingDate ? acc.openingDate.toISOString().slice(0, 10) : null,
     archived: acc.archivedAt !== null,
+    creditLimit: acc.creditLimit !== null ? Number(acc.creditLimit) : null, // CHG-01
+    availableCredit: acc.creditLimit !== null ? Number(acc.creditLimit - acc.balance) : null,
   }
 }
 
@@ -94,9 +96,11 @@ router.patch('/:id', async (req: Request, res: Response) => {
   const id = Number(req.params.id)
   const body = req.body as Record<string, unknown> | undefined
   if (!body || typeof body !== 'object' || Array.isArray(body)) return badRequest(res)
-  const { name, archived } = body
+  const { name, archived, creditLimit } = body
+  const limit = creditLimit === undefined ? undefined : validateCreditLimit(creditLimit)
+  if (limit && !limit.ok && 'badRequest' in limit) return badRequest(res)
   if (
-    (name === undefined && archived === undefined) ||
+    (name === undefined && archived === undefined && creditLimit === undefined) ||
     (name !== undefined && typeof name !== 'string') ||
     (archived !== undefined && typeof archived !== 'boolean')
   ) {
@@ -112,6 +116,11 @@ router.patch('/:id', async (req: Request, res: Response) => {
     if (nameError) return sendValidationFailed(res, { name: nameError })
     if (await nameTaken(userId, account.type, name.trim(), id)) return duplicateName(res, account.type)
   }
+  if (limit && !limit.ok && 'error' in limit) return sendValidationFailed(res, { creditLimit: limit.error })
+  const limitRule = (msg: string) =>
+    res.status(422).json({ error: { code: 'RULE_VIOLATION', message: 'Business rule violation.', details: { creditLimit: msg } } })
+  if (limit && account.type !== AccountType.LOAN_TAKEN) return limitRule('A credit limit can only be set on a LOAN_TAKEN account')
+  if (limit && account.archivedAt !== null) return limitRule('Account is archived')
 
   try {
     const updated = await prisma.$transaction(async (tx) => {
@@ -120,6 +129,10 @@ router.patch('/:id', async (req: Request, res: Response) => {
       if (archived === true && HAS_BALANCE.includes(account.type) && row.balance !== 0n) {
         throw Object.assign(new Error('ARCHIVE_BALANCE'), { balance: row.balance })
       }
+      // CHG-01 BR-18: checked on the locked row so a concurrent charge cannot slip under the new limit.
+      if (limit?.ok && limit.value !== null && limit.value < row.balance) {
+        throw Object.assign(new Error('LIMIT_BELOW_DEBT'), { balance: row.balance })
+      }
       return tx.account.update({
         where: { id },
         data: {
@@ -127,6 +140,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
           // Archiving twice keeps the first timestamp; unarchiving an active account changes nothing.
           ...(archived === true && account.archivedAt === null ? { archivedAt: new Date() } : {}),
           ...(archived === false ? { archivedAt: null } : {}),
+          ...(limit?.ok ? { creditLimit: limit.value } : {}),
         },
       })
     })
@@ -141,6 +155,9 @@ router.patch('/:id', async (req: Request, res: Response) => {
           details: { archived: `Balance must be ฿0.00 to archive (now ฿${formatBaht(balance)})` },
         },
       })
+    }
+    if (err instanceof Error && err.message === 'LIMIT_BELOW_DEBT') {
+      return limitRule(`Limit is below the current debt ฿${formatBaht((err as Error & { balance: bigint }).balance)}`)
     }
     if (isUniqueViolation(err)) return duplicateName(res, account.type)
     throw err
@@ -252,10 +269,11 @@ router.patch('/:id/opening-balance', async (req: Request, res: Response) => {
   try {
     const updated = await prisma.$transaction(async (tx) => {
       // Lock the row so a concurrent posting cannot slip between the check and the write (BR-05).
-      const [row] = await tx.$queryRaw<[{ balance: bigint; opening_balance: bigint }]>`
-        SELECT balance, opening_balance FROM accounts WHERE id = ${id} FOR UPDATE`
+      const [row] = await tx.$queryRaw<[{ balance: bigint; opening_balance: bigint; credit_limit: bigint | null }]>`
+        SELECT balance, opening_balance, credit_limit FROM accounts WHERE id = ${id} FOR UPDATE`
       const balance = balanceAfterOpeningChange(row.balance, row.opening_balance, BigInt(amount))
       if (balance < 0n) throw Object.assign(new Error('NEGATIVE'), { balance })
+      if (row.credit_limit !== null && balance > row.credit_limit) throw Object.assign(new Error('OVER_LIMIT'), { limit: row.credit_limit })
       return tx.account.update({ where: { id }, data: { openingBalance: BigInt(amount), openingDate: new Date(date), balance } })
     })
     res.json(serializeAccount(updated))
@@ -264,6 +282,11 @@ router.patch('/:id/opening-balance', async (req: Request, res: Response) => {
       const { balance } = err as Error & { balance: bigint }
       return rule('Business rule violation.', {
         amount: `Too low: the balance would be −฿${formatBaht(-balance)} because of later transactions`,
+      })
+    }
+    if (err instanceof Error && err.message === 'OVER_LIMIT') {
+      return rule('Business rule violation.', {
+        amount: `Too high: the debt would exceed the credit limit ฿${formatBaht((err as Error & { limit: bigint }).limit)}`,
       })
     }
     throw err

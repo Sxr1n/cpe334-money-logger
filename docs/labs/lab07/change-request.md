@@ -7,7 +7,7 @@
 | Requested by | Team (Sxr1n, Leviathan-c137) |
 | Approval | The instructor's Lab 7 announcement says Sprint 1 change requests need no instructor or TA approval; the team chooses the change. Team approval: Sxr1n (owner) 2026-11-27; Leviathan-c137 approves by reviewing the contract PR (approval date = PR approval date) |
 | Owner / reviewer | Sxr1n / Leviathan-c137 |
-| Status | SPECIFIED (contract revised, implementation not started) |
+| Status | IMPLEMENTED + TESTED on the feature branch; awaiting code review, CI and deploy |
 
 ## 1 Original Sprint 1 requirement and implemented rule
 - **Requirement:** FR-12 (record a charge from a LOAN_TAKEN account) and decision **D-04**, which says repayments cannot exceed the outstanding amount (BR-08) and that credit cards have **no credit limit** in the baseline.
@@ -103,7 +103,7 @@ The full server, client and E2E suites run on every PR (CI `test-and-docker`).
 | Step | Commit / PR | Date |
 |---|---|---|
 | Change request + revised contract (`spec(CHG-01)`) | Issue #72, commit `d090196` | 2026-11-27 |
-| Teammate review of the contract | TO FILL (PR review) | |
-| Failing tests (`test(CHG-01): red`) | TO FILL → `evidence/lab7/CHG01-red.txt` | |
-| Implementation (`feat(CHG-01)`) | TO FILL → `evidence/lab7/CHG01-green.txt` | |
+| Teammate review of the contract | PR #73 approved by Leviathan-c137, merged `7832344` | 2026-11-27 (18:27 UTC) |
+| Failing tests (`test(CHG-01): red`) | `f8a9b70` → `evidence/lab7/CHG01-red.txt` (unit 3 fail, API 7 fail, E2E 1 fail) | 2026-11-28 |
+| Implementation (`feat(CHG-01)`) | `1660d08` → `evidence/lab7/CHG01-green.txt` (server 31 files / 127 tests, client 1 + build, E2E 18/18, 0 failed, 0 skipped) | 2026-11-28 |
 | Code review, CI, deploy | TO FILL | |

@@ -184,7 +184,7 @@ router.post('/', async (req: Request, res: Response) => {
       const lockedAccounts: any[] = []
       for (const accId of sortedIds) {
         const rows: any[] = await tx.$queryRawUnsafe(
-          `SELECT id, name, balance, type FROM accounts WHERE id = $1 AND user_id = $2 AND archived_at IS NULL FOR UPDATE`,
+          `SELECT id, name, balance, type, credit_limit FROM accounts WHERE id = $1 AND user_id = $2 AND archived_at IS NULL FOR UPDATE`,
           accId,
           userId,
         )
@@ -210,6 +210,7 @@ router.post('/', async (req: Request, res: Response) => {
           name: lockedPrimary.name,
           type: lockedPrimary.type as AccountType,
           balance: BigInt(lockedPrimary.balance),
+          creditLimit: lockedPrimary.credit_limit === null ? null : BigInt(lockedPrimary.credit_limit),
         },
         lockedLines.map((l) => ({
           account: {
@@ -217,6 +218,7 @@ router.post('/', async (req: Request, res: Response) => {
             name: l.account.name,
             type: l.account.type as AccountType,
             balance: BigInt(l.account.balance),
+            creditLimit: l.account.credit_limit === null ? null : BigInt(l.account.credit_limit),
           },
           amount: l.amount,
         })),

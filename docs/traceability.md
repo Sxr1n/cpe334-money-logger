@@ -120,14 +120,14 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
 | AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | 6f52657 |
 | AC-F05-08 | Payment form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F05-08 | E2E | | `e2e/f05-pay.spec.ts` | PASS | 6f52657 |
-| AC-F05-09 | (CHG-01) Set, change, remove a credit limit; available credit shown | TEST-F05-09 | API-DB | TDD | | NOT RUN | |
-| AC-F05-10 | (CHG-01) Invalid limits rejected (below debt, range, type, archived) | TEST-F05-10 | unit + API-DB | TDD | | NOT RUN | |
-| AC-F05-11 | (CHG-01) Charge above the limit rejected; equal accepted | TEST-F05-11 | unit + API-DB | TDD | | NOT RUN | |
-| AC-F05-12 | (CHG-01 × F-10) Borrow above the limit rejected; repayment not blocked | TEST-F05-12 | API-DB | TDD | | NOT RUN | |
-| AC-F05-13 | (CHG-01 regression) No limit = baseline; limit never changes income/expense | TEST-F05-13 | API-DB | | | NOT RUN | |
-| AC-F05-14 | (CHG-01 × F-08) Opening-balance change above the limit rejected | TEST-F05-14 | API-DB | TDD | | NOT RUN | |
-| AC-F05-15 | (CHG-01) Credit limit access: 401 / 403 / 404 cross-user | TEST-F05-15 | API-DB | | | NOT RUN | |
-| AC-F05-16 | (CHG-01) Accounts and Pay UI for the limit | TEST-F05-16 | E2E | | | NOT RUN | |
+| AC-F05-09 | (CHG-01) Set, change, remove a credit limit; available credit shown | TEST-F05-09 | API-DB | TDD | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-09` | PASS | 1660d08 |
+| AC-F05-10 | (CHG-01) Invalid limits rejected (below debt, range, type, archived) | TEST-F05-10 | unit + API-DB | TDD | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-10`, `server/tests/chg01-credit-limit.unit.test.ts::TEST-F05-10` | PASS | 1660d08 |
+| AC-F05-11 | (CHG-01) Charge above the limit rejected; equal accepted | TEST-F05-11 | unit + API-DB | TDD | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-11`, `server/tests/chg01-credit-limit.unit.test.ts::TEST-F05-11` | PASS | 1660d08 |
+| AC-F05-12 | (CHG-01 × F-10) Borrow above the limit rejected; repayment not blocked | TEST-F05-12 | API-DB | TDD | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-12`, `server/tests/chg01-credit-limit.unit.test.ts::TEST-F05-12` | PASS | 1660d08 |
+| AC-F05-13 | (CHG-01 regression) No limit = baseline; limit never changes income/expense | TEST-F05-13 | API-DB | | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-13` | PASS | 1660d08 |
+| AC-F05-14 | (CHG-01 × F-08) Opening-balance change above the limit rejected | TEST-F05-14 | API-DB | TDD | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-14` | PASS | 1660d08 |
+| AC-F05-15 | (CHG-01) Credit limit access: 401 / 403 / 404 cross-user | TEST-F05-15 | API-DB | | `server/tests/chg01-credit-limit.api.test.ts::TEST-F05-15` | PASS | 1660d08 |
+| AC-F05-16 | (CHG-01) Accounts and Pay UI for the limit | TEST-F05-16 | E2E | | `e2e/chg01-credit-limit.spec.ts::TEST-F05-16` | PASS | 1660d08 |
 | AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
 | AC-F06-02 | Overview shows each CASH balance, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN | TEST-F06-02 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
 | AC-F06-03 | Month summary after the Sprint 1 scenario: income = salary, expense = 1,200, opening and card repayment excluded | TEST-F06-03 | API-DB | TDD | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
@@ -232,7 +232,7 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 
 | CHG | Summary | Affected REQ / F / AC | Approved | Version |
 |---|---|---|---|---|
-| CHG-01 | Optional credit limit on LOAN_TAKEN accounts (Lab 7) | FR-28, BR-18, D-04; F-05 (+ F-08, F-10, F-11 paths); AC-F05-09..16 | Team, 2026-11-27 (instructor: no TA approval needed for Lab 7) | not released yet |
+| CHG-01 | Optional credit limit on LOAN_TAKEN accounts (Lab 7) | FR-28, BR-18, D-04; F-05 (+ F-08, F-10, F-11 paths); AC-F05-09..16 | Team, 2026-11-27 (instructor: no TA approval needed for Lab 7) | implemented `1660d08`; not released yet |
 
 ## 5. Revision history
 | Ver | Date | Change | Reason/CHG |
@@ -255,4 +255,5 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.16 | 2026-11-26 | F-14 results: AC-F14-01..04 PASS on `b5cc4a3` | D2-S9 (F-14) |
 | 0.17 | 2026-11-26 | F-10 results: AC-F10-01..08 PASS on `e98d37d` (50-case allowed-lines matrix) | D2-S10 |
 | 0.18 | 2026-11-27 | CHG-01: FR-28, BR-18 rows; AC-F05-09..16 / TEST-F05-09..16 (NOT RUN); §4 approved change | CHG-01 (Lab 7) |
-| 0.19 | 2026-11-28 | F-11 results: AC-F11-01..10 PASS on `fb0336f` | D2-S11 |
+| 0.19 | 2026-11-28 | CHG-01 results: AC-F05-09..16 PASS on `1660d08` | CHG-01 (Lab 7) |
+| 0.20 | 2026-11-28 | F-11 results: AC-F11-01..10 PASS on `fb0336f` | D2-S11 |
