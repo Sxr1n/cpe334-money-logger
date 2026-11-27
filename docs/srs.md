@@ -5,7 +5,7 @@
 | Course | CPE334, Semester 1/2026 — Group Project, Theme 7 |
 | Team | นายศารินทร์ ไชยารัตน์ (GitHub `Sxr1n`); นายตันติยวัตร จันทร์ศิริ (GitHub `Leviathan-c137`) — student IDs are given in the submitted PDF only |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Document version | 0.6 (decisions accepted by team) |
+| Document version | 0.7 (CHG-01) |
 | Source brief | `docs/course/group_work_specs_v1.pdf` §6 Theme 7 |
 
 > **Status:** decisions D-01–D-09 in §8.2 were accepted by the team on 2026-11-07 (v0.2). D-03 still awaits TA confirmation (Q-01); a different TA answer will be handled as a CHG.
@@ -123,6 +123,7 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | FR-25 | A user shall see an income and expense summary (totals and net) for a selected period, defaulting to the current calendar month. | User | 1 |
 | FR-26 | A user shall see category spending for a period: each EXPENSE account's total and percentage of all expenses. | User | 3 |
 | FR-27 | A user shall see a period report with monthly income, expense and net for a selected range of months. | User | 3 |
+| FR-28 | A user shall be able to set, change or remove a credit limit on their own LOAN_TAKEN account and see the available credit. *(CHG-01)* | User | Lab 7 (CHG-01) |
 
 ---
 
@@ -147,6 +148,7 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | BR-15 | An account that has transactions cannot be deleted, only archived. A CASH, LOAN_TAKEN or LOAN_GIVEN account can be archived only when its balance is 0. *(D-07)* | FR-09 |
 | BR-16 | A voided transaction cannot be edited; it remains in history marked VOID and is excluded from balances and summaries. Edits re-validate BR-01–BR-09 against the corrected values. | FR-20, FR-21 |
 | BR-17 | Duplicate copies form, primary account, lines and note, sets the date to today, does not copy the favourite flag, and stores nothing until the user submits (which then applies all rules). | FR-23 |
+| BR-18 | When a LOAN_TAKEN account has a credit limit, its debt must never exceed it. A charge (PAYMENT from it), a borrow (RECEIPT line from it) or an opening-balance change that would take the balance above the limit is rejected; equal is accepted; repayments are never blocked. A limit is a positive amount (BR-02 range) and cannot be set below the current debt. An account without a limit has no upper bound. *(CHG-01, revises D-04)* | FR-12, FR-17, FR-10, FR-28 |
 
 ---
 
@@ -183,7 +185,7 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | D-01 | Store money as integer satang (BIGINT); format as THB only at the UI. | Avoids floating-point error (NFR-05). | Accepted (team, 2026-11-07) |
 | D-02 | Identity and role come only from a server-side session; cross-user access returns 404, wrong role 403. | Specs §5.2; avoids leaking record existence. | Accepted (team, 2026-11-07) |
 | D-03 | CASH accounts may not go negative (BR-07); overdraft is not modelled. | Target users rarely have overdraft; gives a clear, testable rule. Simplification: checks the current balance, not the balance on the transaction date. | Accepted (team, 2026-11-07); TA confirmation pending (Q-01) |
-| D-04 | Repayments cannot exceed the outstanding amount (BR-08); credit cards have no credit limit in the baseline. | Prevents meaningless negative debts; a credit limit is not in the brief. | Accepted (team, 2026-11-07) |
+| D-04 | Repayments cannot exceed the outstanding amount (BR-08); credit cards have no credit limit in the baseline. | Prevents meaningless negative debts; a credit limit is not in the brief. | Accepted (team, 2026-11-07); **revised by CHG-01 (2026-11-27)**: the "no credit limit" part is replaced by an optional limit (FR-28, BR-18); BR-08 is unchanged |
 | D-05 | Future-dated transactions are rejected (BR-09). | The product logs what happened; scheduled/recurring items are excluded. | Accepted (team, 2026-11-07) |
 | D-06 | Corrections use edit and void (FR-20, FR-21); a voided transaction remains visible. | Keeps history auditable while allowing fixes. | Accepted (team, 2026-11-07) |
 | D-07 | Accounts with transactions are archived, never deleted (BR-15). | Preserves history and report totals. | Accepted (team, 2026-11-07) |
@@ -222,3 +224,4 @@ Planned sprint is the baseline allocation; the authoritative allocation and feat
 | 0.4 | 2026-11-14 | Student IDs removed from the repository before it becomes public (Lab 5 R-12); they appear only in submitted PDFs. No requirement changed. | Team |
 | 0.5 | 2026-11-22 | Decisions D-10–D-13 added for the Sprint 2 contracts (Q-03 resolved by D-10). No FR/BR/NFR text changed. | Team + Claude (D2-S1) |
 | 0.6 | 2026-11-25 | Decisions D-14–D-16 added for the Sprint 3 contracts. No FR/BR/NFR text changed. | Team + Claude (D2-S5) |
+| 0.7 | 2026-11-27 | CHG-01 (Lab 7): FR-28 and BR-18 added; D-04 revised (optional credit limit on LOAN_TAKEN). No existing FR/BR text changed. Team-approved change per the instructor's Lab 7 announcement. | Sxr1n + Claude (L7-S1) |

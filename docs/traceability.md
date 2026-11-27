@@ -40,6 +40,7 @@ Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and re
 | FR-25 | F-06 Overview, summary and history | 1 | AC-F06-03, AC-F06-04 | TEST-F06-03, TEST-F06-04 |
 | FR-26 | F-15 Category spending | 3 | AC-F15-01, AC-F15-02, AC-F15-03, AC-F15-06 | TEST-F15-01, TEST-F15-02, TEST-F15-03, TEST-F15-06 |
 | FR-27 | F-16 Period reports | 3 | AC-F16-01, AC-F16-03, AC-F16-04, AC-F16-06 | TEST-F16-01, TEST-F16-03, TEST-F16-04, TEST-F16-06 |
+| FR-28 | F-05 (CHG-01) | Lab 7 | AC-F05-09, AC-F05-10, AC-F05-15, AC-F05-16 | TEST-F05-09, TEST-F05-10, TEST-F05-15, TEST-F05-16 |
 
 ### 1.2 Business rules
 A rule shared by several features is verified in Sprint 1 where it first applies; later features that reuse it add their own AC in their sprint ("planned").
@@ -63,6 +64,7 @@ A rule shared by several features is verified in Sprint 1 where it first applies
 | BR-15 | F-07 Account management | 2 | AC-F07-05, AC-F07-06 | TEST-F07-05, TEST-F07-06 (Sprint 2) |
 | BR-16 | F-11 Transaction corrections | 2 | AC-F11-03, AC-F11-05, AC-F11-06 | TEST-F11-03, TEST-F11-05, TEST-F11-06 (Sprint 2) |
 | BR-17 | F-14 Duplicate transaction | 3 | AC-F14-01, AC-F14-02 | TEST-F14-01, TEST-F14-02 |
+| BR-18 | F-05 (CHG-01); also F-08, F-10, F-11 paths | Lab 7 | AC-F05-11, AC-F05-12, AC-F05-13, AC-F05-14 | TEST-F05-11, TEST-F05-12, TEST-F05-13, TEST-F05-14 |
 
 ### 1.3 Non-functional requirements
 | REQ | Feature / responsibility | Sprint (establish / verify) | AC | TEST |
@@ -118,6 +120,14 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F05-06 | Card repayment larger than card debt → 422 (BR-08) | TEST-F05-06 | API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
 | AC-F05-07 | PAYMENT using another user's account → 404, nothing stored | TEST-F05-07 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | 6f52657 |
 | AC-F05-08 | Payment form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F05-08 | E2E | | `e2e/f05-pay.spec.ts` | PASS | 6f52657 |
+| AC-F05-09 | (CHG-01) Set, change, remove a credit limit; available credit shown | TEST-F05-09 | API-DB | TDD | | NOT RUN | |
+| AC-F05-10 | (CHG-01) Invalid limits rejected (below debt, range, type, archived) | TEST-F05-10 | unit + API-DB | TDD | | NOT RUN | |
+| AC-F05-11 | (CHG-01) Charge above the limit rejected; equal accepted | TEST-F05-11 | unit + API-DB | TDD | | NOT RUN | |
+| AC-F05-12 | (CHG-01 × F-10) Borrow above the limit rejected; repayment not blocked | TEST-F05-12 | API-DB | TDD | | NOT RUN | |
+| AC-F05-13 | (CHG-01 regression) No limit = baseline; limit never changes income/expense | TEST-F05-13 | API-DB | | | NOT RUN | |
+| AC-F05-14 | (CHG-01 × F-08) Opening-balance change above the limit rejected | TEST-F05-14 | API-DB | TDD | | NOT RUN | |
+| AC-F05-15 | (CHG-01) Credit limit access: 401 / 403 / 404 cross-user | TEST-F05-15 | API-DB | | | NOT RUN | |
+| AC-F05-16 | (CHG-01) Accounts and Pay UI for the limit | TEST-F05-16 | E2E | | | NOT RUN | |
 | AC-F06-01 | Own accounts grouped by type with balance (CASH/LOAN) or period total (INCOME/EXPENSE) | TEST-F06-01 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
 | AC-F06-02 | Overview shows each CASH balance, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN | TEST-F06-02 | API-DB | | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
 | AC-F06-03 | Month summary after the Sprint 1 scenario: income = salary, expense = 1,200, opening and card repayment excluded | TEST-F06-03 | API-DB | TDD | `server/tests/f06-overview.api.test.ts` | PASS | 7850d4e |
@@ -222,6 +232,7 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 
 | CHG | Summary | Affected REQ / F / AC | Approved | Version |
 |---|---|---|---|---|
+| CHG-01 | Optional credit limit on LOAN_TAKEN accounts (Lab 7) | FR-28, BR-18, D-04; F-05 (+ F-08, F-10, F-11 paths); AC-F05-09..16 | Team, 2026-11-27 (instructor: no TA approval needed for Lab 7) | not released yet |
 
 ## 5. Revision history
 | Ver | Date | Change | Reason/CHG |
@@ -243,3 +254,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.15 | 2026-11-26 | F-09 results: AC-F09-01..07 PASS on `c36a003` (including E2E fix and F-05/F04 test updates) | D2-S9 |
 | 0.16 | 2026-11-26 | F-14 results: AC-F14-01..04 PASS on `b5cc4a3` | D2-S9 (F-14) |
 | 0.17 | 2026-11-26 | F-10 results: AC-F10-01..08 PASS on `e98d37d` (50-case allowed-lines matrix) | D2-S10 |
+| 0.18 | 2026-11-27 | CHG-01: FR-28, BR-18 rows; AC-F05-09..16 / TEST-F05-09..16 (NOT RUN); §4 approved change | CHG-01 (Lab 7) |
