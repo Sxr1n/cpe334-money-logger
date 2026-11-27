@@ -1,0 +1,40 @@
+TEST-NFR05-01 sensitivity check (2026-11-28, local, on top of f1a5f03): computeNetDeltas in server/src/lib/ledger.ts was TEMPORARILY changed to keep only the first non-zero delta of an edit/void:
+  if (delta !== 0n && result.length < 1) result.push({ accountId, delta })   // MUTATION (temporary)
+The test must fail on this broken code; the file was restored right after (git diff empty). Command: cd server && npx vitest run tests/nfr05-recompute.api.test.ts
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+stdout | tests/nfr05-recompute.api.test.ts > NFR-05 balance recomputation (API-DB, property) > TEST-NFR05-01 after 1000 seeded random operations every stored balance equals the recomputation (0 satang)
+TEST-NFR05-01 seed 3342026: {"posted":466,"edited":148,"voided":89,"openingEdits":127,"rejected":170}; 7 balance accounts checked
+
+ ❯ tests/nfr05-recompute.api.test.ts (1 test | 1 failed) 25670ms
+     × TEST-NFR05-01 after 1000 seeded random operations every stored balance equals the recomputation (0 satang) 25292ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/nfr05-recompute.api.test.ts > NFR-05 balance recomputation (API-DB, property) > TEST-NFR05-01 after 1000 seeded random operations every stored balance equals the recomputation (0 satang)
+AssertionError: account 1 (CASH): expected 1172948n to be 0n // Object.is equality
+
+- Expected
++ Received
+
+- 0n
++ 1172948n
+
+ ❯ tests/nfr05-recompute.api.test.ts:133:100
+    131|     expect(count.posted + count.edited + count.voided + count.openingE…
+    132|     for (const k of ['posted', 'edited', 'voided', 'openingEdits', 're…
+    133|     for (const row of rows) expect(row.stored - row.recomputed, `accou…
+       |                                                                                                    ^
+    134|   }, 600_000)
+    135| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  04:25:59
+   Duration  28.33s (transform 135ms, setup 18ms, import 463ms, tests 25.67s, environment 0ms)
+
