@@ -11,7 +11,20 @@ export interface AccountItem {
   openingBalance: number | null
   openingDate: string | null
   periodTotal: number | null // F-06: this month's total for INCOME/EXPENSE, null otherwise
+  archived: boolean // F-07
+  creditLimit: number | null // CHG-01: LOAN_TAKEN only
+  availableCredit: number | null
 }
+
+const TYPE_LABELS: Record<AccountType, string> = {
+  CASH: 'Cash',
+  LOAN_TAKEN: 'Debt (credit card or loan taken)',
+  LOAN_GIVEN: 'Owed to me (loan given)',
+  INCOME: 'Income',
+  EXPENSE: 'Expense',
+}
+
+const errorText = (err: unknown) => (err instanceof ApiError ? err.message : 'Something went wrong.')
 
 const TYPE_SECTIONS: { type: AccountType; title: string }[] = [
   { type: 'CASH', title: 'Cash & Bank Accounts' },
@@ -47,6 +60,62 @@ export default function AccountsPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
+  // F-07: new account form
+  const [showNew, setShowNew] = useState(false)
+  const [newName, setNewName] = useState('')
+  const [newType, setNewType] = useState<AccountType>('CASH')
+  const [newErrors, setNewErrors] = useState<Record<string, string>>({})
+  const [newPending, setNewPending] = useState(false)
+
+  // F-07: rename / archive per row
+  const [renamingId, setRenamingId] = useState<number | null>(null)
+  const [renameValue, setRenameValue] = useState('')
+  const [rowErrors, setRowErrors] = useState<Record<number, string>>({})
+  const [rowPending, setRowPending] = useState<number | null>(null)
+
+  // CHG-01: credit limit form per LOAN_TAKEN row
+  const [limitId, setLimitId] = useState<number | null>(null)
+  const [limitStr, setLimitStr] = useState('')
+
+  const replaceAccount = (updated: AccountItem) =>
+    setAccounts((prev) => prev?.map((a) => (a.id === updated.id ? { ...a, ...updated } : a)) ?? null)
+
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault()
+    const name = newName.trim()
+    if (name.length < 1 || name.length > 50) {
+      setNewErrors({ name: 'Enter a name of 1 to 50 characters' })
+      return
+    }
+    setNewPending(true)
+    setNewErrors({})
+    try {
+      const created = await api<AccountItem>('/accounts', { method: 'POST', body: { name, type: newType } })
+      setAccounts((prev) => [...(prev ?? []), { ...created, periodTotal: null }].sort((a, b) => a.name.localeCompare(b.name)))
+      setShowNew(false)
+      setNewName('')
+    } catch (err) {
+      setNewErrors(err instanceof ApiError && err.details ? err.details : { form: errorText(err) })
+    } finally {
+      setNewPending(false)
+    }
+  }
+
+  async function patchAccount(acc: AccountItem, body: { name?: string; archived?: boolean; creditLimit?: number | null }) {
+    setRowPending(acc.id)
+    setRowErrors((prev) => ({ ...prev, [acc.id]: '' }))
+    try {
+      replaceAccount(await api<AccountItem>(`/accounts/${acc.id}`, { method: 'PATCH', body }))
+      if (body.name !== undefined) setRenamingId(null)
+      if (body.creditLimit !== undefined) setLimitId(null)
+    } catch (err) {
+      const details = err instanceof ApiError ? err.details : undefined
+      setRowErrors((prev) => ({ ...prev, [acc.id]: details?.name ?? details?.archived ?? details?.creditLimit ?? errorText(err) }))
+    } finally {
+      setRowPending(null)
+    }
+  }
+
   useEffect(() => {
     loadAccounts()
   }, [])
@@ -59,8 +128,9 @@ export default function AccountsPage() {
 
   function startSetOpening(acc: AccountItem) {
     setEditingAccount(acc)
-    setAmountStr('')
-    setDateStr(getTodayInBangkok())
+    // F-08: editing pre-fills the current opening amount and date
+    setAmountStr(acc.openingBalance === null ? '' : (acc.openingBalance / 100).toFixed(2))
+    setDateStr(acc.openingDate ?? getTodayInBangkok())
     setFieldErrors({})
     setFormError(null)
   }
@@ -112,13 +182,14 @@ export default function AccountsPage() {
 
     try {
       const updated = await api<AccountItem>(`/accounts/${editingAccount.id}/opening-balance`, {
-        method: 'PUT',
+        method: editingAccount.openingBalance === null ? 'PUT' : 'PATCH',
         body: { amount: satang, date: dateStr },
       })
-      setAccounts((prev) => prev?.map((a) => (a.id === updated.id ? updated : a)) ?? null)
+      replaceAccount(updated)
       setEditingAccount(null)
     } catch (err) {
-      setFormError(err instanceof ApiError ? err.message : 'Something went wrong.')
+      if (err instanceof ApiError && err.details) setFieldErrors(err.details)
+      else setFormError(err instanceof ApiError ? err.message : 'Something went wrong.')
     } finally {
       setPending(false)
     }
@@ -128,7 +199,58 @@ export default function AccountsPage() {
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1 className="h4 mb-0">Accounts</h1>
+        {!showNew && (
+          <button className="btn btn-primary btn-sm" onClick={() => { setShowNew(true); setNewErrors({}) }}>
+            New account
+          </button>
+        )}
       </div>
+
+      {showNew && (
+        <div className="card mb-4 border-primary">
+          <div className="card-header">New account</div>
+          <div className="card-body">
+            {newErrors.form && <div className="alert alert-danger py-2">{newErrors.form}</div>}
+            <form onSubmit={handleCreate} className="row g-3 align-items-start">
+              <div className="col-md-5">
+                <label htmlFor="newName" className="form-label">Name</label>
+                <input
+                  id="newName"
+                  className={`form-control ${newErrors.name ? 'is-invalid' : ''}`}
+                  value={newName}
+                  maxLength={60}
+                  onChange={(e) => setNewName(e.target.value)}
+                  disabled={newPending}
+                />
+                {newErrors.name && <div className="invalid-feedback">{newErrors.name}</div>}
+              </div>
+              <div className="col-md-4">
+                <label htmlFor="newType" className="form-label">Type</label>
+                <select
+                  id="newType"
+                  className={`form-select ${newErrors.type ? 'is-invalid' : ''}`}
+                  value={newType}
+                  onChange={(e) => setNewType(e.target.value as AccountType)}
+                  disabled={newPending}
+                >
+                  {TYPE_SECTIONS.map(({ type }) => (
+                    <option key={type} value={type}>{TYPE_LABELS[type]}</option>
+                  ))}
+                </select>
+                {newErrors.type && <div className="invalid-feedback">{newErrors.type}</div>}
+              </div>
+              <div className="col-md-3 d-flex gap-2" style={{ paddingTop: '2rem' }}>
+                <button type="submit" className="btn btn-primary" disabled={newPending}>
+                  {newPending ? <span className="spinner-border spinner-border-sm" role="status" /> : 'Create'}
+                </button>
+                <button type="button" className="btn btn-outline-secondary" onClick={() => setShowNew(false)} disabled={newPending}>
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="alert alert-danger alert-dismissible" role="alert">
@@ -143,7 +265,7 @@ export default function AccountsPage() {
       {editingAccount && (
         <div className="card mb-4 border-primary">
           <div className="card-header bg-primary text-white">
-            Set opening balance for <strong>{editingAccount.name}</strong> ({editingAccount.type})
+            {editingAccount.openingBalance === null ? 'Set' : 'Edit'} opening balance for <strong>{editingAccount.name}</strong> ({editingAccount.type})
           </div>
           <div className="card-body">
             {formError && <div className="alert alert-danger py-2">{formError}</div>}
@@ -197,7 +319,7 @@ export default function AccountsPage() {
       {accounts && accounts.length > 0 && (
         <div className="row g-4">
           {TYPE_SECTIONS.map(({ type, title }) => {
-            const list = accounts.filter((a) => a.type === type)
+            const list = accounts.filter((a) => a.type === type && !a.archived)
             if (list.length === 0) return null
             const isCashOrLoan = type === 'CASH' || type === 'LOAN_TAKEN' || type === 'LOAN_GIVEN'
 
@@ -215,14 +337,75 @@ export default function AccountsPage() {
                           {isCashOrLoan && <th className="text-end">Balance</th>}
                           {isCashOrLoan && <th className="text-end">Opening Balance</th>}
                           {!isCashOrLoan && <th className="text-end">This month</th>}
-                          <th className="text-end" style={{ width: '180px' }}>Action</th>
+                          <th className="text-end" style={{ width: '340px' }}>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         {list.map((acc) => (
                           <tr key={acc.id}>
                             <td>
-                              <strong>{acc.name}</strong>
+                              {renamingId === acc.id ? (
+                                <form
+                                  className="d-flex gap-2"
+                                  onSubmit={(e) => { e.preventDefault(); patchAccount(acc, { name: renameValue }) }}
+                                >
+                                  <input
+                                    aria-label={`New name for ${acc.name}`}
+                                    className="form-control form-control-sm"
+                                    value={renameValue}
+                                    maxLength={60}
+                                    onChange={(e) => setRenameValue(e.target.value)}
+                                    disabled={rowPending === acc.id}
+                                  />
+                                  <button type="submit" className="btn btn-sm btn-primary" disabled={rowPending === acc.id}>Save name</button>
+                                  <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setRenamingId(null)}>
+                                    Cancel
+                                  </button>
+                                </form>
+                              ) : (
+                                <strong>{acc.name}</strong>
+                              )}
+                              {type === 'LOAN_TAKEN' && (
+                                <div className="text-muted small">
+                                  {acc.creditLimit === null
+                                    ? 'No limit'
+                                    : `Limit ${formatTHB(acc.creditLimit)} · Available ${formatTHB(acc.availableCredit ?? 0)}`}
+                                </div>
+                              )}
+                              {limitId === acc.id && (
+                                <form
+                                  className="d-flex gap-2 mt-1 align-items-center"
+                                  onSubmit={(e) => {
+                                    e.preventDefault()
+                                    const satang = Math.round(Number(limitStr) * 100)
+                                    if (!limitStr || !Number.isFinite(satang) || satang < 1) {
+                                      setRowErrors((prev) => ({ ...prev, [acc.id]: 'Enter a limit of at least ฿0.01' }))
+                                      return
+                                    }
+                                    patchAccount(acc, { creditLimit: satang })
+                                  }}
+                                >
+                                  <label htmlFor={`limit-${acc.id}`} className="form-label small mb-0 text-nowrap">Credit limit (฿)</label>
+                                  <input
+                                    id={`limit-${acc.id}`}
+                                    type="number"
+                                    step="0.01"
+                                    min="0.01"
+                                    className="form-control form-control-sm"
+                                    value={limitStr}
+                                    onChange={(e) => setLimitStr(e.target.value)}
+                                    disabled={rowPending === acc.id}
+                                  />
+                                  <button type="submit" className="btn btn-sm btn-primary" disabled={rowPending === acc.id}>Save</button>
+                                  {acc.creditLimit !== null && (
+                                    <button type="button" className="btn btn-sm btn-outline-danger text-nowrap" onClick={() => patchAccount(acc, { creditLimit: null })} disabled={rowPending === acc.id}>
+                                      Remove limit
+                                    </button>
+                                  )}
+                                  <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setLimitId(null)}>Cancel</button>
+                                </form>
+                              )}
+                              {rowErrors[acc.id] && <div className="text-danger small mt-1">{rowErrors[acc.id]}</div>}
                             </td>
                             {isCashOrLoan && (
                               <td className="text-end font-monospace">
@@ -240,15 +423,40 @@ export default function AccountsPage() {
                               </td>
                             )}
                             <td className="text-end">
-                              {isCashOrLoan && acc.openingBalance === null && (
+                              {isCashOrLoan && (
                                 <button
                                   className="btn btn-sm btn-outline-primary"
                                   onClick={() => startSetOpening(acc)}
                                   disabled={editingAccount?.id === acc.id}
                                 >
-                                  Set opening balance
+                                  {acc.openingBalance === null ? 'Set opening balance' : 'Edit opening balance'}
                                 </button>
                               )}
+                              <div className="btn-group btn-group-sm ms-1">
+                                {type === 'LOAN_TAKEN' && (
+                                  <button
+                                    className="btn btn-outline-secondary"
+                                    onClick={() => { setLimitId(acc.id); setLimitStr(acc.creditLimit === null ? '' : (acc.creditLimit / 100).toFixed(2)) }}
+                                    disabled={rowPending === acc.id}
+                                  >
+                                    Credit limit
+                                  </button>
+                                )}
+                                <button
+                                  className="btn btn-outline-secondary"
+                                  onClick={() => { setRenamingId(acc.id); setRenameValue(acc.name) }}
+                                  disabled={rowPending === acc.id}
+                                >
+                                  Rename
+                                </button>
+                                <button
+                                  className="btn btn-outline-secondary"
+                                  onClick={() => patchAccount(acc, { archived: true })}
+                                  disabled={rowPending === acc.id}
+                                >
+                                  Archive
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -260,6 +468,33 @@ export default function AccountsPage() {
             )
           })}
         </div>
+      )}
+
+      {accounts && accounts.some((a) => a.archived) && (
+        <details className="card shadow-sm mt-4">
+          <summary className="card-header bg-light">Archived ({accounts.filter((a) => a.archived).length})</summary>
+          <table className="table align-middle mb-0">
+            <tbody>
+              {accounts.filter((a) => a.archived).map((acc) => (
+                <tr key={acc.id}>
+                  <td>
+                    <strong>{acc.name}</strong> <span className="text-muted small">{TYPE_LABELS[acc.type]}</span>
+                    {rowErrors[acc.id] && <div className="text-danger small mt-1">{rowErrors[acc.id]}</div>}
+                  </td>
+                  <td className="text-end">
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => patchAccount(acc, { archived: false })}
+                      disabled={rowPending === acc.id}
+                    >
+                      Unarchive
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
       )}
     </>
   )

@@ -1,0 +1,285 @@
+CHG-01 red - run 2026-11-28 01:36 local, on top of commit 7832344 (tests only, no implementation)
+
+=== server: npx vitest run tests/chg01-credit-limit.*.test.ts ===
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+ ❯ tests/chg01-credit-limit.api.test.ts (7 tests | 7 failed) 2526ms
+     × TEST-F05-09 set, change to the debt, and remove a credit limit; available credit is listed 442ms
+     × TEST-F05-10 invalid limits are rejected and the stored limit is unchanged 270ms
+     × TEST-F05-11 a charge over the limit is rejected; a charge to exactly the limit is accepted (BR-18) 314ms
+     × TEST-F05-12 borrowing over the limit is rejected; repayment is not blocked; then borrowing up to the limit works 303ms
+     × TEST-F05-13 a card without a limit keeps the baseline; a limit never changes income or expense 285ms
+     × TEST-F05-14 an opening-balance change that would exceed the limit is rejected (BR-18 × F-08) 298ms
+     × TEST-F05-15 credit limit access: 401 without session, 403 for admin, 404 for another user 605ms
+ ❯ tests/chg01-credit-limit.unit.test.ts (3 tests | 3 failed) 7ms
+     × TEST-F05-10 unit: creditLimit input is integer satang 1..99999999999 or null 3ms
+     × TEST-F05-11 unit: a charge is limited by the card limit; equal is accepted; no limit = no check (BR-18) 3ms
+     × TEST-F05-12 unit: borrowing (RECEIPT line from LOAN_TAKEN) is limited too; repayment is never limited 0ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-09 set, change to the debt, and 
+remove a credit limit; available credit is listed
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ tests/chg01-credit-limit.api.test.ts:54:24
+     52|   it('TEST-F05-09 set, change to the debt, and remove a credit limit; …
+     53|     const set = await setLimit(acc['Credit Card'], 500000)
+     54|     expect(set.status).toBe(200)
+       |                        ^
+     55|     expect(set.body.creditLimit).toBe(500000)
+     56|     expect(set.body.availableCredit).toBe(380000)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-10 invalid limits are rejected 
+and the stored limit is unchanged
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ tests/chg01-credit-limit.api.test.ts:74:65
+     72|
+     73|   it('TEST-F05-10 invalid limits are rejected and the stored limit is …
+     74|     expect((await setLimit(acc['Credit Card'], 500000)).status).toBe(2…
+       |                                                                 ^
+     75|
+     76|     const below = await setLimit(acc['Credit Card'], 119999)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-11 a charge over the limit is 
+rejected; a charge to exactly the limit is accepted (BR-18)
+AssertionError: expected 201 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 201
+
+ ❯ tests/chg01-credit-limit.api.test.ts:107:25
+    105|
+    106|     const over = await charge(380001)
+    107|     expect(over.status).toBe(422)
+       |                         ^
+    108|     expect(over.body.error.code).toBe('RULE_VIOLATION')
+    109|     expect(over.body.error.details.total).toBe('Over the credit limit …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-12 borrowing over the limit is 
+rejected; repayment is not blocked; then borrowing up to the limit works
+AssertionError: expected 201 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 201
+
+ ❯ tests/chg01-credit-limit.api.test.ts:124:25
+    122|       postTxn({ form: 'RECEIPT', primaryAccountId: acc.Bank, total: am…
+    123|     const over = await borrow(1)
+    124|     expect(over.status).toBe(422)
+       |                         ^
+    125|     expect(over.body.error.details['lines[0].amount']).toBe('Over the …
+    126|     expect((await account(acc.Bank)).balance).toBe(3000000n)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-13 a card without a limit keeps 
+the baseline; a limit never changes income or expense
+AssertionError: expected 400 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 400
+
+ ❯ tests/chg01-credit-limit.api.test.ts:144:70
+    142|     expect(afterCharge.income).toBe(before.income)
+    143|
+    144|     expect((await setLimit(acc['Credit Card'], 99999999999)).status).t…
+       |                                                                      ^
+    145|     await setLimit(acc['Credit Card'], null)
+    146|     expect(await summary()).toEqual(afterCharge)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-14 an opening-balance change 
+that would exceed the limit is rejected (BR-18 × F-08)
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ tests/chg01-credit-limit.api.test.ts:152:52
+    150|     const cardB = (await request(app).post('/api/accounts').set('Cooki…
+    151|     expect((await setOpening(cardB, 100000)).status).toBe(200)
+    152|     expect((await setLimit(cardB, 150000)).status).toBe(200)
+       |                                                    ^
+    153|
+    154|     const edit = (amount: number) =>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  tests/chg01-credit-limit.api.test.ts > CHG-01 Credit limit (API-DB) > TEST-F05-15 credit limit access: 401 
+without session, 403 for admin, 404 for another user
+AssertionError: expected 400 to be 404 // Object.is equality
+
+- Expected
++ Received
+
+- 404
++ 400
+
+ ❯ tests/chg01-credit-limit.api.test.ts:171:26
+    169|
+    170|     const cross = await setLimit(bobAcc['Credit Card'], 500000)
+    171|     expect(cross.status).toBe(404)
+
+ Test Files  2 failed (2)
+      Tests  10 failed (10)
+   Start at  01:36:01
+   Duration  5.85s (transform 419ms, setup 33ms, import 738ms, tests 2.53s, environment 0ms)
+
+       |                          ^
+    172|     expect((await account(bobAcc['Credit Card'])).creditLimit).toBeNul…
+    173|     expect((await account(acc['Credit Card'])).creditLimit).toBeNull()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  tests/chg01-credit-limit.unit.test.ts > CHG-01 credit limit (unit) > TEST-F05-10 unit: creditLimit input is 
+integer satang 1..99999999999 or null
+TypeError: validateCreditLimit is not a function
+ ❯ tests/chg01-credit-limit.unit.test.ts:8:12
+      6| describe('CHG-01 credit limit (unit)', () => {
+      7|   it('TEST-F05-10 unit: creditLimit input is integer satang 1..9999999…
+      8|     expect(validateCreditLimit(null)).toEqual({ ok: true, value: null …
+       |            ^
+      9|     expect(validateCreditLimit(1)).toEqual({ ok: true, value: 1n })
+     10|     expect(validateCreditLimit(99999999999)).toEqual({ ok: true, value…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  tests/chg01-credit-limit.unit.test.ts > CHG-01 credit limit (unit) > TEST-F05-11 unit: a charge is limited by 
+the card limit; equal is accepted; no limit = no check (BR-18)
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/chg01-credit-limit.unit.test.ts:27:24
+     25|
+     26|     const over = calculateTxnEffects('PAYMENT', card, [{ account: dini…
+     27|     expect(over.valid).toBe(false)
+       |                        ^
+     28|     expect(over.errorType).toBe('RULE_VIOLATION')
+     29|     expect(over.details?.total).toBe('Over the credit limit of Credit …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  tests/chg01-credit-limit.unit.test.ts > CHG-01 credit limit (unit) > TEST-F05-12 unit: borrowing (RECEIPT line 
+from LOAN_TAKEN) is limited too; repayment is never limited
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/chg01-credit-limit.unit.test.ts:44:26
+     42|
+     43|     const borrow = calculateTxnEffects('RECEIPT', bank, [{ account: ca…
+     44|     expect(borrow.valid).toBe(false)
+       |                          ^
+     45|     expect(borrow.details?.['lines[0].amount']).toBe('Over the credit …
+     46|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+=== npx playwright test e2e/chg01-credit-limit.spec.ts ===
+node.exe : [WebServer] (node:48448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:47204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:47844) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:49952) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it (7.5s)
+
+
+  1) [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('row', { name: /Card CHG01/ })
+    Expected substring: "No limit"
+    Received string:    "Card CHG01฿0.00—Set opening balanceRenameArchive"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('row', { name: /Card CHG01/ }) with timeout 5000ms
+      - waiting for getByRole('row', { name: /Card CHG01/ })
+        13 × locator resolved to <tr>…</tr>
+           - unexpected value "Card CHG01฿0.00—Set opening balanceRenameArchive"
+
+
+      16 |   await page.goto('/accounts')
+      17 |   const row = page.getByRole('row', { name: /Card CHG01/ })
+    > 18 |   await expect(row).toContainText('No limit')
+         |                     ^
+      19 |   await row.getByRole('button', { name: 'Credit limit' }).click()
+      20 |   await page.getByLabel('Credit limit (฿)').fill('5000.00')
+      21 |   await page.getByRole('button', { name: 'Save', exact: true }).click()
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\chg01-credit-limit.spec.ts:18:21
+
+    Error Context: test-results\chg01-credit-limit-TEST-F0-112b9-t-and-saves-one-equal-to-it-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\chg01-credit-limit-TEST-F0-112b9-t-and-saves-one-equal-to-it-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chg01-credit-limit-TEST-F0-112b9-t-and-saves-one-equal-to-it-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it 

@@ -46,7 +46,7 @@ describe('F-04 Ledger core & validator (unit)', () => {
     const badLine = validateAllowedAccountTypes('RECEIPT', AccountType.CASH, [AccountType.EXPENSE])
     expect(badLine.valid).toBe(false)
     expect(badLine.errorType).toBe('RULE_VIOLATION')
-    expect(badLine.details?.['lines[0]']).toBe('Receipt lines must be INCOME accounts')
+    expect(badLine.details?.['lines[0]']).toBe('Receipt lines cannot be EXPENSE accounts')
 
     // RECEIPT with CASH primary and INCOME lines -> valid
     const validReceipt = validateAllowedAccountTypes('RECEIPT', AccountType.CASH, [

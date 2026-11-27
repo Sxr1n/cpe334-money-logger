@@ -1,17 +1,17 @@
 # CPE334 Lab 5 — CI/CD, Docker and GCP deployment
 
-<!-- Build: STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab5/report.md submission/lab5/lab5_sec<N>_<group>.pdf
-     Every ⟨TODO⟩ must be replaced with real evidence before submitting. -->
+<!-- Build: STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab5/report.md submission/lab5/lab5_sec131_Help_me.pdf
+     The PDF holds student IDs: never commit it (public repository). -->
 
 ## Answer Part 0: Team and Evidence Index
 
 | Item | Value |
 |---|---|
-| Team / topic | ⟨TODO: team number⟩ · Theme 7 Personal Money and Expense Logging System (Money Logger) |
+| Team / topic | Team 59, section 131, group "Help me" (course cloud prefix `s87ce2df5`) · Theme 7 Personal Money and Expense Logging System (Money Logger) |
 | Students | นายศารินทร์ ไชยารัตน์ — {{ID_A}} — GitHub `Sxr1n` · นายตันติยวัตร จันทร์ศิริ — {{ID_B}} — GitHub `Leviathan-c137` |
 | Repository (public, R-12) | https://github.com/Sxr1n/cpe334-money-logger |
-| Submitted release | ⟨TODO: tag / main commit⟩ |
-| Public URL and commit it serves | https://s87ce2df5-4d7hbszvwq-as.a.run.app — `/api/health` returns `version` = `b903e00628037a55d12491c9144e01a82f4c0a00` (⟨update after the final release⟩) |
+| Submitted release | `main` commit `0831d0b` (application code = `v0.1.0-sprint1`) |
+| Public URL and commit it serves | https://s87ce2df5-4d7hbszvwq-as.a.run.app — `/api/health` returns `version` = `0831d0b7d9b57e008cfbcb96fd263a5bf21b71e9` |
 | Cloud | Course project `cpe-se-course-2026`, region `asia-southeast1`, team prefix `s87ce2df5` (resources made by the course Student Cloud Portal, announcement 2026-11-20) |
 | Release procedure | [`docs/labs/lab05/deployment.md`](https://github.com/Sxr1n/cpe334-money-logger/blob/main/docs/labs/lab05/deployment.md) |
 
@@ -25,8 +25,8 @@
 | Move to the shared course project, `ci-docker.yml` | #27–#29 | #38 (Sxr1n → Leviathan-c137) |
 | Merge gate demo (C-02) | #28 | #42 (Sxr1n; closed unmerged by design) |
 | First deployment, secrets (C-04) | #27 | `deploy/deploy.sh` run by Sxr1n in Cloud Shell; JWT secret in slot 1; evidence in PR #43 |
-| Persistence and rollback (C-05) | #30 | ⟨TODO⟩ |
-| Release to main and auto deploy (C-06) | #29 | ⟨TODO⟩ |
+| Persistence and rollback (C-05) | #30 | #45 (Sxr1n → Leviathan-c137); rollback and roll forward run by Leviathan-c137 (runs 44926378340, 44927793262), #30 closed |
+| Release to main and auto deploy (C-06) | #29 | #43 (Sxr1n → Leviathan-c137), #44 release (approved by Leviathan-c137) |
 
 ### Evidence index
 | Rubric part | Artifact / direct link | IDs / version | Verification result |
@@ -35,8 +35,8 @@
 | 1. CI and quality gate | PR #42 and run [44909593693](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44909593693); `docs/labs/lab05/C-02-failing-check.txt`; Figure 2 | C-02, commit `cee2c7e` | Check failed; merge blocked |
 | 2. Docker and configuration | `Dockerfile`, `.dockerignore`, `.env.example`, `docs/labs/lab05/C-03-fresh-clone.txt` | C-03, commit `b43f9f5` | Fresh clone builds and runs; migrations applied; login 200 |
 | 3. GCP deployment | https://s87ce2df5-4d7hbszvwq-as.a.run.app; Figures 3–6; `docs/labs/lab05/first-deploy-smoke.txt` | C-04, release `b903e00` | Sign-in, receipt saved, overspend rejected (BR-07); smoke test 4/4 PASS |
-| 3. Persistence | ⟨TODO: before/after screenshots⟩ | C-05, ⟨release⟩ | ⟨TODO⟩ |
-| 4. Release pipeline | ⟨TODO: release PR, Deploy demo run, Cloud Run revision⟩ | C-06, ⟨commit⟩ | ⟨TODO⟩ |
+| 3. Persistence | Figures 6–7, 9–11; `docs/labs/lab05/C-06-release-deploy.txt`, `docs/labs/lab05/C-05-rollback.txt` | C-05, b903e00 → 0831d0b → b903e00 → 0831d0b | Data present after redeploy, after rollback (revision s87ce2df5-00004-c6v, image b903e00) and after roll forward (s87ce2df5-00005-cgk, image 0831d0b); smoke test 4/4 PASS on both runs |
+| 4. Release pipeline | PR #43 → PR #44 → [run 44918889759](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44918889759); `docs/labs/lab05/C-06-release-deploy.txt` | C-06, commit `0831d0b`, revision `s87ce2df5-00003-xnd` | Deployed automatically; `/api/health` version = release commit |
 
 ## Answer Part 1: CI and Quality Gate
 
@@ -90,7 +90,9 @@
   - Artifact Registry `s87ce2df5`
   - Secrets `s87ce2df5-database-url`, `-admin-password`, `-demo-password`, `-app-secret-1` (JWT)
 
-  ⟨TODO Figure: Cloud Run service page with the revision and image digest⟩
+  ![Figure 8](img/gcp-cloud-run-revisions.png)
+
+  *Figure 8. R-03/R-07: Cloud Run service `s87ce2df5` in project cpe-se-course-2026. Revision s87ce2df5-00003-xnd (release 0831d0b) serves 100% of traffic. It was deployed by `s87ce2df5-deployer@…` (the GitHub Actions identity via WIF). Earlier revisions: 00002 is the first deployment by deploy.sh, 00001 is the portal placeholder. Port 4000.*
 - **C-04, domain workflow on the public URL** (https://s87ce2df5-4d7hbszvwq-as.a.run.app, release `b903e00`, 2026-11-21 ≈21:45 Asia/Bangkok, user `bob`). Every page shows the running commit in the footer (`API version: b903e006…`):
   1. Sign in over HTTPS (the session cookie is `Secure`). Overview shows ฿0.00 everywhere (Figure 3).
   2. Main business action: Receive money ฿1,500.00 Salary → Bank, saved (Figure 4).
@@ -114,11 +116,45 @@
   ![Figure 6](img/c04-4-overview-after.png)
 
   *Figure 6. C-04 (R-03): https://s87ce2df5-4d7hbszvwq-as.a.run.app/overview after the rejection — Bank ฿1,500.00, income ฿1,500.00, expense ฿0.00.*
-- **C-05, persistence:** ⟨TODO: a record created before a restart (new revision) and before a redeploy is still there afterwards; before and after screenshots with timestamps and revisions⟩.
+- **C-05, persistence:** bob's ฿1,500.00 receipt was created on release `b903e00` (Figure 6).
+  - **After redeploy:** the automatic release deployed `0831d0b` as revision `s87ce2df5-00003-xnd`. The same Overview still shows Bank ฿1,500.00 and income ฿1,500.00, and the footer now shows the new version (Figure 7). The database is Cloud SQL `s87ce2df5-pg`, outside the container, so a new revision does not reset it.
+  - **After rollback and roll forward (Leviathan-c137, 21 Nov):** two manual `Deploy demo` runs on `main` with the `image_tag` input. A rollback reuses the existing image and skips tests, build, migration and seed. Each run starts a new revision, so the containers are also restarted.
+    - Before: bob's Overview shows Bank ฿1,500.00 and version `0831d0b…` (Figure 9).
+    - Rollback, [run 44926378340](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44926378340), `image_tag` = `b903e00…`: revision `s87ce2df5-00004-c6v` serves 100% of traffic, smoke test 4/4 PASS. The footer shows `b903e00…`, and Bank is still ฿1,500.00 (Figure 10).
+    - Roll forward, [run 44927793262](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44927793262), `image_tag` = `0831d0b…`: revision `s87ce2df5-00005-cgk`, smoke test 4/4 PASS. The footer shows `0831d0b…`, and the data is unchanged (Figure 11).
+    - Full step output: `docs/labs/lab05/C-05-rollback.txt`.
+
+  ![Figure 7](img/c05-after-redeploy.png)
+
+  *Figure 7. C-05 (R-04): https://s87ce2df5-4d7hbszvwq-as.a.run.app/overview after the redeploy to revision s87ce2df5-00003-xnd (release 0831d0b); bob's data created on b903e00 is still there.*
+
+  ![Figure 9](img/c05-rb-1-before.png)
+
+  *Figure 9. C-05 (R-04): bob's Overview before the rollback — Bank ฿1,500.00, API version 0831d0b.*
+
+  ![Figure 10](img/c05-rb-2-rolled-back.png)
+
+  *Figure 10. C-05 (R-04): after the rollback to image b903e00 (revision s87ce2df5-00004-c6v) — same data, API version b903e00.*
+
+  ![Figure 11](img/c05-rb-3-rolled-forward.png)
+
+  *Figure 11. C-05 (R-04): after the roll forward to image 0831d0b (revision s87ce2df5-00005-cgk) — same data, API version 0831d0b.*
 
 ## Answer Part 4: Repeatable Release Pipeline
 
-- **C-06:** ⟨TODO: Issue #N (label `lab5`) → PR #N into `staging/sprint-1` with a specific teammate review → release PR #N into `main` → CI → `Deploy demo` run ⟨link⟩. The workflow builds the image tagged with the commit SHA, runs the migration job, updates the service and runs the smoke test. The running revision shows `version` = release commit⟩.
+- **C-06:** the release went through the full repeatable path:
+  1. Change: PR #43 (label `lab5`) into `staging/sprint-1`, with a specific review by Leviathan-c137, merged as `822e36d`.
+  2. Release: PR #44 `staging/sprint-1` → `main`, approved by Leviathan-c137; merge commit `0831d0b`.
+  3. Pipeline: [Deploy demo run 44918889759](https://github.com/Sxr1n/cpe334-money-logger/actions/runs/44918889759) on `main`. The workflow:
+     - ran CI (6 checks pass)
+     - authenticated with Workload Identity Federation (no key file)
+     - built and pushed the image tagged with the commit SHA (digest `sha256:2b5cc93b…`)
+     - ran the migration job (execution `s87ce2df5-migrate-w226h`)
+     - deployed revision `s87ce2df5-00003-xnd` at 100% traffic
+     - ran the smoke test (4/4 PASS)
+  4. Running revision = release commit: `/api/health` returns `version` = `0831d0b7d9b57e008cfbcb96fd263a5bf21b71e9`.
+
+  Full output: `docs/labs/lab05/C-06-release-deploy.txt`.
 - **Release procedure and rollback:** `deployment.md` §5. A rollback is a manual `Deploy demo` run with `image_tag` = an earlier full SHA; it skips build and migration.
 - **Release identification:** the image tag and `APP_VERSION` are the full commit SHA. `/api/health` and the run summary show it.
 
@@ -128,4 +164,9 @@
   - the CI aggregator job
   - the fresh-clone check script
   - this report's draft
-- Limitations: ⟨TODO⟩
+- Limitations:
+  - A rollback changes only the image. It does not undo database migrations. Releases b903e00 and 0831d0b have the same schema, so this demo was safe. A release with a breaking migration would need a forward fix instead.
+  - The runtime image still contains development dependencies (a known shortcut in the `Dockerfile`), so it is larger than needed.
+  - The service runs with at most 1 instance and 512 MiB. This is enough for the course demo, but it was not load tested.
+  - Known display issue (not a data error): after saving on Receive money, the account dropdown shows the old balance until the page is reloaded. It is recorded in Parked for Sprint 2.
+  - Only Sxr1n's Google account has console access to the shared project. Leviathan-c137 deploys and rolls back through GitHub Actions (WIF), which needs no personal GCP role.

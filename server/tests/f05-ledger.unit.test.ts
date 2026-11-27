@@ -62,16 +62,13 @@ describe('F-05 Ledger core & validator (unit)', () => {
     expect(badPrimaryLoanGiven.valid).toBe(false)
     expect(badPrimaryLoanGiven.errorType).toBe('RULE_VIOLATION')
 
-    // Line CASH -> rejected in Sprint 1
-    const badLineCash = validateAllowedAccountTypes('PAYMENT', AccountType.CASH, [AccountType.CASH])
-    expect(badLineCash.valid).toBe(false)
-    expect(badLineCash.errorType).toBe('RULE_VIOLATION')
-    expect(badLineCash.details?.['lines[0]']).toBe('Payment lines must be EXPENSE or LOAN_TAKEN accounts')
+    // Line CASH -> allowed since F-09 (transfers)
+    const cashLine = validateAllowedAccountTypes('PAYMENT', AccountType.CASH, [AccountType.CASH])
+    expect(cashLine.valid).toBe(true)
 
-    // Line LOAN_GIVEN -> rejected in Sprint 1
-    const badLineLoanGiven = validateAllowedAccountTypes('PAYMENT', AccountType.CASH, [AccountType.LOAN_GIVEN])
-    expect(badLineLoanGiven.valid).toBe(false)
-    expect(badLineLoanGiven.errorType).toBe('RULE_VIOLATION')
+    // Line LOAN_GIVEN -> allowed since F-10 (loans)
+    const loanGivenLine = validateAllowedAccountTypes('PAYMENT', AccountType.CASH, [AccountType.LOAN_GIVEN])
+    expect(loanGivenLine.valid).toBe(true)
 
     // Line INCOME -> rejected in Sprint 1
     const badLineIncome = validateAllowedAccountTypes('PAYMENT', AccountType.CASH, [AccountType.INCOME])

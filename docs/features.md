@@ -3,7 +3,7 @@
 | Item | Value |
 |---|---|
 | Source | `docs/srs.md` v0.2 |
-| Document version | 0.2 |
+| Document version | 0.4 |
 | Related | `docs/traceability.md` (requirement → feature → sprint → AC/TEST), `docs/sprints/plan.md` |
 
 Feature IDs are stable. A feature that is dropped is marked `WITHDRAWN (CHG-xx)`, never renumbered. Status follows `PLANNED → SPECIFIED → IN PROGRESS → IMPLEMENTED → TESTED → ACCEPTED` (`INCOMPLETE` if not finished).
@@ -12,22 +12,22 @@ Feature IDs are stable. A feature that is dropped is marked `WITHDRAWN (CHG-xx)`
 
 | F-ID | Name | Description | FR | BR | NFR | Depends on | Sprint | Status |
 |---|---|---|---|---|---|---|---|---|
-| F-01 | Authentication and session | Login with username/password, logout, current user (`/me`). Seeded users and administrators only. Disabled users cannot log in. | FR-01, FR-02, FR-03 | BR-12, BR-13 | NFR-01, NFR-03, NFR-04 | — | 1 | PLANNED |
-| F-02 | Administrator user access | Administrator lists platform users (no financial data) and disables/re-enables them; disabling revokes the user's sessions on the next request. Administrators get 403 on every financial endpoint; users get 403 on every admin endpoint. | FR-04, FR-05 | BR-12, BR-13 | NFR-01, NFR-02 | F-01 | 1 | PLANNED |
-| F-03 | Opening balance | Set the opening balance and opening date of a seeded CASH, LOAN_TAKEN or LOAN_GIVEN account (once per account). Never counted as income or expense. Also delivers the basic own-account list used by F-04/F-05 pickers. | FR-07 | BR-02, BR-06, BR-10, BR-11 | NFR-02, NFR-05 | F-01 | 1 | PLANNED |
-| F-04 | Receive money | Record a RECEIPT into a CASH account with one or more INCOME lines (e.g. salary into Bank). Establishes the shared transaction engine: line validation, form/account-type rules and atomic balance posting. | FR-11 | BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11 | NFR-02, NFR-05, NFR-06, NFR-10 | F-01, F-03 | 1 | PLANNED |
-| F-05 | Make a payment or record a charge | Record a PAYMENT from a CASH or LOAN_TAKEN account with one or more EXPENSE lines (e.g. card purchase split Dining + Groceries), and repay a LOAN_TAKEN account from a CASH account (e.g. pay the card bill from Bank). | FR-12, FR-13 | BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11 | NFR-02, NFR-05, NFR-06, NFR-10 | F-04 | 1 | PLANNED |
-| F-06 | Overview, summary and history | Accounts grouped by type with balances/period totals; overview of CASH balances, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN; income/expense summary for a period (default: current Bangkok month); paginated transaction history and detail. | FR-06, FR-18, FR-24, FR-25 | BR-06, BR-11 | NFR-02, NFR-08 | F-03, F-04, F-05 | 1 | PLANNED |
-| F-07 | Account management | Create accounts of all five types; rename; archive (accounts with transactions are never deleted; balance must be 0 to archive). Archived accounts are hidden from new transactions but kept in history and reports. | FR-08, FR-09 | BR-04, BR-14, BR-15 | NFR-02, NFR-10 | F-01, F-06 | 2 | PLANNED |
-| F-08 | Opening balance management | Change an existing opening balance or opening date, with balances recomputed. | FR-10 | BR-05, BR-10 | NFR-02, NFR-05 | F-03 | 2 | PLANNED |
-| F-09 | Transfers between own cash accounts | PAYMENT line to another CASH account, or RECEIPT line from another CASH account. Not counted as income or expense. | FR-14 | BR-03, BR-04, BR-06, BR-07 | NFR-02 | F-04, F-05, F-07 | 2 | PLANNED |
-| F-10 | Loans given and taken | Lend (PAYMENT line to LOAN_GIVEN), receive repayment (RECEIPT line from LOAN_GIVEN), borrow (RECEIPT line from LOAN_TAKEN); one transaction may mix any allowed line types for its form. Not counted as income or expense. | FR-15, FR-16, FR-17 | BR-03, BR-04, BR-06, BR-08 | NFR-02 | F-04, F-05, F-07 | 2 | PLANNED |
-| F-11 | Transaction corrections | Edit a transaction's date, note, primary account and lines (all rules re-validated, balances recomputed); void a transaction (kept in history marked VOID, excluded from balances and summaries). | FR-20, FR-21 | BR-01–BR-09, BR-16 | NFR-02, NFR-06 | F-04, F-05, F-06 | 2 | PLANNED |
-| F-12 | Search and filter history | Filter history by date range, account, form, amount range and note text. | FR-19 | BR-11 | NFR-02, NFR-08 | F-06 | 2 | PLANNED |
-| F-13 | Favourite transactions | Mark/unmark a transaction as favourite and list favourites. | FR-22 | BR-11 | NFR-02 | F-06 | 3 | PLANNED |
-| F-14 | Duplicate transaction | Open a new editable form pre-filled from an existing transaction (date = today, favourite not copied); nothing stored until submitted. | FR-23 | BR-17 | NFR-02 | F-04, F-05, F-13 | 3 | PLANNED |
-| F-15 | Category spending | Per-EXPENSE-account totals and percentage of all expenses for a period. | FR-26 | BR-06, BR-11 | NFR-02 | F-06 | 3 | PLANNED |
-| F-16 | Period reports | Monthly income, expense and net for a selected range of months (Asia/Bangkok month boundaries). | FR-27 | BR-06, BR-11 | NFR-02 | F-06 | 3 | PLANNED |
+| F-01 | Authentication and session | Login with username/password, logout, current user (`/me`). Seeded users and administrators only. Disabled users cannot log in. | FR-01, FR-02, FR-03 | BR-12, BR-13 | NFR-01, NFR-03, NFR-04 | — | 1 | TESTED |
+| F-02 | Administrator user access | Administrator lists platform users (no financial data) and disables/re-enables them; disabling revokes the user's sessions on the next request. Administrators get 403 on every financial endpoint; users get 403 on every admin endpoint. | FR-04, FR-05 | BR-12, BR-13 | NFR-01, NFR-02 | F-01 | 1 | TESTED |
+| F-03 | Opening balance | Set the opening balance and opening date of a seeded CASH, LOAN_TAKEN or LOAN_GIVEN account (once per account). Never counted as income or expense. Also delivers the basic own-account list used by F-04/F-05 pickers. | FR-07 | BR-02, BR-06, BR-10, BR-11 | NFR-02, NFR-05 | F-01 | 1 | TESTED |
+| F-04 | Receive money | Record a RECEIPT into a CASH account with one or more INCOME lines (e.g. salary into Bank). Establishes the shared transaction engine: line validation, form/account-type rules and atomic balance posting. | FR-11 | BR-01, BR-02, BR-03, BR-04, BR-05, BR-09, BR-11 | NFR-02, NFR-05, NFR-06, NFR-10 | F-01, F-03 | 1 | TESTED |
+| F-05 | Make a payment or record a charge | Record a PAYMENT from a CASH or LOAN_TAKEN account with one or more EXPENSE lines (e.g. card purchase split Dining + Groceries), and repay a LOAN_TAKEN account from a CASH account (e.g. pay the card bill from Bank). CHG-01: optional credit limit on LOAN_TAKEN accounts. | FR-12, FR-13, FR-28 (CHG-01) | BR-01, BR-02, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-09, BR-11, BR-18 (CHG-01) | NFR-02, NFR-05, NFR-06, NFR-10 | F-04 | 1 | TESTED |
+| F-06 | Overview, summary and history | Accounts grouped by type with balances/period totals; overview of CASH balances, outstanding LOAN_TAKEN (card debt) and LOAN_GIVEN; income/expense summary for a period (default: current Bangkok month); paginated transaction history and detail. | FR-06, FR-18, FR-24, FR-25 | BR-06, BR-11 | NFR-02, NFR-08 | F-03, F-04, F-05 | 1 | TESTED |
+| F-07 | Account management | Create accounts of all five types; rename; archive (accounts with transactions are never deleted; balance must be 0 to archive). Archived accounts are hidden from new transactions but kept in history and reports; they can be unarchived (D-11). | FR-08, FR-09 | BR-04, BR-14, BR-15 | NFR-02, NFR-10 | F-01, F-06 | 2 | TESTED |
+| F-08 | Opening balance management | Change an existing opening balance or opening date, with balances recomputed. | FR-10 | BR-05, BR-10 | NFR-02, NFR-05 | F-03 | 2 | IN PROGRESS |
+| F-09 | Transfers between own cash accounts | PAYMENT line to another CASH account, or RECEIPT line from another CASH account. Not counted as income or expense. | FR-14 | BR-03, BR-04, BR-06, BR-07 | NFR-02 | F-04, F-05, F-07 | 2 | TESTED |
+| F-10 | Loans given and taken | Lend (PAYMENT line to LOAN_GIVEN), receive repayment (RECEIPT line from LOAN_GIVEN), borrow (RECEIPT line from LOAN_TAKEN); one transaction may mix any allowed line types for its form. Not counted as income or expense. | FR-15, FR-16, FR-17 | BR-03, BR-04, BR-06, BR-08 | NFR-02 | F-04, F-05, F-07 | 2 | TESTED |
+| F-11 | Transaction corrections | Edit a transaction's date, note, primary account and lines (all rules re-validated, balances recomputed); void a transaction (kept in history marked VOID, excluded from balances and summaries). | FR-20, FR-21 | BR-01–BR-09, BR-16 | NFR-02, NFR-06 | F-04, F-05, F-06 | 2 | TESTED |
+| F-12 | Search and filter history | Filter history by date range, account, form, amount range and note text. | FR-19 | BR-11 | NFR-02, NFR-08 | F-06 | 2 | TESTED |
+| F-13 | Favourite transactions | Mark/unmark a transaction as favourite and list favourites. | FR-22 | BR-11 | NFR-02 | F-06 | 3 | TESTED |
+| F-14 | Duplicate transaction | Open a new editable form pre-filled from an existing transaction (date = today, favourite not copied); nothing stored until submitted. | FR-23 | BR-17 | NFR-02 | F-04, F-05, F-13 | 3 | TESTED |
+| F-15 | Category spending | Per-EXPENSE-account totals and percentage of all expenses for a period. | FR-26 | BR-06, BR-11 | NFR-02 | F-06 | 3 | TESTED |
+| F-16 | Period reports | Monthly income, expense and net for a selected range of months (Asia/Bangkok month boundaries). | FR-27 | BR-06, BR-11 | NFR-02 | F-06 | 3 | TESTED |
 
 Note on F-14 → F-13: Duplicate is reachable from any transaction detail; the dependency on F-13 is only for the "Duplicate from favourites" entry point.
 
@@ -47,3 +47,8 @@ Requirements that apply to every feature are owned by a named system responsibil
 |---|---|---|---|
 | 0.1 | 2026-11-07 | Initial inventory F-01–F-16, SR-01–SR-04 | D1-S2 baseline |
 | 0.2 | 2026-11-07 | F-03 also delivers the basic account list (needed by F-04/F-05); FR-06 display stays in F-06 | D1-S4 contracts |
+| 0.3 | 2026-11-22 | Status sync: F-01–F-06 TESTED (`v0.1.0-sprint1`, see STATUS/traceability); F-07–F-12 SPECIFIED (Sprint 2 contracts) | D2-S1 |
+| 0.4 | 2026-11-25 | F-13–F-16 SPECIFIED (Sprint 3 contracts) | D2-S5 |
+| 0.5 | 2026-11-26 | F-14 TESTED (AC-F14-01..04 PASS on `b5cc4a3`) | D2-S9 |
+| 0.6 | 2026-11-27 | F-05 gains FR-28/BR-18 (CHG-01 credit limit); status IN PROGRESS until AC-F05-09..16 pass | CHG-01 (Lab 7) |
+| 0.7 | 2026-11-28 | F-05 TESTED again: CHG-01 AC-F05-09..16 PASS on `1660d08` | CHG-01 (Lab 7) |

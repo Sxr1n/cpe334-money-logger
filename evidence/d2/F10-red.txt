@@ -1,0 +1,21 @@
+# F-10 RED — tests written before implementation (branch feature/F10-loans, base staging/sprint-2)
+# Command: cd server && npx vitest run tests/f10-loans.unit.test.ts tests/f10-loans.api.test.ts
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ❯ tests/f10-loans.api.test.ts (7 tests | 6 failed) 3383ms
+     × TEST-F10-01 lending from Bank increases LOAN_GIVEN without changing expense 603ms
+     × TEST-F10-02 LOAN_GIVEN repayment enforces BR-08 (150000 ok, 50001 rejected, 50000 ok) 379ms
+     × TEST-F10-03 borrowing via RECEIPT LOAN_TAKEN increases debt and Bank without changing income 357ms
+     × TEST-F10-04 mixed RECEIPT (Salary + Ken repayment) counts only Salary as income 583ms
+     × TEST-F10-05 4-line PAYMENT (Dining + Credit Card + Ken + Wallet) applies all effects and counts only Dining as expense 380ms
+     ✓ TEST-F10-06 rejects invalid form/account combinations (422) and cross-user loan line (404) 586ms
+     × TEST-F10-07 GET /api/overview reflects Loan to Ken and Loan from Mom totals 491ms
+ ❯ tests/f10-loans.unit.test.ts (3 tests | 3 failed) 9ms
+     × TEST-F10-01 PAYMENT from CASH with LOAN_GIVEN line increases receivable and decreases CASH 6ms
+     × TEST-F10-02 BR-08 rejects RECEIPT LOAN_GIVEN line exceeding receivable and accepts within receivable 1ms
+     × TEST-F10-06 50-case allowed-lines matrix matches SRS §4.2 0ms
+
+ Test Files  2 failed (2)
+      Tests  9 failed | 1 passed (10)
+   Duration  13.97s

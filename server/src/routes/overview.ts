@@ -11,7 +11,7 @@ const router = Router()
 router.get('/overview', async (req, res) => {
   const userId = req.user!.id
   const accounts = await prisma.account.findMany({
-    where: { userId, type: { in: ['CASH', 'LOAN_TAKEN', 'LOAN_GIVEN'] } },
+    where: { userId, type: { in: ['CASH', 'LOAN_TAKEN', 'LOAN_GIVEN'] }, archivedAt: null }, // F-07: archived accounts are hidden
     orderBy: { name: 'asc' },
   })
   const group = (type: AccountType) => {

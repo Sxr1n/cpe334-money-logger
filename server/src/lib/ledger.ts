@@ -25,7 +25,7 @@ export function getTodayBangkok(now: Date = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Bangkok' }).format(now)
 }
 
-// Allowed lines table for Sprint 1 (contract §2)
+// Allowed lines table (F-10 completes SRS §4.2 with LOAN_GIVEN and LOAN_TAKEN lines)
 export function validateAllowedAccountTypes(
   form: 'RECEIPT' | 'PAYMENT',
   primaryType: AccountType,
@@ -38,9 +38,9 @@ export function validateAllowedAccountTypes(
       details.primaryAccountId = 'Receiving account must be CASH'
     }
     lineTypes.forEach((type, idx) => {
-      if (type !== AccountType.INCOME) {
-        details.lines = 'Receipt lines must be INCOME accounts'
-        details[`lines[${idx}]`] = 'Receipt lines must be INCOME accounts'
+      if (type === AccountType.EXPENSE) {
+        details.lines = 'Receipt lines cannot be EXPENSE accounts'
+        details[`lines[${idx}]`] = 'Receipt lines cannot be EXPENSE accounts'
       }
     })
   } else if (form === 'PAYMENT') {
@@ -48,8 +48,8 @@ export function validateAllowedAccountTypes(
       details.primaryAccountId = 'Paying account must be CASH or LOAN_TAKEN'
     }
     lineTypes.forEach((type, idx) => {
-      if (type !== AccountType.EXPENSE && type !== AccountType.LOAN_TAKEN) {
-        details[`lines[${idx}]`] = 'Payment lines must be EXPENSE or LOAN_TAKEN accounts'
+      if (type === AccountType.INCOME) {
+        details[`lines[${idx}]`] = 'Payment lines cannot be INCOME accounts'
       }
     })
   }
@@ -202,10 +202,62 @@ export function formatBaht(satang: bigint | number): string {
   })
 }
 
+export interface TxnEffectInput {
+  form: 'RECEIPT' | 'PAYMENT'
+  primaryAccount: { id: number; type: AccountType }
+  lines: { account: { id: number; type: AccountType }; amount: bigint }[]
+  total: bigint
+}
+
+// SRS §4.3: signed balance deltas for stored-balance accounts (CASH, LOAN_TAKEN, LOAN_GIVEN).
+export function computeRawTxnDeltas(txn: TxnEffectInput): Map<number, bigint> {
+  const map = new Map<number, bigint>()
+  const add = (id: number, d: bigint) => map.set(id, (map.get(id) ?? 0n) + d)
+
+  if (txn.form === 'RECEIPT') {
+    if (txn.primaryAccount.type === AccountType.CASH) add(txn.primaryAccount.id, txn.total)
+    for (const l of txn.lines) {
+      if (l.account.type === AccountType.CASH || l.account.type === AccountType.LOAN_GIVEN) add(l.account.id, -l.amount)
+      else if (l.account.type === AccountType.LOAN_TAKEN) add(l.account.id, l.amount)
+    }
+  } else {
+    if (txn.primaryAccount.type === AccountType.CASH) add(txn.primaryAccount.id, -txn.total)
+    else if (txn.primaryAccount.type === AccountType.LOAN_TAKEN) add(txn.primaryAccount.id, txn.total)
+    for (const l of txn.lines) {
+      if (l.account.type === AccountType.LOAN_TAKEN) add(l.account.id, -l.amount)
+      else if (l.account.type === AccountType.CASH || l.account.type === AccountType.LOAN_GIVEN) add(l.account.id, l.amount)
+    }
+  }
+  return map
+}
+
+// F-11: net deltas = -(old effects) + (new effects), or -(old effects) when voiding (newTxn = null).
+export function computeNetDeltas(oldTxn: TxnEffectInput, newTxn: TxnEffectInput | null): AccountDelta[] {
+  const net = new Map<number, bigint>()
+  for (const [id, d] of computeRawTxnDeltas(oldTxn)) net.set(id, -d)
+  if (newTxn) {
+    for (const [id, d] of computeRawTxnDeltas(newTxn)) net.set(id, (net.get(id) ?? 0n) + d)
+  }
+  const result: AccountDelta[] = []
+  for (const [accountId, delta] of net) {
+    if (delta !== 0n) result.push({ accountId, delta })
+  }
+  return result
+}
+
+// creditLimit (CHG-01) is optional so callers without a limit keep the baseline behaviour.
+type LedgerAccount = { id: number; name: string; type: AccountType; balance: bigint; creditLimit?: bigint | null }
+
+// BR-18: the debt a LOAN_TAKEN account would have after adding `amount` must not exceed its limit.
+function overCreditLimit(account: LedgerAccount, amount: bigint): string | null {
+  if (account.creditLimit == null || account.balance + amount <= account.creditLimit) return null
+  return `Over the credit limit of ${account.name} (available ฿${formatBaht(account.creditLimit - account.balance)})`
+}
+
 export function calculateTxnEffects(
   form: 'RECEIPT' | 'PAYMENT',
-  primaryAccount: { id: number; name: string; type: AccountType; balance: bigint },
-  lines: { account: { id: number; name: string; type: AccountType; balance: bigint }; amount: bigint }[],
+  primaryAccount: LedgerAccount,
+  lines: { account: LedgerAccount; amount: bigint }[],
   total: bigint,
 ): TxnEffectsResult {
   const deltas: AccountDelta[] = []
@@ -214,7 +266,37 @@ export function calculateTxnEffects(
     if (primaryAccount.type === AccountType.CASH) {
       deltas.push({ accountId: primaryAccount.id, delta: total })
     }
-    // Lines: INCOME accounts don't store balance
+    // Lines: BR-05, BR-07 (CASH), BR-08 (LOAN_GIVEN), LOAN_TAKEN (+); INCOME lines don't store balance
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i]
+      if (line.account.type === AccountType.CASH) {
+        if (line.amount > line.account.balance) {
+          return {
+            valid: false,
+            errorType: 'RULE_VIOLATION',
+            details: {
+              [`lines[${i}].amount`]: `Not enough money in ${line.account.name} (balance ฿${formatBaht(line.account.balance)})`,
+            },
+          }
+        }
+        deltas.push({ accountId: line.account.id, delta: -line.amount })
+      } else if (line.account.type === AccountType.LOAN_GIVEN) {
+        if (line.amount > line.account.balance) {
+          return {
+            valid: false,
+            errorType: 'RULE_VIOLATION',
+            details: {
+              [`lines[${i}].amount`]: `More than the amount owed to you ฿${formatBaht(line.account.balance)}`,
+            },
+          }
+        }
+        deltas.push({ accountId: line.account.id, delta: -line.amount })
+      } else if (line.account.type === AccountType.LOAN_TAKEN) {
+        const over = overCreditLimit(line.account, line.amount)
+        if (over) return { valid: false, errorType: 'RULE_VIOLATION', details: { [`lines[${i}].amount`]: over } }
+        deltas.push({ accountId: line.account.id, delta: line.amount })
+      }
+    }
     return { valid: true, deltas }
   }
 
@@ -232,10 +314,12 @@ export function calculateTxnEffects(
       }
       deltas.push({ accountId: primaryAccount.id, delta: -total })
     } else if (primaryAccount.type === AccountType.LOAN_TAKEN) {
+      const over = overCreditLimit(primaryAccount, total)
+      if (over) return { valid: false, errorType: 'RULE_VIOLATION', details: { total: over } }
       deltas.push({ accountId: primaryAccount.id, delta: total })
     }
 
-    // Lines: BR-05 & BR-08: each LOAN_TAKEN line balance -= amount; EXPENSE lines no change
+    // Lines: BR-05 & BR-08: LOAN_TAKEN -= amount; CASH += amount; LOAN_GIVEN += amount; EXPENSE no change
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
       if (line.account.type === AccountType.LOAN_TAKEN) {
@@ -249,6 +333,8 @@ export function calculateTxnEffects(
           }
         }
         deltas.push({ accountId: line.account.id, delta: -line.amount })
+      } else if (line.account.type === AccountType.CASH || line.account.type === AccountType.LOAN_GIVEN) {
+        deltas.push({ accountId: line.account.id, delta: line.amount })
       }
     }
 

@@ -11,3 +11,4 @@ submission/*/*.pdf
 
 # Course handouts stay local (repository is public, Lab 5 R-12)
 docs/course/
+__pycache__/

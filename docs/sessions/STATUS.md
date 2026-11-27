@@ -1,11 +1,11 @@
 # Project Status — อัปเดตทุกครั้งที่จบ session
 
 ## Current
-- Phase / next checkpoint: D1 submitted. **Lab 5 due 22 Nov 23:59** (course Google Cloud open 2026-11-20); Lab 6 moved to 29 Nov (same day as Lab 7 + D2); Final 13 Dec
-- Next session: release PR staging → main → portal Recheck + Activate → JWT secret + first deploy → C-02/C-04/C-05/C-06 evidence → Lab 5 PDF · Lab 6 partner UAT · Sprint 2 contracts
+- Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
+- Next session: release PR `release/v0.2.0-sprint2` → main (Leviathan-c137 approves) → tag `v0.2.0-sprint2` → Deploy demo → post-deploy checks (CHG-01 + Sprint 1 isolation/admin 403) · #76 E2E flake fix · TEST-NFR05-01 (AC-F08-07) and TEST-F14-03 → F-11 void API · Lab 7 PDF · D2 PDF parts + RC `v0.3.0-rc1` · Lab 6 partner UAT · due 29 Nov 23:59
 - Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
-- Active staging branch: `staging/sprint-1` (PRs #7–#40 merged; release PR #32 merged to main)
-- Deployed URL / version: —
+- Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
+- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
 
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
@@ -16,16 +16,16 @@
 | F-04 | Receive money | 1 | TESTED | Leviathan-c137 | sprint-1/F04-receive-money.md | #4 / PR #17 | red `295c90b`, green `b2a4f70` (evidence/d1/F04-*.txt) |
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
-| F-07 | Account management | 2 | PLANNED | — | — | — | — |
-| F-08 | Opening balance management | 2 | PLANNED | — | — | — | — |
-| F-09 | Transfers | 2 | PLANNED | — | — | — | — |
-| F-10 | Loans given and taken | 2 | PLANNED | — | — | — | — |
-| F-11 | Transaction corrections | 2 | PLANNED | — | — | — | — |
-| F-12 | Search and filter | 2 | PLANNED | — | — | — | — |
-| F-13 | Favourite transactions | 3 | PLANNED | — | — | — | — |
-| F-14 | Duplicate transaction | 3 | PLANNED | — | — | — | — |
-| F-15 | Category spending | 3 | PLANNED | — | — | — | — |
-| F-16 | Period reports | 3 | PLANNED | — | — | — | — |
+| F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR #56 | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
+| F-08 | Opening balance management | 2 | IN PROGRESS (01–06 PASS; 07 after F-09–F-11) | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR #57 | red `51eeffc`, green `c341d6d` (evidence/d2/F08-*.txt) |
+| F-09 | Transfers | 2 | TESTED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | red `769742f`, green `c36a003` (evidence/d2/F09-*.txt) |
+| F-10 | Loans given and taken | 2 | TESTED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | red `cbf9735`, green `e98d37d` (evidence/d2/F10-*.txt) |
+| F-11 | Transaction corrections | 2 | TESTED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | red `7888ac1`, green `fb0336f` (evidence/d2/F11-*.txt) |
+| F-12 | Search and filter | 2 | TESTED | Sxr1n | sprint-2/F12-search-filter.md | #55 / PR #58 | red `37675b2`, green `63d377b` (evidence/d2/F12-*.txt) |
+| F-13 | Favourite transactions | 3 | TESTED | Sxr1n | sprint-3/F13-favourites.md | #62 / PR #66 | red `c4b8f42`, green `748556f` (evidence/d2/F13-*.txt) |
+| F-14 | Duplicate transaction | 3 | TESTED | Sxr1n | sprint-3/F14-duplicate.md | #60 | red `255be65`, green `b5cc4a3` (evidence/d2/F14-*.txt) |
+| F-15 | Category spending | 3 | TESTED | Sxr1n | sprint-3/F15-category-spending.md | #61 / PR #64 | red `7f2ea52`, green `0e291ae` (evidence/d2/F15-*.txt) |
+| F-16 | Period reports | 3 | TESTED | Sxr1n | sprint-3/F16-period-reports.md | #63 / PR #65 | red `a82b171`, green `c5d7c81` (evidence/d2/F16-*.txt) |
 
 ## Work split (ตกลง 2026-11-07, แก้ตามวันส่ง LEB2: D1 + Lab 5 ส่ง 15 Nov)
 | วันที่ | Sxr1n (ศารินทร์) | Leviathan-c137 (ตันติยวัตร) |
@@ -46,6 +46,137 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-R1 release v0.2.0-sprint2 (prep) — Claude + Sxr1n
+- Done: #74 (CHG-01) and #75 (F-11, after the race/BR-18 fixes and verbatim evidence) merged into `staging/sprint-2` (`22acd51`); E2E cold-start flake fixed in PR #76 (open); release branch `release/v0.2.0-sprint2` from `22acd51` with release evidence
+- Evidence: `evidence/d2/release-v0.2.0-sprint2.txt` on `22acd51`: server tsc OK, 33 files / 139 tests passed; client 1 test + build OK; E2E 19 passed; Docker image build OK; 0 failed, 0 skipped
+- Decisions: release now (Lab 7 needs the CHG-01 deploy) with F-08 still IN PROGRESS — AC-F08-07 (TEST-NFR05-01) is not written yet and is disclosed in the release PR; #76 joins the RC
+- Open issues: TEST-NFR05-01; TEST-F14-03 still uses `e2e-void.ts`; Issues #50–#55, #60–#63, #72 close with the release PR; Lab 6 UAT not run
+- Next session: tag + deploy + post-deploy checks after the release PR is approved
+### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
+- Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
+  - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;
+  - an interpretation of 92 words (limit 100);
+  - the readiness checklist (verdict **NOT READY** at the snapshot: CHG-01 not on main or deployed, partner UAT not run);
+  - the technical debt table and a DRAFT retrospective.
+- Evidence: snapshot 2026-11-27 18:58 UTC, window from 2026-11-22.
+  - M-1: 0 Issues closed.
+  - M-2: 15 PRs merged, 0 of them to main.
+  - M-3: run 46051342340 on `5e5c97c`: 127 + 1 + 18 passed, 0 failed, 0 skipped.
+  - M-4: 0 UAT defects (UAT not run).
+  - M-5: 44 CI runs, 43 success, 1 failure (45667938623, F-09 E2E); 0 deploy runs.
+- Decisions: none.
+- Open issues:
+  - The retrospective must be confirmed by both students.
+  - Readiness and the version table must be updated after the release and deploy.
+  - Handout: the red for the TEST-F05-10 unit test is a missing function (`validateCreditLimit is not a function`). The behavioural red evidence is the 7 API assertions and the TEST-F05-11/12 unit assertions; say so in the PDF.
+  - The Receive-page stale-balance display issue should be registered as DEF-01.
+  - Leviathan-c137 pushed `feature/F11-transaction-corrections` on 2026-11-27.
+- Next session: release + deploy (Lab 7 action) · Lab 7 PDF · D2 PDF parts
+### 2026-11-28 — L7-S2 CHG-01 credit limit (TDD) — Claude + Sxr1n
+- Done:
+  - Leviathan-c137 approved the contract (#73) on 2026-11-27, before any code; #70, #71 and #73 are merged.
+  - Migration `add_credit_limit` adds a nullable `credit_limit` column and a check constraint.
+  - `validateCreditLimit` and the `creditLimit` field on `PATCH /api/accounts/:id` (checked under a row lock; cannot be set below the debt).
+  - The account shape now includes `creditLimit` and `availableCredit`.
+  - BR-18 in `calculateTxnEffects` covers charges and borrows; the F-08 opening-balance change also checks the limit.
+  - Accounts page: limit text and a Credit limit form. Pay page: the card option shows the available credit.
+- Evidence:
+  - red `f8a9b70` → `evidence/lab7/CHG01-red.txt` (unit 3 fail, API 7 fail, E2E 1 fail). Before committing the red, one test expectation was corrected (PUT opening balance returns 200, not 201); every failure in the committed red is real.
+  - green `1660d08` → `evidence/lab7/CHG01-green.txt` (server tsc OK, 31 files / 127 tests; client 1 test + build OK; E2E 18/18; 0 failed, 0 skipped).
+- Decisions: none new (contract v0.6 → v0.7 records the results only).
+- Open issues:
+  - The code PR needs Leviathan-c137's review.
+  - Deploy waits for the next release to main.
+  - The CHECK violation fallback in `POST /api/transactions` still says "Balance cannot be negative" for every constraint; it is reached only in a race.
+  - F-11 edits must re-validate BR-18.
+- Next session: L7-S3 metrics, readiness and retrospective · release `v0.2.0-sprint2` / RC · D2 PDF parts
+### 2026-11-27 — L7-S1 CHG-01 change request — Claude + Sxr1n
+- Done: change request Issue #72 and contract PR #73. Credit limit on LOAN_TAKEN accounts: FR-28, BR-18, D-04 revised. Docs: `docs/labs/lab07/change-request.md` (baseline `e1747cb`, pre-change code, impact table, regression protection); F-05 contract v0.6 with AC-F05-09..16 and TEST-F05-09..16; SRS v0.7; SDS v0.9; features v0.6; traceability v0.18; CHG-01 in `docs/changes.md`
+- Evidence: spec commit `d090196` on `spec/CHG01-credit-limit`
+- Decisions (Sxr1n, 2026-11-27):
+  - Instructor announcement: Lab 7 changes need no TA approval; the team picks one that is not trivial.
+  - The team picked the credit limit; Sxr1n owns it and Leviathan-c137 reviews.
+  - `null` = no limit.
+  - A limit cannot be set below the current debt.
+  - BR-18 also covers borrowing (F-10) and opening-balance changes (F-08).
+  - The limit is set through the existing `PATCH /api/accounts/:id`.
+- Open issues:
+  - F-11 must re-validate BR-18 in its edits (DB check is the backstop until then).
+  - The F-05 contract still has no revision row for F-10 (#69 review finding).
+  - The code waits for the #73 review (Lab 7 requires review before code).
+- Next session: after #73 is approved, CHG-01 red → green; then metrics, readiness and retrospective (L7-S3)
+### 2026-11-27 — D2-P (start) PDF builder — Claude + Sxr1n
+- Done: #68 (F-14) approved and merged by Leviathan-c137 (`b2c57ee`, CI success); #69 (F-10) merged; PR #70 merges `staging/sprint-1` (#48, Lab 5 Part 0) into `staging/sprint-2` (STATUS conflict resolved); `submission/d2/build_pdf.py` (reuses the D1 renderer; cover reads the deployed version from `/api/health` and flags a mismatch with the tag) + `part-a/b/c/e.md` skeletons following D2 §4.1 (all results marked TO FILL)
+- Evidence: test build `D2-v0.3.0-rc1.pdf` 69 pages = cover 1 + [1, 25, 12, 29, 1]; cover shows deployed `0831d0b` flagged as not matching (no RC tag yet)
+- Decisions (Sxr1n, 2026-11-27): F-11 stays with Leviathan-c137; Lab 6 partner team is known (details to be added); Lab 7 change waits for the instructor's announcement
+- Open issues: PR #70 and the D2 PDF PR need review; F-11 not started; Lab 6 partner details and Lab 7 change not in the repo yet
+- Next session: Lab 6 partner UAT / Lab 7 change once the details arrive · F-11 → release `v0.2.0-sprint2` → RC `v0.3.0-rc1` → fill Parts A–E
+### 2026-11-26 — D2-S9 F-14 Duplicate transaction — Claude + Sxr1n
+- Done: local `.git` repaired (OneDrive zeroed HEAD, index, the `spec/sprint-3-contracts` ref and 4 working files; restored from origin, nothing lost); PR #64 head was stuck after the GitHub outage → empty commit `d2eefa8`; #64, #65, #66 merged into `staging/sprint-2` (`982a93e`, CI success). F-14: `toDuplicateDraft`/`loadDuplicate` in `client/src/duplicate.ts`, `DuplicateBanner`, `?duplicate=` on Pay/Receive, Duplicate link on the detail page (POSTED and VOID) and Favourites rows; empty account selects show "Choose an account"
+- Evidence: red `255be65` → `evidence/d2/F14-red.txt` (unit module missing, E2E 3 fail); green `b5cc4a3` → `evidence/d2/F14-green.txt` (server tsc OK, 25 files / 98 tests; client 1 test + build OK; E2E 15/15)
+- Decisions (Sxr1n, 2026-11-26): Vitest added to `client/` (+ `npm test` in CI "Client build"); TEST-F14-03 sets VOID through `server/prisma/e2e-void.ts` until F-11 (contract v0.2)
+- Open issues: replace `e2e-void.ts` with the F-11 void API when F-11 merges; F-09 (#67) merged during this session → merged into the F-14 branch (`00bcb2f`), full regression green (`evidence/d2/F14-green-after-F09.txt`: server 27 files / 107 tests, E2E 16/16); the repo lives in OneDrive — move it out or pause sync
+- Next session: Leviathan-c137 F-10 → F-11 (F-09 merged in #67); after F-11: TEST-NFR05-01 (AC-F08-07) and switch TEST-F14-03 to the F-11 void API; release prep for D2
+### 2026-11-26 — D2-S8 F-13 Favourite transactions — Claude + Sxr1n
+- Done: `PUT /api/transactions/:id/favorite` (VOID → 422, D-15); `favorite=true` filter (POSTED favourites only); `isFavorite` in the transaction shape; detail-page toggle (`aria-pressed`), Favourites page + nav link
+- Evidence: red `c4b8f42` → `evidence/d2/F13-red.txt` (5 fail); green `748556f` → `evidence/d2/F13-green.txt` (tsc OK, server 25 files / 98 tests, client build OK, E2E 12/12)
+- Decisions: none new; the check-then-update for VOID is not locked, which is harmless because the list itself filters POSTED
+- Open issues: PR chain #58 → #59 → #64 → #65 → this one
+- Next session: F-14 Duplicate
+### 2026-11-26 — D2-S7 F-16 Period reports — Claude + Sxr1n
+- Done: `GET /api/reports/monthly` (income/expense/net per Bangkok month via `summarize`, empty months listed, total row); `parseMonthRange` + `monthBounds` in `lib/period.ts` (≤ 12 months, default last 6, D-14); Reports page Monthly report section
+- Evidence: red `a82b171` → `evidence/d2/F16-red.txt` (6 fail); green `c5d7c81` → `evidence/d2/F16-green.txt` (tsc OK, server 23 files / 93 tests, client build OK, E2E 11/11)
+- Decisions: none new
+- Open issues: PR chain #58 → #59 → #64 → this one; F-09–F-11 still not started
+- Next session: F-13 Favourites
+### 2026-11-25 — D2-S6 F-15 Category spending — Claude + Sxr1n
+- Done: `GET /api/reports/categories` (`routes/reports.ts`, `percentOf` in `lib/summary.ts`, `/api/reports` behind the USER guard); Reports page + nav link with the Category spending section
+- Evidence: red `7f2ea52` → `evidence/d2/F15-red.txt` (6 fail, no route); green `0e291ae` → `evidence/d2/F15-green.txt` (tsc OK, server 21 files / 87 tests, client build OK, E2E 10/10)
+- Decisions: none new; E2E uses bob and reads expected amounts back through the API (alice's data changes in other specs)
+- Open issues: PRs #58 → #59 → this one must merge in order; F-09–F-11 still not started
+- Next session: F-16 (shares the Reports page) or F-13
+### 2026-11-25 — D2-S5 Sprint 3 contracts — Claude + Sxr1n
+- Done: contracts F-13–F-16 in `docs/sprints/sprint-3/` (21 AC, 21 STS rows, SPECIFIED); SRS v0.6 (D-14–D-16); features v0.4; plan v0.4 (F-15 first, Sxr1n owns F-13–F-16); traceability v0.11 (§2c); SDS v0.8
+- Evidence: branch `spec/sprint-3-contracts` (spec commits per feature), PR #59; Issues #60–#63
+- Decisions (Sxr1n, 2026-11-25): D-14 period report ≤ 12 months, default last 6; D-15 VOID cannot be favourited (hidden from list) but can be duplicated; D-16 F-15 is the Sprint 3 workflow in `v0.3.0-rc1`; Sxr1n owns all Sprint 3 features
+- Open issues: PR #57 approved but merging from this session was blocked by the permission classifier → Sxr1n merges; F-14 unit test needs Vitest for a pure client module (decide in F-14: client dev dependency or server Vitest include)
+- Next session: F-15 Category spending
+### 2026-11-24 — D2-S4 F-12 Search and filter history — Claude + Sxr1n
+- Done: `GET /api/transactions` filters (from, to, accountId = primary or line, form, status, minAmount, maxAmount, q case-insensitive and literal); `parseTxnFilter` (422 per parameter) and `escapeLike` in `lib/query.ts`; History filter bar kept in the URL, Clear filters, filtered empty state
+- Evidence: red `37675b2` → `evidence/d2/F12-red.txt` (6 fail; TEST-F12-06 already passed through F-06 scoping); green `63d377b` → `evidence/d2/F12-green.txt` (tsc OK, server 19 files / 81 tests, client build OK, E2E 9/9)
+- Decisions: none new; branch based on the F-08 branch (PR #57 open) to avoid doc conflicts
+- Open issues: Prisma `contains` does not escape `%`/`_` (found by TEST-F12-04) — other `contains` queries must use `escapeLike`; F-09–F-11 not started by Leviathan-c137 as of 2026-11-24
+- Next session: Sprint 3 contracts F-13–F-16 (D2 requirement)
+### 2026-11-23 — D2-S3 F-08 Opening balance management — Claude + Sxr1n
+- Done: `PATCH /api/accounts/:id/opening-balance` (balance += new − old under a row lock; 422 if negative, INCOME/EXPENSE or archived; 409 if not set yet); Accounts page "Edit opening balance" pre-filled, server field errors under Amount
+- Evidence: red `51eeffc` → `evidence/d2/F08-red.txt` (5 fail; TEST-F08-05 already passed via middleware); green `c341d6d` → `evidence/d2/F08-green.txt` (tsc OK, server 17 files / 72 tests, client build OK, E2E 8/8)
+- Decisions: none new; F-08 status IN PROGRESS until AC-F08-07 (TEST-NFR05-01) runs after F-09–F-11
+- Open issues: Leviathan-c137 has not started F-09 yet (no branch on 2026-11-23); `staging/sprint-1` (#48) still to merge into `staging/sprint-2`
+- Next session: F-12 (Sxr1n)
+### 2026-11-23 — D2-S2 F-07 Account management — Claude + Sxr1n
+- Done: `POST /api/accounts`, `PATCH /api/accounts/:id` (rename, archive at balance 0 under row lock, unarchive); archived accounts hidden from Overview and Pay/Receive selects; posting lock re-checks `archived_at` (404); opening balance on archived → 422; Accounts page New account / Rename / Archive / Archived section
+- Evidence: red `e25946a` → `evidence/d2/F07-red.txt` (API 7 fail, unit module missing, E2E no button); green `3a75c2f` → `evidence/d2/F07-green.txt` (tsc OK, server 15 files / 66 tests, client build OK, E2E 7/7)
+- Decisions: none new (contract v0.1 unchanged); E2E heading selector needed `exact: true` (matched "Cash & Bank Accounts")
+- Open issues: PR #48 (Lab 5 team number) is on `staging/sprint-1` only → merge `staging/sprint-1` into `staging/sprint-2` with the next release PR
+- Next session: F-08 (Sxr1n) · Leviathan-c137 F-09 · review the F-07 PR
+### 2026-11-22 — D2-S1 Sprint 2 contracts — Claude + Sxr1n
+- Done: contracts F-07–F-12 in `docs/sprints/sprint-2/` (47 AC, 47 STS rows incl. TEST-NFR05-01, status SPECIFIED); SRS v0.5 (D-10–D-13, Q-03 resolved); features v0.3 (F-01–F-06 TESTED, F-07–F-12 SPECIFIED); traceability v0.7 (§2b Sprint 2 table, FR/BR rows filled); SDS v0.7 (Sprint 2 endpoints)
+- Evidence: branch `spec/sprint-2-contracts` (spec commits per feature); PR to `staging/sprint-2`
+- Decisions (Sxr1n, 2026-11-22): D-10 opening balance editable after transactions, rejected if balance < 0; D-11 unarchive allowed, no delete; D-12 edit/void rejected if a balance would go negative; D-13 account filter = primary or line. Owners: Sxr1n F-07/F-08/F-12, Leviathan-c137 F-09/F-10/F-11. F-08 uses a new `PATCH` so the F-03 `PUT` contract is unchanged; NFR-05 1,000-operation test in F-08 (runs after F-09–F-11 merge)
+- Open issues: `staging/sprint-2` created from `staging/sprint-1` `3fd73fe` (Sprint 1 code = `v0.1.0-sprint1`; Lab 5 docs since); Issues #50–#55 (F-07–F-12, label `sprint-2`, assigned); F-09 and F-10 both edit `validateAllowedAccountTypes` → merge F-09 first
+- Next session: Sprint 2 T-FEAT sessions in parallel
+### 2026-11-22 — Lab 5 C-05 rollback evidence — Claude + Sxr1n (+ Leviathan-c137)
+- Done: Leviathan-c137 merged #45 (`bc4f367`), ran rollback (image `b903e00`, revision `s87ce2df5-00004-c6v`) and roll forward (image `0831d0b`, revision `s87ce2df5-00005-cgk`) via Deploy demo, closed #30; bob's data unchanged on all three screenshots; Lab 5 report C-05 + limitations filled; `build_report.py` embeds `img/` PNGs (headless Chrome printed only the first 4 file:// images)
+- Evidence: runs 44926378340 and 44927793262 (deploy success, smoke 4/4 PASS each); `docs/labs/lab05/C-05-rollback.txt`; Figures 9–11 `submission/lab5/img/c05-rb-*.png`; live `/api/health` version `0831d0b7…` after roll forward
+- Open issues: Lab 5 Part 0 team number and PDF file name (section, group); Leviathan-c137 has no Cloud Console access to the shared project (not needed: deploys via Actions/WIF)
+- Next session: build + submit Lab 5 PDF → Lab 6 partner UAT → Sprint 2 contracts
+### 2026-11-21 — Lab 5 deploy on the course cloud — Claude + Sxr1n (+ Leviathan-c137 reviews)
+- Done: #37–#41 merged (#41 release → main `b903e00`); portal "Connect to Google Cloud" → resources ready (prefix `s87ce2df5`, URL https://s87ce2df5-4d7hbszvwq-as.a.run.app); GitHub environment `demo` + WIF variables, `DEPLOY_ENABLED=true`; JWT secret in `s87ce2df5-app-secret-1` and first deploy by `deploy/deploy.sh` (Sxr1n, Cloud Shell; 2SV had to be enabled first); C-02 PR #42 (failing test, blocked, closed unmerged); C-04 live demo as bob (sign-in, ฿1,500 receipt, BR-07 rejection); #43 → staging, release #44 → main `0831d0b` deployed automatically (revision `s87ce2df5-00003-xnd`); C-05 after-redeploy; PR #45 with C-05/C-06 evidence
+- Evidence: `docs/labs/lab05/C-02-failing-check.txt`, `C-03-fresh-clone.txt`, `first-deploy-smoke.txt`, `C-06-release-deploy.txt`; Deploy demo run 44918889759 (CI 6/6, deploy, smoke 4/4); `submission/lab5/img/` Figures 1–8
+- Decisions: alice untouched for Lab 6 UAT-01; bob used for Lab 5 demos (UAT cases v0.3 make bob's values relative); first deploy by script, later releases by Actions
+- Open issues: C-05 restart/rollback (Leviathan-c137, #30); Lab 5 Part 0 needs team number, section, group name; report limitations; build + submit Lab 5 PDF by 22 Nov 23:59; Lab 6 partner unknown
+- Next session: rollback evidence → Lab 5 PDF → Lab 6 partner UAT → Sprint 2 contracts (D2 29 Nov)
+
 ### 2026-11-20 — Lab 5 shared cloud + Lab 6 Part A — Claude + Sxr1n
 - Done: course portal sign-in (team prefix `s87ce2df5`, project `cpe-se-course-2026`); portal review said our repo lacked `ci-docker.yml` → team kit zip merged into our setup (PR #38: `deploy.sh` without resource creation, names `s87ce2df5*`, `ci.yml` → `ci-docker.yml` + job `test-and-docker`, `teardown.sh` removed, deployment.md v0.3, SDS v0.6); Lab 6 UAT cases UAT-01–05 + handoff (PR #39, v0.2 after a local rehearsal); ruleset `protect-main` (id 27680785) on `main` + `staging/**`: no deletion/force-push, PR with 1 approval, merge commits only, required check `test-and-docker`
 - Evidence: PR #38 CI all 6 checks pass (run 44623254181); `DRY_RUN=1 bash deploy/deploy.sh` touches only `s87ce2df5*`; UAT rehearsal 5/5 on local dev servers (temporary Playwright script, not committed; not UAT evidence)
@@ -199,5 +330,6 @@
 - Next session:
 
 ## Parked (เจอระหว่างทางแต่อยู่นอก scope)
+- Receive money: after Save, the Receiving account dropdown still shows the old balance (`Bank (฿0.00)`) until the page is reloaded — display only (seen on the live URL 2026-11-21)
 - รวม `getTodayBangkok()` (server/src/lib/ledger.ts) กับ `bangkokToday()` (server/src/lib/period.ts) และ `formatTHB` ใน AccountsPage/PayPage/ReceiveMoneyPage ให้ใช้ `client/src/format.ts`
 -

@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../api'
+import DuplicateBanner from '../components/DuplicateBanner'
+import { loadDuplicate, toAmountStr, type LoadedDuplicate } from '../duplicate'
+import { preEditBalance, type TxnView } from '../format'
 
 export interface AccountItem {
   id: number
   name: string
   type: string
   balance: number
+  archived: boolean
+  availableCredit?: number | null // CHG-01
 }
 
 interface FormLine {
@@ -44,17 +49,22 @@ function parseSatang(val: string): { satang: number | null; error?: string } {
   return { satang }
 }
 
-export default function PayPage() {
+export default function PayPage({ editTxn }: { editTxn?: TxnView } = {}) {
+  const navigate = useNavigate()
   const [accounts, setAccounts] = useState<AccountItem[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
 
   // Form inputs
-  const [primaryAccountId, setPrimaryAccountId] = useState<number>(0)
-  const [dateStr, setDateStr] = useState<string>(getTodayInBangkok())
-  const [totalStr, setTotalStr] = useState<string>('')
-  const [noteStr, setNoteStr] = useState<string>('')
-  const [lines, setLines] = useState<FormLine[]>([])
+  const [primaryAccountId, setPrimaryAccountId] = useState<number>(editTxn?.primaryAccount.id ?? 0)
+  const [dateStr, setDateStr] = useState<string>(editTxn?.date ?? getTodayInBangkok())
+  const [totalStr, setTotalStr] = useState<string>(editTxn ? toAmountStr(editTxn.total) : '')
+  const [noteStr, setNoteStr] = useState<string>(editTxn?.note ?? '')
+  const [lines, setLines] = useState<FormLine[]>(
+    editTxn
+      ? editTxn.lines.map((l, i) => ({ id: `edit-${i}`, accountId: l.account.id, amountStr: toAmountStr(l.amount) }))
+      : [],
+  )
 
   // Errors & submission state
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -62,25 +72,53 @@ export default function PayPage() {
   const [pending, setPending] = useState(false)
   const [successTxn, setSuccessTxn] = useState<any | null>(null)
 
+  // F-14: /pay?duplicate=:id pre-fills the form from an own PAYMENT
+  const duplicateId = useSearchParams()[0].get('duplicate')
+  const [duplicate, setDuplicate] = useState<LoadedDuplicate | null>(null)
+  const [duplicateError, setDuplicateError] = useState<string | null>(null)
+
   useEffect(() => {
-    loadAccounts()
+    loadAccounts().then((active) => {
+      if (!editTxn && duplicateId && active) applyDuplicate(duplicateId, active)
+    })
   }, [])
+
+  async function applyDuplicate(id: string, active: AccountItem[]) {
+    try {
+      const loaded = await loadDuplicate(id, 'PAYMENT', active.map((a) => a.id), getTodayInBangkok())
+      const { draft } = loaded
+      setPrimaryAccountId(draft.primaryAccountId)
+      setDateStr(draft.date)
+      setTotalStr(toAmountStr(draft.total))
+      setNoteStr(draft.note ?? '')
+      setLines(draft.lines.map((l, i) => ({ id: `dup-${i}`, accountId: l.accountId, amountStr: toAmountStr(l.amount) })))
+      setDuplicate(loaded)
+    } catch (err) {
+      setDuplicateError(err instanceof Error ? err.message : 'Something went wrong.')
+    }
+  }
 
   async function loadAccounts() {
     try {
       setLoading(true)
       const res = await api<{ items: AccountItem[] }>('/accounts')
-      setAccounts(res.items)
+      const active = res.items
+        .filter((a) => !a.archived) // F-07: archived accounts take no new transactions
+        .map((a) => ({ ...a, balance: preEditBalance(a.id, a.balance, editTxn) }))
+      setAccounts(active)
 
-      const paying = res.items.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN')
-      const expense = res.items.filter((a) => a.type === 'EXPENSE')
-      const loanTaken = res.items.filter((a) => a.type === 'LOAN_TAKEN')
+      const paying = active.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN')
+      const expense = active.filter((a) => a.type === 'EXPENSE')
+      const loanTaken = active.filter((a) => a.type === 'LOAN_TAKEN')
 
-      if (paying.length > 0) setPrimaryAccountId(paying[0].id)
-      const defaultLineAcc = expense[0]?.id ?? loanTaken[0]?.id ?? 0
-      if (defaultLineAcc) {
-        setLines([{ id: 'line-1', accountId: defaultLineAcc, amountStr: '' }])
+      if (!editTxn) {
+        if (paying.length > 0) setPrimaryAccountId(paying[0].id)
+        const defaultLineAcc = expense[0]?.id ?? loanTaken[0]?.id ?? 0
+        if (defaultLineAcc) {
+          setLines([{ id: 'line-1', accountId: defaultLineAcc, amountStr: '' }])
+        }
       }
+      return active
     } catch (err) {
       setFetchError(err instanceof ApiError ? err.message : 'Failed to load accounts.')
     } finally {
@@ -91,9 +129,11 @@ export default function PayPage() {
   const payingAccounts = accounts?.filter((a) => a.type === 'CASH' || a.type === 'LOAN_TAKEN') ?? []
   const expenseAccounts = accounts?.filter((a) => a.type === 'EXPENSE') ?? []
   const loanTakenAccounts = accounts?.filter((a) => a.type === 'LOAN_TAKEN') ?? []
+  const loanGivenAccounts = accounts?.filter((a) => a.type === 'LOAN_GIVEN') ?? []
+  const cashAccounts = accounts?.filter((a) => a.type === 'CASH') ?? []
 
   function addLine() {
-    const defaultAccId = expenseAccounts[0]?.id ?? loanTakenAccounts[0]?.id ?? 0
+    const defaultAccId = expenseAccounts[0]?.id ?? loanTakenAccounts[0]?.id ?? loanGivenAccounts[0]?.id ?? cashAccounts[0]?.id ?? 0
     setLines((prev) => [...prev, { id: `line-${Date.now()}-${Math.random()}`, accountId: defaultAccId, amountStr: '' }])
   }
 
@@ -164,7 +204,9 @@ export default function PayPage() {
       } else if (p.satang !== null) {
         payloadLines.push({ accountId: l.accountId, amount: p.satang })
       }
-      if (l.accountId === primaryAccountId) {
+      if (!l.accountId) {
+        errors[`lines[${idx}].accountId`] = 'Choose an account'
+      } else if (l.accountId === primaryAccountId) {
         errors[`lines[${idx}].accountId`] = 'Line account cannot be the same as paying account'
       }
     })
@@ -190,6 +232,14 @@ export default function PayPage() {
 
     setPending(true)
     try {
+      if (editTxn) {
+        await api<TxnView>(`/transactions/${editTxn.id}`, {
+          method: 'PUT',
+          body: payload,
+        })
+        navigate(`/transactions/${editTxn.id}`, { state: { flash: 'Transaction updated' } })
+        return
+      }
       const created = await api<any>('/transactions', {
         method: 'POST',
         body: payload,
@@ -247,11 +297,13 @@ export default function PayPage() {
   return (
     <div className="container py-4" style={{ maxWidth: 800 }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Make a payment</h2>
-        <Link to="/accounts" className="btn btn-outline-secondary btn-sm">
-          Back to Accounts
+        <h2>{editTxn ? 'Edit payment' : 'Make a payment'}</h2>
+        <Link to={editTxn ? `/transactions/${editTxn.id}` : '/accounts'} className="btn btn-outline-secondary btn-sm">
+          {editTxn ? 'Back to detail' : 'Back to Accounts'}
         </Link>
       </div>
+
+      {!successTxn && <DuplicateBanner loaded={duplicate} error={duplicateError} />}
 
       {successTxn && (
         <div className="alert alert-success" role="alert">
@@ -299,9 +351,12 @@ export default function PayPage() {
                 value={primaryAccountId}
                 onChange={(e) => setPrimaryAccountId(Number(e.target.value))}
               >
+                {primaryAccountId === 0 && <option value={0}>Choose an account</option>}
                 {payingAccounts.map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.name} ({a.type === 'CASH' ? 'Cash/Bank' : 'Credit/Debt'}) — Balance: {formatTHB(a.balance)}
+                    {a.availableCredit != null
+                      ? `${a.name} (debt ${formatTHB(a.balance)} · available ${formatTHB(a.availableCredit)})` // CHG-01
+                      : <>{a.name} ({a.type === 'CASH' ? 'Cash/Bank' : 'Credit/Debt'}) — Balance: {formatTHB(a.balance)}</>}
                   </option>
                 ))}
               </select>
@@ -384,10 +439,12 @@ export default function PayPage() {
                   <div className="col-md-7">
                     <label className="form-label small text-muted">Category / Debt account</label>
                     <select
+                      aria-label="Category / Debt account"
                       className={`form-select ${lineError ? 'is-invalid' : ''}`}
                       value={line.accountId}
                       onChange={(e) => updateLine(line.id, { accountId: Number(e.target.value) })}
                     >
+                      {line.accountId === 0 && <option value={0}>Choose an account</option>}
                       <optgroup label="Spending">
                         {expenseAccounts.map((a) => (
                           <option key={a.id} value={a.id} disabled={a.id === primaryAccountId}>
@@ -399,6 +456,20 @@ export default function PayPage() {
                         {loanTakenAccounts.map((a) => (
                           <option key={a.id} value={a.id} disabled={a.id === primaryAccountId}>
                             {a.name} (Outstanding debt: {formatTHB(a.balance)})
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Lend money">
+                        {loanGivenAccounts.map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.name} (Owed to me: {formatTHB(a.balance)})
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Transfer to my cash account">
+                        {cashAccounts.map((a) => (
+                          <option key={a.id} value={a.id} disabled={a.id === primaryAccountId}>
+                            {a.name} (Cash: {formatTHB(a.balance)})
                           </option>
                         ))}
                       </optgroup>
@@ -471,6 +542,8 @@ export default function PayPage() {
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
                 Saving...
               </>
+            ) : editTxn ? (
+              'Save changes'
             ) : (
               'Save Payment'
             )}
