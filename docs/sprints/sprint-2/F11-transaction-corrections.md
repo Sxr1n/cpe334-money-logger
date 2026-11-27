@@ -1,5 +1,5 @@
 # F-11 Transaction corrections (edit and void) — Sprint 2
-Linked: FR-20, FR-21, BR-01–BR-09, BR-11, BR-12, BR-16, NFR-01, NFR-02, NFR-06, NFR-10   Status: SPECIFIED   Owner: Leviathan-c137
+Linked: FR-20, FR-21, BR-01–BR-09, BR-11, BR-12, BR-16, NFR-01, NFR-02, NFR-06, NFR-10   Status: TESTED   Owner: Leviathan-c137
 Depends on: F-04, F-05, F-06; uses the full allowed-lines table from F-09/F-10 when merged. Design references: `docs/system-sds.md` §2.4 ("Edit and void reverse the old deltas and apply the new ones"); decisions D-06, D-12
 
 ## 1 Behavior & workflow
@@ -114,9 +114,19 @@ No schema change (`transactions.status` POSTED/VOID and `updated_at` exist). Lin
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
 |---|---|---|---|
-| AC-F11-01 … AC-F11-10 | — | NOT RUN | — |
+| AC-F11-01 | `server/tests/f11-corrections.unit.test.ts::TEST-F11-01`, `server/tests/f11-corrections.api.test.ts::TEST-F11-01` | PASS | fb0336f |
+| AC-F11-02 | `server/tests/f11-corrections.api.test.ts::TEST-F11-02` | PASS | fb0336f |
+| AC-F11-03 | `server/tests/f11-corrections.api.test.ts::TEST-F11-03` | PASS | fb0336f |
+| AC-F11-04 | `server/tests/f11-corrections.api.test.ts::TEST-F11-04` | PASS | fb0336f |
+| AC-F11-05 | `server/tests/f11-corrections.api.test.ts::TEST-F11-05` | PASS | fb0336f |
+| AC-F11-06 | `server/tests/f11-corrections.api.test.ts::TEST-F11-06` | PASS | fb0336f |
+| AC-F11-07 | `server/tests/f11-corrections.api.test.ts::TEST-F11-07` | PASS | fb0336f |
+| AC-F11-08 | `server/tests/f11-corrections.api.test.ts::TEST-F11-08` | PASS | fb0336f |
+| AC-F11-09 | `server/tests/f11-corrections.api.test.ts::TEST-F11-09` | PASS | fb0336f |
+| AC-F11-10 | `e2e/f11-corrections.spec.ts::TEST-F11-10` | PASS | fb0336f |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
 |---|---|---|---|
 | 0.1 | 2026-11-22 | Initial contract. Edit keeps the form; edit/void rejected when a balance would go negative (D-12) or an affected stored-balance account is archived. | D2-S1 |
+| 0.2 | 2026-11-28 | Implemented; all AC PASS (red `7888ac1`, green `fb0336f`, `evidence/d2/F11-*.txt`). Status → TESTED. | D2-S11 |
