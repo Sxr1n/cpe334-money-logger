@@ -13,6 +13,9 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   reporter: 'list',
+  // The first spec of a run loads a cold Vite dev server (on-demand compile) and can need more than the 5 s default;
+  // this only lengthens how long an assertion may wait, never what it checks.
+  expect: { timeout: 15_000 },
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'retain-on-failure',

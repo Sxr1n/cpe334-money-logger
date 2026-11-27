@@ -1,0 +1,92 @@
+E2E cold-start check after expect timeout fix - 2026-11-28 03:12 local, on top of 3f8e176 (staging/sprint-2) + playwright.config.ts change; dev servers started fresh by Playwright for each run
+
+=== cold run 1 : npx playwright test (all E2E) ===
+node.exe : [WebServer] (node:32380) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:48460) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:49424) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:38564) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it (4.1s)
+  ok  2 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (1.7s)
+  ok  3 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (1.6s)
+  ok  4 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (2.3s)
+  ok  5 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (3.7s)
+  ok  6 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (11.1s)
+  ok  7 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (9.2s)
+  ok  8 [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves (5.2s)
+  ok  9 [desktop] › e2e\f09-transfers.spec.ts:9:1 › TEST-F09-07 record a cash transfer on /pay using Transfer to my cash account; Overview updates balances without changing expense (5.4s)
+  ok 10 [desktop] › e2e\f10-loans.spec.ts:9:1 › TEST-F10-08 mixed RECEIPT (Salary + Repayment to me) reduces Owed to me total on Overview (6.2s)
+  ok 11 [desktop] › e2e\f12-search.spec.ts:6:1 › TEST-F12-07 filter History by account and text; filters survive reload; Clear shows everything (6.5s)
+  ok 12 [desktop] › e2e\f13-favourites.spec.ts:6:1 › TEST-F13-05 add a favourite from the detail page, see it on Favourites, remove it (5.8s)
+  ok 13 [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged (5.3s)
+(node:45240) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16016) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44820) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 14 [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt (10.3s)
+  ok 15 [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found (8.0s)
+  ok 16 [desktop] › e2e\f15-reports.spec.ts:6:1 › TEST-F15-06 Reports shows category spending for the month and an empty range (4.9s)
+  ok 17 [desktop] › e2e\f16-monthly.spec.ts:6:1 › TEST-F16-06 monthly report: default 6 months, 13-month range rejected with inputs kept (4.5s)
+  ok 18 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (1.9s)
+
+  18 passed (1.8m)
+
+=== cold run 2 : npx playwright test (all E2E) ===
+node.exe : [WebServer] (node:7328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:38020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:31224) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it (13.6s)
+  ok  2 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (6.9s)
+  ok  3 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (3.3s)
+  ok  4 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (5.6s)
+  ok  5 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (5.7s)
+  ok  6 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (15.0s)
+  ok  7 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (9.6s)
+  ok  8 [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves (5.6s)
+  ok  9 [desktop] › e2e\f09-transfers.spec.ts:9:1 › TEST-F09-07 record a cash transfer on /pay using Transfer to my cash account; Overview updates balances without changing expense (5.2s)
+  ok 10 [desktop] › e2e\f10-loans.spec.ts:9:1 › TEST-F10-08 mixed RECEIPT (Salary + Repayment to me) reduces Owed to me total on Overview (4.8s)
+  ok 11 [desktop] › e2e\f12-search.spec.ts:6:1 › TEST-F12-07 filter History by account and text; filters survive reload; Clear shows everything (6.2s)
+  ok 12 [desktop] › e2e\f13-favourites.spec.ts:6:1 › TEST-F13-05 add a favourite from the detail page, see it on Favourites, remove it (6.2s)
+  ok 13 [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged (6.3s)
+(node:41992) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29660) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 14 [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt (8.8s)
+  ok 15 [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found (7.4s)
+  ok 16 [desktop] › e2e\f15-reports.spec.ts:6:1 › TEST-F15-06 Reports shows category spending for the month and an empty range (6.0s)
+  ok 17 [desktop] › e2e\f16-monthly.spec.ts:6:1 › TEST-F16-06 monthly report: default 6 months, 13-month range rejected with inputs kept (5.3s)
+  ok 18 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (1.8s)
+
+  18 passed (2.3m)
+

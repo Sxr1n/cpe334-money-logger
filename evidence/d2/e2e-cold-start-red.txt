@@ -1,0 +1,89 @@
+E2E cold-start failure as observed (before the fix) - excerpt of a full local run on PR #75 head ce2ae73 (2026-11-28, Sxr1n review), dev servers started fresh by Playwright.
+The same spec passed when rerun alone (warm servers) and in CI run 46057746805.
+
+PR #75 head check (Sxr1n review) - run 2026-11-28 02:57 local, on top of commit ce2ae73
+
+=== npx playwright test (all E2E) ===
+node.exe : [WebServer] (node:45672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] (no... env being set.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:39020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:18032) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 19 tests using 1 worker
+
+(node:48156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x   1 [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it (12.0s)
+(node:38028) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  2 [desktop] › e2e\f01-auth.spec.ts:6:1 › TEST-F01-08 user logs in, sees their name, logs out and protected pages redirect to Login (8.4s)
+  ok  3 [desktop] › e2e\f01-auth.spec.ts:23:1 › TEST-F01-08 (login error) wrong password shows the generic error and keeps the username (4.9s)
+  ok  4 [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully (11.2s)
+  ok  5 [desktop] › e2e\f05-pay.spec.ts:5:1 › TEST-F05-08 payment form enforces line sum, handles 422 keeping values, and saves successfully (2.0s)
+  ok  6 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (5.4s)
+  ok  7 [desktop] › e2e\f07-accounts.spec.ts:6:1 › TEST-F07-08 create, duplicate name, archive rules and hidden archived accounts (1.8s)
+  ok  8 [desktop] › e2e\f08-opening-balance.spec.ts:6:1 › TEST-F08-06 edit an opening balance: pre-filled form, server rejection keeps the value, valid edit saves (1.8s)
+  ok  9 [desktop] › e2e\f09-transfers.spec.ts:9:1 › TEST-F09-07 record a cash transfer on /pay using Transfer to my cash account; Overview updates balances without changing expense (2.3s)
+  ok 10 [desktop] › e2e\f10-loans.spec.ts:9:1 › TEST-F10-08 mixed RECEIPT (Salary + Repayment to me) reduces Owed to me total on Overview (3.2s)
+  ok 11 [desktop] › e2e\f11-corrections.spec.ts:9:1 › TEST-F11-10 edit a payment from detail, verify updated Overview balance, then void and see Void badge in detail and History (4.4s)
+  ok 12 [desktop] › e2e\f12-search.spec.ts:6:1 › TEST-F12-07 filter History by account and text; filters survive reload; Clear shows everything (4.3s)
+  ok 13 [desktop] › e2e\f13-favourites.spec.ts:6:1 › TEST-F13-05 add a favourite from the detail page, see it on Favourites, remove it (3.0s)
+  ok 14 [desktop] › e2e\f14-duplicate.spec.ts:28:1 › TEST-F14-02 duplicate a favourite payment: pre-filled, nothing saved until Save, original unchanged (2.3s)
+(node:44264) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:42620) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 15 [desktop] › e2e\f14-duplicate.spec.ts:63:1 › TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt (2.9s)
+  ok 16 [desktop] › e2e\f14-duplicate.spec.ts:81:1 › TEST-F14-04 archived account left empty and listed; foreign id shows not found (4.3s)
+  ok 17 [desktop] › e2e\f15-reports.spec.ts:6:1 › TEST-F15-06 Reports shows category spending for the month and an empty range (2.5s)
+  ok 18 [desktop] › e2e\f16-monthly.spec.ts:6:1 › TEST-F16-06 monthly report: default 6 months, 13-month range rejected with inputs kept (1.8s)
+  ok 19 [desktop] › e2e\smoke.spec.ts:3:1 › app loads and shows the API version from /api/health (824ms)
+
+
+  1) [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it 
+
+    Error: expect(page).toHaveURL(expected) failed
+
+    Expected pattern: /\/overview$/
+    Received string:  "http://localhost:5173/login"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toHaveURL" with timeout 5000ms
+        12 × locator resolved to <html lang="en">…</html>
+           - unexpected value "http://localhost:5173/login"
+
+
+       9 |   await page.getByLabel('Password').fill(password)
+      10 |   await page.getByRole('button', { name: 'Log in' }).click()
+    > 11 |   await expect(page).toHaveURL(/\/overview$/)
+         |                      ^
+      12 |
+      13 |   // A fresh card keeps this spec independent of other specs that use alice's Credit Card.
+      14 |   const card = (await (await page.request.post('/api/accounts', { data: { name: 'Card CHG01', type: 'LOAN_TAKEN' } })).json()).id as number
+        at C:\Users\akemi\OneDrive\Desktop\CPE334_Duo_pj\e2e\chg01-credit-limit.spec.ts:11:22
+
+    Error Context: test-results\chg01-credit-limit-TEST-F0-112b9-t-and-saves-one-equal-to-it-desktop\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\chg01-credit-limit-TEST-F0-112b9-t-and-saves-one-equal-to-it-desktop\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chg01-credit-limit-TEST-F0-112b9-t-and-saves-one-equal-to-it-desktop\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e\chg01-credit-limit.spec.ts:6:1 › TEST-F05-16 set a credit limit on Accounts; Pay rejects a charge over it and saves one equal to it 
+  18 passed (1.7m)
+
