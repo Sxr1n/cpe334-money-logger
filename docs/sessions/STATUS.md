@@ -17,7 +17,7 @@
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
 | F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR #56 | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
-| F-08 | Opening balance management | 2 | IN PROGRESS (01–06 PASS; 07 after F-09–F-11) | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR #57 | red `51eeffc`, green `c341d6d` (evidence/d2/F08-*.txt) |
+| F-08 | Opening balance management | 2 | TESTED | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR #57 | red `51eeffc`, green `c341d6d`, NFR-05 `ced1120` (evidence/d2/F08-*.txt, NFR05-*.txt) |
 | F-09 | Transfers | 2 | TESTED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | red `769742f`, green `c36a003` (evidence/d2/F09-*.txt) |
 | F-10 | Loans given and taken | 2 | TESTED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | red `cbf9735`, green `e98d37d` (evidence/d2/F10-*.txt) |
 | F-11 | Transaction corrections | 2 | TESTED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | red `7888ac1`, green `fb0336f` (evidence/d2/F11-*.txt) |
@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-RC TEST-NFR05-01 + TEST-F14-03 — Claude + Sxr1n
+- Done: TEST-NFR05-01 (AC-F08-07): 1,000 seeded HTTP operations, then stored balances compared with an SQL recomputation → F-08 TESTED. TEST-F14-03 now voids through the F-11 API; `server/prisma/e2e-void.ts` removed. #76 (E2E cold start) merged
+- Evidence: `ced1120`. `evidence/d2/NFR05-green.txt`: server 34 files / 140 passed; client 1 passed + build OK; E2E 19 passed; 0 failed, 0 skipped. Counts: seed 3342026 → 464 posted, 121 edited, 73 voided, 126 opening edits, 216 rejections. `evidence/d2/NFR05-mutation-check.txt`: the test fails when a delta is dropped
+- Decisions: none new. The first run of the test failed on a test-side type error (SQL SUM returns numeric), fixed with a `::bigint` cast before committing
+- Open issues: #78 adds traceability row 0.20 after Leviathan-c137's 0.20/0.21, so it must be renumbered to 0.22. DEF-01 not registered. Lab 6 UAT not run
+- Next session: RC `v0.3.0-rc1` release PR → tag → deploy → post-deploy checks
 ### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
 - Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
   - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;

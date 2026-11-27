@@ -155,7 +155,7 @@ Short descriptions; full wording in `docs/sprints/sprint-2/` (v0.1, D2-S1). Evid
 | AC-F08-04 | Amount −1, 1.5 or 100000000000, or date "2026-02-30" → 422 VALIDATION_FAILED; Salary (INCOME) → 422 … | TEST-F08-04 | API-DB |  | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-04` | PASS | c341d6d |
 | AC-F08-05 | Without a session → 401; as admin → 403; alice patching bob's Bank → 404 and bob's Bank is unchanged. | TEST-F08-05 | API-DB |  | `server/tests/f08-opening-balance.api.test.ts::TEST-F08-05` | PASS | c341d6d |
 | AC-F08-06 | In the browser on /accounts, "Edit opening balance" on Bank opens the form with the current amount and date; … | TEST-F08-06 | E2E |  | `e2e/f08-opening-balance.spec.ts::TEST-F08-06` | PASS | c341d6d |
-| AC-F08-07 | (NFR-05) After a seeded run of 1,000 random valid operations covering every form, every allowed line type, … | TEST-NFR05-01 | API-DB |  | — | NOT RUN | — |
+| AC-F08-07 | (NFR-05) After a seeded run of 1,000 random valid operations covering every form, every allowed line type, … | TEST-NFR05-01 | API-DB |  | `server/tests/nfr05-recompute.api.test.ts::TEST-NFR05-01` | PASS | ced1120 |
 | AC-F09-01 | Given Bank 1000000 and Wallet 0, a PAYMENT from Bank with one Wallet line 300000 → 201, Bank 700000, Wallet … | TEST-F09-01 | unit + API-DB | yes | `server/tests/f09-transfers.unit.test.ts::TEST-F09-01`, `server/tests/f09-transfers.api.test.ts::TEST-F09-01` | PASS | c36a003 |
 | AC-F09-02 | Given Bank 700000 and Wallet 300000, a RECEIPT into Wallet with one Bank line 200000 → 201, Bank 500000, Wallet … | TEST-F09-02 | unit + API-DB |  | `server/tests/f09-transfers.unit.test.ts::TEST-F09-02`, `server/tests/f09-transfers.api.test.ts::TEST-F09-02` | PASS | c36a003 |
 | AC-F09-03 | Given Bank 500000, a RECEIPT into Wallet with a Bank line 500001 → 422 RULE_VIOLATION … | TEST-F09-03 | unit + API-DB | yes | `server/tests/f09-transfers.unit.test.ts::TEST-F09-03`, `server/tests/f09-transfers.api.test.ts::TEST-F09-03` | PASS | c36a003 |
@@ -203,7 +203,7 @@ Short descriptions; full wording in `docs/sprints/sprint-3/` (v0.1, D2-S5). F-15
 | AC-F13-05 | In the browser, alice adds a transaction to favourites from its detail page, sees it on Favourites, removes it, … | TEST-F13-05 | E2E |  | `e2e/f13-favourites.spec.ts::TEST-F13-05` | PASS | 748556f |
 | AC-F14-01 | toDuplicateDraft of a PAYMENT dated 2026-11-01 with lines Dining 70000 + Groceries 50000, note "Weekend" and … | TEST-F14-01 | unit | yes | `client/src/duplicate.test.ts::TEST-F14-01` | PASS | b5cc4a3 |
 | AC-F14-02 | In the browser, Duplicate on a payment opens /pay?duplicate=:id with the values pre-filled and today's date; … | TEST-F14-02 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-02` | PASS | b5cc4a3 |
-| AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-03` (VOID set by `server/prisma/e2e-void.ts` until F-11) | PASS | b5cc4a3 |
+| AC-F14-03 | Duplicate of a VOID receipt opens /receive pre-filled and saves as a new POSTED transaction. | TEST-F14-03 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-03` (VOID through the F-11 void API since `ced1120`) | PASS | b5cc4a3 |
 | AC-F14-04 | When the source uses an archived account, the form leaves that field empty and lists the archived name in the … | TEST-F14-04 | E2E |  | `e2e/f14-duplicate.spec.ts::TEST-F14-04` | PASS | b5cc4a3 |
 | AC-F15-01 | Given alice's card purchase in November with Dining 70000 + Groceries 50000, GET … | TEST-F15-01 | unit + API-DB | yes | `server/tests/f15-categories.api.test.ts::TEST-F15-01`, `server/tests/f15-categories.unit.test.ts::TEST-F15-01` | PASS | 0e291ae |
 | AC-F15-02 | In the same period alice also records a card repayment from Bank, a Salary receipt and a VOID payment with a … | TEST-F15-02 | API-DB | yes | `server/tests/f15-categories.api.test.ts::TEST-F15-02` | PASS | 0e291ae |
@@ -260,3 +260,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.19 | 2026-11-28 | CHG-01 results: AC-F05-09..16 PASS on `1660d08` | CHG-01 (Lab 7) |
 | 0.20 | 2026-11-28 | F-11 results: AC-F11-01..10 PASS on `fb0336f` | D2-S11 |
 | 0.21 | 2026-11-28 | F-11 concurrency (AC-F11-11) and CHG-01 BR-18 on edit (AC-F11-12) PASS on `ce2ae73` | CHG-01 / PR #75 |
+| 0.23 | 2026-11-28 | AC-F08-07 (NFR-05) PASS on `ced1120`; AC-F14-03 re-run on the F-11 void API | D2-RC |
