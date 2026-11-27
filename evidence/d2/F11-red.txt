@@ -1,0 +1,21 @@
+# F-11 RED — tests written before implementation (branch feature/F11-transaction-corrections, base staging/sprint-2)
+# Command: cd server && npx vitest run tests/f11-corrections.unit.test.ts tests/f11-corrections.api.test.ts
+
+ RUN  v4.1.12 C:/Users/admin/Desktop/Deliverable/server
+
+ ❯ tests/f11-corrections.api.test.ts (9 tests | 8 failed) 4134ms
+     × TEST-F11-01 editing card payment replaces lines, adjusts debt by net delta, and updates category totals 680ms
+     × TEST-F11-02 editing receipt primary from Bank to Wallet moves balances and updates date/note 421ms
+     × TEST-F11-03 invalid edits (lines mismatch, future date, changed form, same primary/line) return 422 leaving DB unchanged 431ms
+     × TEST-F11-04 D-12 rejects edit that leaves Bank negative (399999 -> 422), accepts exact 400000 (Bank = 0) 412ms
+     × TEST-F11-05 voiding a PAYMENT restores Bank balance, removes expense, and keeps transaction in history/detail as VOID 414ms
+     × TEST-F11-06 voiding receipt whose cash was spent returns 422 naming Bank; voiding or editing VOID returns 422 430ms
+     × TEST-F11-07 voiding a payment on an archived Wallet returns 422 Unarchive Wallet first 427ms
+     ✓ TEST-F11-08 401 / 403 / cross-user 404 on PUT and void 510ms
+     × TEST-F11-09 (NFR-06) failure on 2nd balance update rolls back edit atomically 406ms
+ ❯ tests/f11-corrections.unit.test.ts (1 test | 1 failed) 4ms
+     × TEST-F11-01 computeNetDeltas returns net balance changes between old and new transaction effects 3ms
+
+ Test Files  2 failed (2)
+      Tests  9 failed | 1 passed (10)
+   Duration  15.45s
