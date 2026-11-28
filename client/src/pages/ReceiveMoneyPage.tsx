@@ -239,6 +239,10 @@ export default function ReceiveMoneyPage({ editTxn }: { editTxn?: TxnView } = {}
       })
 
       setSuccessTxn(res)
+      // DEF-01: show the balances after the save without resetting the form; a failed refresh only leaves the old figures
+      api<{ items: AccountItem[] }>('/accounts')
+        .then((r) => setAccounts(r.items.filter((a) => !a.archived)))
+        .catch(() => {})
     } catch (err) {
       if (err instanceof ApiError) {
         setFormError(err.message)
