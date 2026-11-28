@@ -2,10 +2,10 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 code PR, then deploy it · both students confirm the Lab 7 retrospective draft · release + deploy by 29 Nov 12:00 (Lab 7 action) · Lab 7 PDF · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
-- Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
+- Next session: TEST-NFR05-01 (AC-F08-07) + TEST-F14-03 → F-11 void API + #76 → RC `v0.3.0-rc1` · Lab 7 PDF · D2 PDF parts · Lab 6 partner UAT (give cloud test accounts through the private handoff) · due 29 Nov 23:59
+- Latest release on main: `v0.2.0-sprint2` (commit `76aaabc`, tagged on `main`, 2026-11-27); previous `v0.1.0-sprint1` (`e1747cb`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
-- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
+- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `76aaabc` = `v0.2.0-sprint2` (revision `s87ce2df5-00006-bbr`, Deploy demo run 46064946596)
 
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
@@ -46,6 +46,29 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-R1 release v0.2.0-sprint2 + deploy — Claude + Sxr1n
+- Done:
+  - PR #77 approved by Leviathan-c137 and merged to `main` (`76aaabc`); tag `v0.2.0-sprint2` pushed.
+  - Deploy demo run 46064946596: migration `add_credit_limit` applied, revision `s87ce2df5-00006-bbr`, smoke 4/4.
+  - Post-deploy checks 11/11 PASS (`deploy/post_deploy_checks.py`, run by Sxr1n with the cloud passwords from Secret Manager via Cloud Shell).
+  - Lab 7 change request §4, readiness D.4 (READY for the maintained Sprint 1 scope), CHG register and traceability updated.
+  - `main` merged back into `staging/sprint-2`.
+- Evidence: `evidence/lab7/post-deploy-v0.2.0-sprint2.txt` (converted from UTF-16; 3 mis-decoded `฿` restored, noted in its header); `/api/health` = `76aaabc…`.
+- Decisions: the cloud passwords stay out of the repo and the chat; the script prompts for them.
+- Open issues:
+  - F-08 AC-F08-07 (TEST-NFR05-01);
+  - TEST-F14-03 still uses `e2e-void.ts`;
+  - #76 is open;
+  - DEF-01 (Receive-page stale balance) is not registered;
+  - Lab 6 UAT has not run;
+  - the retrospective draft needs confirmation from both students.
+- Next session: RC `v0.3.0-rc1` work, then the Lab 7 and D2 PDFs
+### 2026-11-28 — D2-R1 release v0.2.0-sprint2 (prep) — Claude + Sxr1n
+- Done: #74 (CHG-01) and #75 (F-11, after the race/BR-18 fixes and verbatim evidence) merged into `staging/sprint-2` (`22acd51`); E2E cold-start flake fixed in PR #76 (open); release branch `release/v0.2.0-sprint2` from `22acd51` with release evidence
+- Evidence: `evidence/d2/release-v0.2.0-sprint2.txt` on `22acd51`: server tsc OK, 33 files / 139 tests passed; client 1 test + build OK; E2E 19 passed; Docker image build OK; 0 failed, 0 skipped
+- Decisions: release now (Lab 7 needs the CHG-01 deploy) with F-08 still IN PROGRESS — AC-F08-07 (TEST-NFR05-01) is not written yet and is disclosed in the release PR; #76 joins the RC
+- Open issues: TEST-NFR05-01; TEST-F14-03 still uses `e2e-void.ts`; Issues #50–#55, #60–#63, #72 close with the release PR; Lab 6 UAT not run
+- Next session: tag + deploy + post-deploy checks after the release PR is approved
 ### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
 - Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
   - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;
