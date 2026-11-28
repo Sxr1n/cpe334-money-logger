@@ -46,6 +46,12 @@
 |---|---|---|---|
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-P D2 PDF parts (before RC) — Claude + Sxr1n
+- Done: #78, #79, #80 merged (approved by Leviathan-c137, CI 6/6) → staging `0ce1c5f`; D2 Part A.3 (baseline revisions), B.1/B.3/B.4/B.5, C.1/C.3 filled; directives (include/code/gitdiff) moved to `submission/directives.py`, shared by the D2 and Lab 7 builders
+- Evidence: `evidence/d2/B3-excerpts-run.txt` (TEST-F11-04 and TEST-F11-08, 2 passed, 9 filtered by `-t`); test builds: D2 77 pages, Lab 7 39 pages (unchanged)
+- Decisions: C.3 owners and dates are a proposal — both students confirm
+- Open issues: TO FILL (D2-RC): A.1, A.2, B.2, C.2, Part E; PR #82 (DEF-01) awaits approval
+- Next session: #82 merge → RC `v0.3.0-rc1` → fill the D2-RC items
 ### 2026-11-28 — D2-RC TEST-NFR05-01 + TEST-F14-03 — Claude + Sxr1n
 - Done: TEST-NFR05-01 (AC-F08-07): 1,000 seeded HTTP operations, then stored balances compared with an SQL recomputation → F-08 TESTED. TEST-F14-03 now voids through the F-11 API; `server/prisma/e2e-void.ts` removed. #76 (E2E cold start) merged
 - Evidence: `ced1120`. `evidence/d2/NFR05-green.txt`: server 34 files / 140 passed; client 1 passed + build OK; E2E 19 passed; 0 failed, 0 skipped. Counts: seed 3342026 → 464 posted, 121 edited, 73 voided, 126 opening edits, 216 rejections. `evidence/d2/NFR05-mutation-check.txt`: the test fails when a delta is dropped

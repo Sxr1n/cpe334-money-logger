@@ -86,11 +86,11 @@ def pages(pdf):
     return len(re.findall(rb'/Type\s*/Page(?![a-zA-Z])', pdf.read_bytes()))
 
 
-def part_body(letter, title, files):
+def part_body(letter, title, files, transform=lambda text: text):
     body = [f'<h1 class="part">Part {letter} — {html.escape(title)}</h1>']
     for f in files:
         path = ROOT / f
-        text = path.read_text(encoding='utf-8') if path.exists() else f'*Missing: `{f}` — not yet written.*'
+        text = transform(path.read_text(encoding='utf-8')) if path.exists() else f'*Missing: `{f}` — not yet written.*'
         body.append(f'<p class="src">Source: <code>{html.escape(f)}</code></p>')
         # part-f.md links submission/d1/img/; the HTML is printed from submission/d1/build/.
         text = text.replace('](img/', '](../img/')
