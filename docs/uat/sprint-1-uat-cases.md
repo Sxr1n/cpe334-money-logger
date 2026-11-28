@@ -6,9 +6,9 @@
 | UAT Team | `<partner team name, students>` |
 | Product | Personal Money and Expense Logging System (Theme 7) |
 | Sprint 1 baseline | tag `v0.1.0-sprint1`, commit `e1747cb` (application code) |
-| Deployed release under test | `<main commit SHA>` = tag `<release tag>`. It contains the Sprint 1 features unchanged in behaviour except the approved changes listed below, plus Sprint 2–3 features that are not part of this UAT |
+| Deployed release under test | `a56ebe5` (`a56ebe5112242ab3217f02b6ecea2c27defdccdd`) = tag `v0.3.0-rc1`, deployed 2026-11-28. It contains the Sprint 1 features unchanged in behaviour except the approved changes listed below, plus Sprint 2–3 features that are not part of this UAT |
 | Approved changes since `v0.1.0-sprint1` that touch Sprint 1 screens | D-10 (F-08): after an opening balance is set, Accounts shows **Edit opening balance** instead of no button. CHG-01: a Credit Card can have an optional credit limit (none is set on the test accounts). DEF-01: after Save, Receive money shows the new balance in the account list without a reload |
-| URL | `<Cloud Run URL>` · running version: open `<URL>/api/health` → `version` must equal the SHA above |
+| URL | https://s87ce2df5-4d7hbszvwq-as.a.run.app · running version: open https://s87ce2df5-4d7hbszvwq-as.a.run.app/api/health → `version` must equal the SHA above |
 | Accepted-for-test scope | F-01 Authentication and session, F-02 Administrator user access, F-03 Opening balance, F-04 Receive money, F-05 Make a payment or record a charge, F-06 Overview, summary and history (contracts in `docs/sprints/sprint-1/`) |
 | Not in scope | Sprint 2–3 features that are visible on the release: Favourites and Reports menus; New account / Rename / Archive / Credit limit and Edit opening balance on Accounts; transfer and loan options in the line lists; Edit / Void / Duplicate / Add to favourites on a transaction page; History filters. **Do not use them during this UAT** (they would change the expected values). Findings about them are welcome but are recorded as outside Sprint 1 scope |
 
@@ -119,3 +119,4 @@ Report every finding as a GitHub Issue in this repository (https://github.com/Sx
 | 0.2 | 2026-11-20 | Exact screen texts (payment success, rejection messages, history rows, detail page) after a Product Team rehearsal of all five cases on a local build of the same code (all steps gave the expected results). The rehearsal is not UAT evidence | Make the cases executable without explanations |
 | 0.3 | 2026-11-21 | bob's expected values made relative (bob was used for the Lab 5 live demo); alice stays untouched | Deployed data is shared with the Lab 5 evidence |
 | 0.4 | 2026-11-28 | Release under test is now a later main release (Sprint 1 + approved changes + Sprint 2–3). Listed the approved changes that touch Sprint 1 screens (D-10, CHG-01, DEF-01) and the visible out-of-scope functions; UAT-01 step 2 button text, step 3 updated account list, exact option names in the line lists; Issue title prefix instead of a label. Product Team rehearsal of all five cases on a local build of the candidate code (`6a46b12`): every expected result matched the screen. The rehearsal is not UAT evidence | Deployed release changed after v0.3 |
+| 0.5 | 2026-11-28 | Filled the release under test (`v0.3.0-rc1`, `a56ebe5`) and the URL after the deploy | D2-RC |
