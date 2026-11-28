@@ -5,7 +5,7 @@ We are the **UAT Team** here. Fill this file while testing; never copy the partn
 ## 1 Partner and release under test
 | Item | Value |
 |---|---|
-| Product Team | ⟨team name⟩ — ⟨student 1 (GitHub)⟩, ⟨student 2 (GitHub)⟩ |
+| Product Team | วอดส์ (TH-018_P9) — {{PARTNER_A}}, {{PARTNER_B}} (names and IDs filled at PDF build time, not committed) · GitHub ⟨TODO⟩ |
 | Their repository | ⟨URL⟩ |
 | Sprint 1 release tag / commit | ⟨tag⟩ / ⟨full SHA⟩ |
 | Deployed URL and revision | ⟨URL⟩ · ⟨how the running version was read, e.g. /api/health or footer⟩ |
