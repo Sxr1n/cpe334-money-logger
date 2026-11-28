@@ -2,10 +2,10 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: F-11 (Leviathan-c137; F-09 #67, F-10 #69 and F-14 #68 merged) · Leviathan-c137 reviews the CHG-01 code PR, then deploy it · both students confirm the Lab 7 retrospective draft · release + deploy by 29 Nov 12:00 (Lab 7 action) · Lab 7 PDF · fill the D2 PDF parts · TEST-NFR05-01 after F-11 · Lab 6 partner UAT · release `v0.2.0-sprint2` / RC · D2 + Lab 6 + Lab 7 due 29 Nov
-- Latest release on main: `v0.1.0-sprint1` (commit `e1747cb`, tagged on `main`)
+- Next session: RC `v0.3.0-rc1` (release PR → tag → deploy → post-deploy checks) · Lab 7 PDF · D2 PDF parts · Lab 6 partner UAT (cloud test accounts through the private handoff) · due 29 Nov 23:59
+- Latest release on main: `v0.2.0-sprint2` (commit `76aaabc`, tagged on `main`, 2026-11-27); previous `v0.1.0-sprint1` (`e1747cb`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
-- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `0831d0b` (app code = `v0.1.0-sprint1`)
+- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `76aaabc` = `v0.2.0-sprint2` (revision `s87ce2df5-00006-bbr`, Deploy demo run 46064946596)
 
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
@@ -17,7 +17,7 @@
 | F-05 | Make a payment or record a charge | 1 | TESTED | Leviathan-c137 | sprint-1/F05-payment-charge.md | #5 / PR #18 | red `f615c47`, green `6f52657` (evidence/d1/F05-*.txt) |
 | F-06 | Overview, summary and history | 1 | TESTED | Sxr1n | sprint-1/F06-overview-history.md | #6 | red `c5848da`, green `7850d4e` (evidence/d1/F06-*.txt) |
 | F-07 | Account management | 2 | TESTED | Sxr1n | sprint-2/F07-account-management.md | #50 / PR #56 | red `e25946a`, green `3a75c2f` (evidence/d2/F07-*.txt) |
-| F-08 | Opening balance management | 2 | IN PROGRESS (01–06 PASS; 07 after F-09–F-11) | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR #57 | red `51eeffc`, green `c341d6d` (evidence/d2/F08-*.txt) |
+| F-08 | Opening balance management | 2 | TESTED | Sxr1n | sprint-2/F08-opening-balance-management.md | #51 / PR #57 | red `51eeffc`, green `c341d6d`, NFR-05 `ced1120` (evidence/d2/F08-*.txt, NFR05-*.txt) |
 | F-09 | Transfers | 2 | TESTED | Leviathan-c137 | sprint-2/F09-transfers.md | #52 | red `769742f`, green `c36a003` (evidence/d2/F09-*.txt) |
 | F-10 | Loans given and taken | 2 | TESTED | Leviathan-c137 | sprint-2/F10-loans.md | #53 | red `cbf9735`, green `e98d37d` (evidence/d2/F10-*.txt) |
 | F-11 | Transaction corrections | 2 | TESTED | Leviathan-c137 | sprint-2/F11-transaction-corrections.md | #54 | red `7888ac1`, green `fb0336f` (evidence/d2/F11-*.txt) |
@@ -53,6 +53,35 @@
 - Decisions: none new. The first two test versions (bob's Bank; an account named "Wallet DEF01") broke TEST-F06-07 (exact bob totals) and TEST-F07-08 (`/Wallet/`); the test now uses alice's new "DEF01 Purse" account. Each red was re-run and is in git history
 - Open issues: traceability row for AC-F04-08 waits for the RC (avoid a version clash with #78/#79); DEF-01 re-test by the Lab 6 partner after deploy
 - Next session: merge #78 → #79 → #80 → DEF-01 PR → RC `v0.3.0-rc1`
+### 2026-11-28 — D2-RC TEST-NFR05-01 + TEST-F14-03 — Claude + Sxr1n
+- Done: TEST-NFR05-01 (AC-F08-07): 1,000 seeded HTTP operations, then stored balances compared with an SQL recomputation → F-08 TESTED. TEST-F14-03 now voids through the F-11 API; `server/prisma/e2e-void.ts` removed. #76 (E2E cold start) merged
+- Evidence: `ced1120`. `evidence/d2/NFR05-green.txt`: server 34 files / 140 passed; client 1 passed + build OK; E2E 19 passed; 0 failed, 0 skipped. Counts: seed 3342026 → 464 posted, 121 edited, 73 voided, 126 opening edits, 216 rejections. `evidence/d2/NFR05-mutation-check.txt`: the test fails when a delta is dropped
+- Decisions: none new. The first run of the test failed on a test-side type error (SQL SUM returns numeric), fixed with a `::bigint` cast before committing
+- Open issues: #78's traceability row renumbered to 0.22 (`d34780d`) and #78 merged into this branch. DEF-01 not registered. Lab 6 UAT not run
+- Next session: RC `v0.3.0-rc1` release PR → tag → deploy → post-deploy checks
+### 2026-11-28 — D2-R1 release v0.2.0-sprint2 + deploy — Claude + Sxr1n
+- Done:
+  - PR #77 approved by Leviathan-c137 and merged to `main` (`76aaabc`); tag `v0.2.0-sprint2` pushed.
+  - Deploy demo run 46064946596: migration `add_credit_limit` applied, revision `s87ce2df5-00006-bbr`, smoke 4/4.
+  - Post-deploy checks 11/11 PASS (`deploy/post_deploy_checks.py`, run by Sxr1n with the cloud passwords from Secret Manager via Cloud Shell).
+  - Lab 7 change request §4, readiness D.4 (READY for the maintained Sprint 1 scope), CHG register and traceability updated.
+  - `main` merged back into `staging/sprint-2`.
+- Evidence: `evidence/lab7/post-deploy-v0.2.0-sprint2.txt` (converted from UTF-16; 3 mis-decoded `฿` restored, noted in its header); `/api/health` = `76aaabc…`.
+- Decisions: the cloud passwords stay out of the repo and the chat; the script prompts for them.
+- Open issues:
+  - F-08 AC-F08-07 (TEST-NFR05-01);
+  - TEST-F14-03 still uses `e2e-void.ts`;
+  - #76 is open;
+  - DEF-01 (Receive-page stale balance) is not registered;
+  - Lab 6 UAT has not run;
+  - the retrospective draft needs confirmation from both students.
+- Next session: RC `v0.3.0-rc1` work, then the Lab 7 and D2 PDFs
+### 2026-11-28 — D2-R1 release v0.2.0-sprint2 (prep) — Claude + Sxr1n
+- Done: #74 (CHG-01) and #75 (F-11, after the race/BR-18 fixes and verbatim evidence) merged into `staging/sprint-2` (`22acd51`); E2E cold-start flake fixed in PR #76 (open); release branch `release/v0.2.0-sprint2` from `22acd51` with release evidence
+- Evidence: `evidence/d2/release-v0.2.0-sprint2.txt` on `22acd51`: server tsc OK, 33 files / 139 tests passed; client 1 test + build OK; E2E 19 passed; Docker image build OK; 0 failed, 0 skipped
+- Decisions: release now (Lab 7 needs the CHG-01 deploy) with F-08 still IN PROGRESS — AC-F08-07 (TEST-NFR05-01) is not written yet and is disclosed in the release PR; #76 joins the RC
+- Open issues: TEST-NFR05-01; TEST-F14-03 still uses `e2e-void.ts`; Issues #50–#55, #60–#63, #72 close with the release PR; Lab 6 UAT not run
+- Next session: tag + deploy + post-deploy checks after the release PR is approved
 ### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
 - Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
   - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;

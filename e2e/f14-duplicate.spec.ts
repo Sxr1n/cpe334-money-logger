@@ -1,4 +1,3 @@
-import { execSync } from 'node:child_process'
 import { expect, test, type Page } from '@playwright/test'
 
 const password = process.env.SEED_USER_PASSWORD ?? ''
@@ -64,7 +63,9 @@ test('TEST-F14-03 duplicate a VOID receipt saves a new POSTED receipt', async ({
   await login(page, 'alice')
   const id = await accountIds(page)
   const source = await post(page, { form: 'RECEIPT', primaryAccountId: id('Bank'), date: '2026-11-02', total: 4500, lines: [{ accountId: id('Salary'), amount: 4500 }], note: 'void F14' })
-  execSync(`npx tsx prisma/e2e-void.ts ${source.id}`, { cwd: 'server', stdio: 'inherit' })
+  const voided = await page.request.post(`/api/transactions/${source.id}/void`) // F-11 void API (replaces prisma/e2e-void.ts)
+  expect(voided.status()).toBe(200)
+  expect((await voided.json()).status).toBe('VOID')
 
   await page.goto(`/transactions/${source.id}`)
   await page.getByRole('link', { name: 'Duplicate' }).click()

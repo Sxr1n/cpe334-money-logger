@@ -1,0 +1,18 @@
+# Run by Sxr1n on 2026-11-27 21:19 UTC (PowerShell, passwords typed at the prompt, not stored):
+# python deploy/post_deploy_checks.py https://s87ce2df5-4d7hbszvwq-as.a.run.app 76aaabc795bfc7dd8c72970484390760b4e7fc53 | Tee-Object ...
+# Encoding repair only: Tee-Object saved UTF-16 and decoded '฿' as 'α╕┐' (3 places); converted to UTF-8 and restored '฿'. No result text changed.
+# Deployed revision s87ce2df5-00006-bbr (Deploy demo run 46064946596), tag v0.2.0-sprint2.
+
+Post-deploy checks 2026-11-27 21:19:48 UTC against https://s87ce2df5-4d7hbszvwq-as.a.run.app
+PASS PD-01 | GET /api/health | expected: version 76aaabc795bfc7dd8c72970484390760b4e7fc53 | actual: 200 76aaabc795bfc7dd8c72970484390760b4e7fc53
+PASS PD-02 | bob creates LOAN_TAKEN "Card CHG01 212018" | expected: 201, no limit | actual: 201 creditLimit=None
+PASS PD-03 | bob sets creditLimit 500000 (฿5,000.00) | expected: 200, availableCredit 500000 | actual: 200 availableCredit=500000
+PASS PD-04 | bob charges 500001 (1 satang over the limit) | expected: 422 "Over the credit limit ... (available ฿5,000.00)" | actual: 422 Over the credit limit of Card CHG01 212018 (available ฿5,000.00)
+PASS PD-05 | bob charges 500000 (exactly the limit) | expected: 201 | actual: 201 txn id=2
+PASS PD-06 | bob re-reads accounts (persistence) | expected: balance 500000, availableCredit 0 | actual: balance=500000 availableCredit=0
+PASS PD-07 | bob pays Bank balance + 1 (150001) | expected: 422, Bank unchanged | actual: 422 Bank=150000
+PASS PD-08 | GET /api/accounts without a session | expected: 401 | actual: 401
+PASS PD-09 | admin GET /api/accounts (financial data) | expected: 403 | actual: 403
+PASS PD-10 | admin PATCH bob's card creditLimit | expected: 403 | actual: 403
+PASS PD-11 | bob PATCH alice's Credit Card creditLimit | expected: 404, alice's limit unchanged | actual: 404 alice creditLimit=None
+11/11 passed, 0 failed
