@@ -8,5 +8,6 @@
 ## Defects (DEF) — includes every finding received from Lab 6 UAT
 | ID | Date | Source (reporter, case, version) | Finding | Classification | Reason (Sprint 1 contract / evidence) | Severity (user impact) | Owner | Fix (Issue → PR → release) | Re-test (tester, version, result) | Status |
 |---|---|---|---|---|---|---|---|---|---|---|
+| DEF-01 | 2026-11-28 | Sxr1n, exploratory check on the live URL 2026-11-21, `0831d0b` | Receive money: after Save, the Receiving account select still shows the old balance (e.g. `Bank (฿0.00)`) until reload; stored balance is correct | accepted defect | F-04 §4 success state shows the stored result; `PayPage` reloads accounts after a save, `ReceiveMoneyPage` does not | minor (display only) | Sxr1n | Issue #81 → AC-F04-08 / TEST-F04-08 | — | OPEN |
 
 Classification: accepted defect · duplicate (link the original) · not-defect · enhancement (outside Sprint 1 scope). Critical and major accepted defects block Sprint 1 acceptance; minor ones are fixed or accepted by the UAT Team as known limitations. A failing requirement is never relabelled as an enhancement.
