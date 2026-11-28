@@ -6,10 +6,11 @@
 | UAT Team | `<partner team name, students>` |
 | Product | Personal Money and Expense Logging System (Theme 7) |
 | Sprint 1 baseline | tag `v0.1.0-sprint1`, commit `e1747cb` (application code) |
-| Deployed release under test | `<main commit SHA>` — application code identical to `v0.1.0-sprint1` (`git diff v0.1.0-sprint1 <SHA> -- server client Dockerfile` is empty; the release only adds Lab 5 deployment files) |
+| Deployed release under test | `<main commit SHA>` = tag `<release tag>`. It contains the Sprint 1 features unchanged in behaviour except the approved changes listed below, plus Sprint 2–3 features that are not part of this UAT |
+| Approved changes since `v0.1.0-sprint1` that touch Sprint 1 screens | D-10 (F-08): after an opening balance is set, Accounts shows **Edit opening balance** instead of no button. CHG-01: a Credit Card can have an optional credit limit (none is set on the test accounts). DEF-01: after Save, Receive money shows the new balance in the account list without a reload |
 | URL | `<Cloud Run URL>` · running version: open `<URL>/api/health` → `version` must equal the SHA above |
 | Accepted-for-test scope | F-01 Authentication and session, F-02 Administrator user access, F-03 Opening balance, F-04 Receive money, F-05 Make a payment or record a charge, F-06 Overview, summary and history (contracts in `docs/sprints/sprint-1/`) |
-| Not in scope | Sprint 2–3 features (account management, transfers, loans given, corrections, search, favourites, reports). Their absence is not a defect |
+| Not in scope | Sprint 2–3 features that are visible on the release: Favourites and Reports menus; New account / Rename / Archive / Credit limit and Edit opening balance on Accounts; transfer and loan options in the line lists; Edit / Void / Duplicate / Add to favourites on a transaction page; History filters. **Do not use them during this UAT** (they would change the expected values). Findings about them are welcome but are recorded as outside Sprint 1 scope |
 
 ## 1 Accounts (credentials are sent privately, never in this document)
 | Label | Role | Used in |
@@ -18,12 +19,12 @@
 | `bob` | USER | UAT-03, UAT-05 |
 | `admin` | ADMIN | UAT-03, UAT-05 |
 
-Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit Card (Loan taken), Salary (Income), Dining, Groceries, Electricity, Telecom (Expense).
+Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit Card (Loan taken), Salary (Income), Dining, Groceries, Electricity, Telecom (Expense). `bob` may have extra accounts and transactions from the Product Team's deployment checks (Lab 5 and Lab 7); his cases use relative values.
 
 ## 2 Data setup, sequence and cleanup
 - The Product Team does not use `alice` on the deployed release before the UAT session, so alice starts with ฿0.00 everywhere. `bob` was used for the Product Team's Lab 5 deployment demo, so bob's cases use values relative to what you see at the start. Before starting, check on Overview that `alice` shows Cash ฿0.00. If not, stop and tell the Product Team (do not continue with other values).
 - **Run the cases in order UAT-01 → UAT-05.** UAT-02 and UAT-04 use the balances left by UAT-01. UAT-03 and UAT-05 do not depend on alice's balances.
-- An opening balance can be set only once per account (BR-11), and Sprint 1 has no edit or delete, so the data cannot be reset from the UI. For a re-test the Product Team tells you the expected starting values, or asks the TA to reset the database. Data is synthetic; nothing needs to be cleaned up.
+- Sprint 1 sets an opening balance once per account and has no edit or delete. The release also has the Sprint 2 edit/void functions, but do not use them to undo your steps: for a re-test the Product Team tells you the expected starting values. Data is synthetic; nothing needs to be cleaned up.
 - Dates: "today" means today's date in Thailand (Asia/Bangkok). Amounts are typed in baht with two decimals.
 - After a failure, write down the URL, what you typed, what the screen showed, and take a screenshot. Do not retry with different values before recording it.
 
@@ -37,10 +38,10 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | # | Action | Expected result |
 |---|---|---|
 | 1 | Open the URL, log in as `alice` | Overview page; navigation shows "Alice Example"; Cash ฿0.00 |
-| 2 | Accounts → Bank → **Set opening balance**: amount `5000.00`, date = the 1st of the current month → Save | Bank balance ฿5,000.00; Bank shows "Opening ฿5,000.00 on …" and no longer has a Set opening balance button (once per account, BR-10) |
-| 3 | Receive money: account Bank, date today, total `30000.00`, one line Salary `30000.00` → Save | "Saved" message. Bank = 5,000.00 + 30,000.00 = **฿35,000.00** |
-| 4 | Make a payment: from Credit Card, date today, total `1200.00`, lines Spending → Dining `700.00` and Spending → Groceries `500.00` → **Save Payment** | "Payment recorded successfully!". Credit Card debt = 0 + 1,200.00 = **฿1,200.00**; Bank unchanged ฿35,000.00 |
-| 5 | Make a payment: from Bank, date today, total `1200.00`, one line Repay a debt → Credit Card `1200.00` → **Save Payment** | "Payment recorded successfully!". Bank = 35,000.00 − 1,200.00 = **฿33,800.00**; Credit Card debt = 1,200.00 − 1,200.00 = **฿0.00** |
+| 2 | Accounts → Bank → **Set opening balance**: amount `5000.00`, date = the 1st of the current month → Save | Bank balance ฿5,000.00; Bank shows "Opening ฿5,000.00 on …" and its button now reads **Edit opening balance** instead of Set opening balance (approved change D-10; do not click it) |
+| 3 | Receive money: account Bank, date today, total `30000.00`, one line Salary `30000.00` → Save | "Saved" message: "Recorded ฿30,000.00 into Bank." Without reloading, the Receiving account list shows **Bank (฿35,000.00)** (DEF-01 fix). Bank = 5,000.00 + 30,000.00 = **฿35,000.00** |
+| 4 | Make a payment: from Credit Card, date today, total `1200.00`, in "Category / Debt account" choose **Dining (Expense)** `700.00`, then **+ Add Line** and **Groceries (Expense)** `500.00` (both under the group *Spending*) → **Save Payment** | "Payment recorded successfully!" with "Total: ฿1,200.00 from Credit Card on <today>", Dining ฿700.00, Groceries ฿500.00. Credit Card debt = 0 + 1,200.00 = **฿1,200.00**; Bank unchanged ฿35,000.00 |
+| 5 | Make a payment: from Bank, date today, total `1200.00`, one line **Credit Card (Outstanding debt: ฿1,200.00)** under the group *Repay a debt*, `1200.00` → **Save Payment** | "Payment recorded successfully!". Bank = 35,000.00 − 1,200.00 = **฿33,800.00**; Credit Card debt = 1,200.00 − 1,200.00 = **฿0.00** |
 | 6 | Open Overview | Cash ฿33,800.00; card debt ฿0.00; this month: Income **฿30,000.00**, Expense **฿1,200.00** (700 + 500), Net **฿28,800.00**. The opening balance (5,000) and the card repayment (1,200) are **not** counted as income or expense |
 | 7 | Open History | Exactly 3 rows, newest first: Paid · Bank · ฿1,200.00; Paid · Credit Card · ฿1,200.00; Received · Bank · ฿30,000.00 (the opening balance is not a transaction) |
 
@@ -53,7 +54,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 |---|---|---|
 | 1 | Receive money: Bank, today, total `1000.00`, one Salary line `900.00` | Message "Lines must add up to the total"; Save is disabled |
 | 2 | Make a payment: from Bank, today, total `33800.01`, line Dining `33800.01` → **Save Payment** | Rejected: "Business rule violation." and "Not enough money in Bank (balance ฿33,800.00)"; the typed values stay in the form |
-| 3 | Make a payment: from Bank, today, total `0.01`, line Repay a debt → Credit Card `0.01` → **Save Payment** | Rejected: "Business rule violation." and "More than the outstanding debt ฿0.00" |
+| 3 | Make a payment: from Bank, today, total `0.01`, line **Credit Card** under *Repay a debt*, `0.01` → **Save Payment** | Rejected: "Business rule violation." and "More than the outstanding debt ฿0.00" |
 | 4 | Open Overview and History | Still Cash ฿33,800.00, card debt ฿0.00, Income ฿30,000.00, Expense ฿1,200.00, and still 3 history rows — nothing from steps 1–3 was saved |
 
 ### UAT-03 — Other users' records and Administrator denial (forbidden role / ownership case)
@@ -63,7 +64,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 
 | # | Action | Expected result |
 |---|---|---|
-| 1 | Log in as `bob`. On Overview **write down bob's Cash total B**. Receive money: Bank, today, total `100.00`, line Salary `100.00` → Save. Open History → click the **date** of that row. **Write down the address**, e.g. `<URL>/transactions/42`. Log out | "Saved"; the detail page shows "Received ฿100.00", "Received into Bank", line Salary ฿100.00 |
+| 1 | Log in as `bob`. On Overview **write down bob's Cash total B**. Receive money: Bank, today, total `100.00`, line Salary `100.00` → Save. Open History → click the **date** of that row. **Write down the address**, e.g. `<URL>/transactions/42`. Log out | "Saved"; the detail page shows "Received ฿100.00", "Received into Bank", line Salary ฿100.00 (ignore the Edit / Void / Duplicate / Add to favourites buttons — Sprint 2–3) |
 | 2 | Log in as `alice`. Open the address from step 1 | "Not found." — no amount, account or note of bob is shown |
 | 3 | As `alice`, open History and Accounts | No ฿100.00 receipt; only alice's seven accounts with her balances (Bank ฿33,800.00 if UAT-01 ran) |
 | 4 | As `alice`, open `<URL>/admin/users` | "Not allowed." — no user list |
@@ -95,7 +96,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | 1 | Window A: log in as `bob`, stay on Overview | Bob's Overview |
 | 2 | Window B: log in as `admin` → Users → **Disable** on bob | bob's status becomes DISABLED |
 | 3 | Window A: reload the page | Bob is sent to the Login page (old session no longer works) |
-| 4 | Window A: log in as `bob` with his correct password | "Invalid username or password." — the same message as step 5 |
+| 4 | Window A: log in as `bob` with his correct password | "Invalid username or password." — the same message as step 5. The username stays; the password box is emptied and shows "Required" (expected) |
 | 5 | Window A: log in as `bob` with password `wrong-password` | "Invalid username or password." |
 | 6 | Window B: **Enable** bob. Window A: log in as `bob` | bob logs in; his Cash total is still B + ฿100.00 (B from UAT-03 step 1) |
 | 7 | Window B: look at the Users page row of `admin` | No Disable button on the admin's own row (an administrator cannot disable their own account, BR-13); admin stays ACTIVE |
@@ -109,7 +110,7 @@ Each USER starts with seven synthetic accounts and no money: Bank (Cash), Credit
 | UAT-04 | | | | | | |
 | UAT-05 | | | | | | |
 
-Report every finding as a GitHub Issue in this repository (label `uat`) or in the shared handoff sheet, with: case/step, version, what you typed, expected, actual, screenshot.
+Report every finding as a GitHub Issue in this repository (https://github.com/Sxr1n/cpe334-money-logger/issues/new) with a title starting `[UAT]` — the Product Team adds the `lab6` label — or in the shared handoff sheet, with: case/step, version, what you typed, expected, actual, screenshot.
 
 ## 5 Revision history
 | Ver | Date | Change | Reason |
@@ -117,3 +118,4 @@ Report every finding as a GitHub Issue in this repository (label `uat`) or in th
 | 0.1 | 2026-11-20 | Initial UAT cases UAT-01–UAT-05 and handoff | Lab 6 Part A |
 | 0.2 | 2026-11-20 | Exact screen texts (payment success, rejection messages, history rows, detail page) after a Product Team rehearsal of all five cases on a local build of the same code (all steps gave the expected results). The rehearsal is not UAT evidence | Make the cases executable without explanations |
 | 0.3 | 2026-11-21 | bob's expected values made relative (bob was used for the Lab 5 live demo); alice stays untouched | Deployed data is shared with the Lab 5 evidence |
+| 0.4 | 2026-11-28 | Release under test is now a later main release (Sprint 1 + approved changes + Sprint 2–3). Listed the approved changes that touch Sprint 1 screens (D-10, CHG-01, DEF-01) and the visible out-of-scope functions; UAT-01 step 2 button text, step 3 updated account list, exact option names in the line lists; Issue title prefix instead of a label. Product Team rehearsal of all five cases on a local build of the candidate code (`6a46b12`): every expected result matched the screen. The rehearsal is not UAT evidence | Deployed release changed after v0.3 |
