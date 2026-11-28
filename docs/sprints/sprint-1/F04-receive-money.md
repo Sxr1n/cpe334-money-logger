@@ -47,7 +47,7 @@ Sprint 1 allowed-lines table in the ledger core (Sprint 2 extends it to the full
 - **Receive money screen** (`/receive`): Receiving account (select: own CASH accounts), Date (default today), Total (THB), Note, Lines table (account select: own INCOME accounts; amount), "Add line" / remove-line buttons (at least one line).
 - Live footer "Lines total ฿x of ฿y"; red with "Lines must add up to the total" while they differ; Save disabled until equal and all fields valid (NFR-10).
 - Field errors under each input: "Required", "Must be more than 0", "At most 2 decimal places", "Date cannot be in the future", "Choose a different account for each line". Entered values are kept on any error, including server 422 (mapped from `details`).
-- Pending: Save disabled with spinner. Success: toast "Saved" and the stored transaction detail. Empty: no INCOME account → "No income accounts available."
+- Pending: Save disabled with spinner. Success: toast "Saved" and the stored transaction detail; the Receiving account select shows the balances after the save (DEF-01). Empty: no INCOME account → "No income accounts available."
 
 ## 5 API
 **`POST /api/transactions`** (USER)
@@ -96,6 +96,7 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | AC-F04-05 | A RECEIPT by alice using bob's Bank as primary, or bob's Salary as a line → 404; nothing stored; bob's balances unchanged. |
 | AC-F04-06 | If posting fails after the transaction and line rows are inserted (balance update made to throw), no transaction, line or balance change remains. |
 | AC-F04-07 | In the browser, with total ฿1,000.00 and one line of ฿900.00 the form shows "Lines must add up to the total" and Save is disabled; after a server 422 (future date entered by bypassing the picker) the field message is shown and all entered values remain. |
+| AC-F04-08 | (DEF-01) In the browser, after alice saves a receipt of ฿1.00 into a CASH account, without reloading the page the Receiving account select shows that account with the new balance (old + ฿1.00), also after "Receive another payment". |
 
 ## 8 STS
 | TEST ID | AC | Level | Precondition / Input | Action | Expected |
@@ -107,6 +108,7 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | TEST-F04-05 | AC-F04-05 | API-DB | alice cookie; bob's account ids | Post with bob's Bank as primary; post with bob's Salary as line | Both 404; counts unchanged; bob balances unchanged |
 | TEST-F04-06 | AC-F04-06 | API-DB | `vi.spyOn` balance-update step to throw | Post a valid RECEIPT | 500 `INTERNAL`; transactions/lines count 0; Bank balance unchanged |
 | TEST-F04-07 | AC-F04-07 | E2E | alice logged in; Bank, Salary exist | Fill total 1000.00, line 900.00; check Save; fix to 1000.00, set date via request intercept to tomorrow, submit | Mismatch message + Save disabled; after 422 date error shown and total/line/note values kept |
+| TEST-F04-08 | AC-F04-08 | E2E (DEF-01 regression) | alice logged in; a new CASH account "DEF01 Purse …" (balance B = 0) | Receive ฿1.00 into it ← Salary, Save; then click "Receive another payment" | Both times its option reads `DEF01 Purse … (B + ฿1.00)`; no reload |
 
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
@@ -118,6 +120,7 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | AC-F04-05 | server/tests/f04-transactions.api.test.ts::TEST-F04-05 | PASS | b2a4f70 |
 | AC-F04-06 | server/tests/f04-transactions.api.test.ts::TEST-F04-06 | PASS | b2a4f70 |
 | AC-F04-07 | e2e/f04-receive.spec.ts::TEST-F04-07 | PASS | b2a4f70 |
+| AC-F04-08 | e2e/def01-receive-balance.spec.ts::TEST-F04-08 | PASS (red `85d87d1`, `evidence/d2/DEF01-red.txt`) | 5fa7f24 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
@@ -125,3 +128,6 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | 0.1 | 2026-11-07 | Initial contract. Sprint 1 accepts only INCOME lines for RECEIPT (team decision D1-S4). | D1-S4 |
 | 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
 | 0.3 | 2026-11-13 | Record done evidence for AC-F04-01..07 after implementation | D1-S6b |
+| 0.4 | 2026-11-28 | §4 success state shows the updated balance; AC-F04-08 / TEST-F04-08 added (defect regression) | DEF-01 (Issue #81) |
+| 0.5 | 2026-11-28 | TEST-F04-08 precondition: alice with a new CASH account instead of bob's Bank. The first version changed bob's totals and broke TEST-F06-07, which asserts exact values for bob; the account is named "DEF01 Purse" because TEST-F07-08 matches /Wallet/. Behaviour unchanged | DEF-01 |
+| 0.6 | 2026-11-28 | AC-F04-08 PASS on `5fa7f24` (full regression `evidence/d2/DEF01-green.txt`) | DEF-01 |
