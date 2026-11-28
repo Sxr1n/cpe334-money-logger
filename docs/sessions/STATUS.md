@@ -47,6 +47,12 @@
 | DEF-01 | Receive money shows a stale balance after Save (#81) | minor | FIXED, not released |
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-RC release v0.3.0-rc1 (prep) — Claude + Sxr1n
+- Done: #82 (DEF-01), #84 (UAT cases v0.4) and #83 (D2 parts, after merging staging in to resolve STATUS/ai-use conflicts by keeping both sides) merged, all approved by Leviathan-c137 with CI 6/6 → staging `d9fa4c8`; branch `release/v0.3.0-rc1`; traceability v0.24 (AC-F04-08 row, FR-11 link, header version)
+- Evidence: `evidence/d2/release-v0.3.0-rc1.txt` on `d9fa4c8`: server tsc OK, 34 files / 140 tests passed; client 1 test + build OK; E2E 20 passed; Docker image build OK; 0 failed, 0 skipped. UAT v0.4 rehearsal (local, `6a46b12`, not UAT evidence): every expected value in UAT-01–05 matched
+- Decisions: none new; no migration since `v0.2.0-sprint2`
+- Open issues: release PR needs Leviathan-c137's approval; then tag, deploy, post-deploy checks; UAT doc header gets the RC SHA/tag before it goes to the partner; DEF-01 re-test by the partner
+- Next session: tag `v0.3.0-rc1` → deploy → post-deploy checks → send the UAT handoff → fill D2-RC items
 ### 2026-11-28 — D2-P D2 PDF parts (before RC) — Claude + Sxr1n
 - Done: #78, #79, #80 merged (approved by Leviathan-c137, CI 6/6) → staging `0ce1c5f`; D2 Part A.3 (baseline revisions), B.1/B.3/B.4/B.5, C.1/C.3 filled; directives (include/code/gitdiff) moved to `submission/directives.py`, shared by the D2 and Lab 7 builders
 - Evidence: `evidence/d2/B3-excerpts-run.txt` (TEST-F11-04 and TEST-F11-08, 2 passed, 9 filtered by `-t`); test builds: D2 77 pages, Lab 7 39 pages (unchanged)
