@@ -120,7 +120,7 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | AC-F04-05 | server/tests/f04-transactions.api.test.ts::TEST-F04-05 | PASS | b2a4f70 |
 | AC-F04-06 | server/tests/f04-transactions.api.test.ts::TEST-F04-06 | PASS | b2a4f70 |
 | AC-F04-07 | e2e/f04-receive.spec.ts::TEST-F04-07 | PASS | b2a4f70 |
-| AC-F04-08 | e2e/def01-receive-balance.spec.ts::TEST-F04-08 | NOT RUN | — |
+| AC-F04-08 | e2e/def01-receive-balance.spec.ts::TEST-F04-08 | PASS (red `85d87d1`, `evidence/d2/DEF01-red.txt`) | 5fa7f24 |
 
 ## 10 Revision history
 | Ver | Date | Change | Reason/CHG |
@@ -130,3 +130,4 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | 0.3 | 2026-11-13 | Record done evidence for AC-F04-01..07 after implementation | D1-S6b |
 | 0.4 | 2026-11-28 | §4 success state shows the updated balance; AC-F04-08 / TEST-F04-08 added (defect regression) | DEF-01 (Issue #81) |
 | 0.5 | 2026-11-28 | TEST-F04-08 precondition: alice with a new CASH account instead of bob's Bank. The first version changed bob's totals and broke TEST-F06-07, which asserts exact values for bob; the account is named "DEF01 Purse" because TEST-F07-08 matches /Wallet/. Behaviour unchanged | DEF-01 |
+| 0.6 | 2026-11-28 | AC-F04-08 PASS on `5fa7f24` (full regression `evidence/d2/DEF01-green.txt`) | DEF-01 |

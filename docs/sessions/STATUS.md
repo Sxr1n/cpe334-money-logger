@@ -44,8 +44,15 @@
 ## Open defects / changes (สรุป รายละเอียดอยู่ใน docs/changes.md)
 | ID | Summary | Severity | Status |
 |---|---|---|---|
+| DEF-01 | Receive money shows a stale balance after Save (#81) | minor | FIXED, not released |
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — DEF-01 Receive stale balance — Claude + Sxr1n
+- Done: DEF-01 registered (Issue #81, `docs/changes.md`, F-04 v0.4–0.6 AC-F04-08 / TEST-F04-08); `ReceiveMoneyPage` reloads accounts after a successful POST (Pay already did)
+- Evidence: spec `d628f1f`; red `85d87d1` → `evidence/d2/DEF01-red.txt` (option text still `(฿0.00)`); green `5fa7f24` → `evidence/d2/DEF01-green.txt` (server tsc OK, 33 files / 139; client 1 + build OK; E2E 20 passed; 0 failed, 0 skipped)
+- Decisions: none new. The first two test versions (bob's Bank; an account named "Wallet DEF01") broke TEST-F06-07 (exact bob totals) and TEST-F07-08 (`/Wallet/`); the test now uses alice's new "DEF01 Purse" account. Each red was re-run and is in git history
+- Open issues: traceability row for AC-F04-08 waits for the RC (avoid a version clash with #78/#79); DEF-01 re-test by the Lab 6 partner after deploy
+- Next session: merge #78 → #79 → #80 → DEF-01 PR → RC `v0.3.0-rc1`
 ### 2026-11-28 — L7-S3 metrics, readiness, retrospective — Claude + Sxr1n
 - Done: read the Lab 7 handout (`docs/course/Lab_7_Sprint_1_Maintenance.pdf`, not committed). `docs/labs/lab07/metrics-readiness.md` contains:
   - five metrics M-1..M-5 (the handout's recommended set), with embedded source lists;
@@ -324,6 +331,6 @@
 - Next session:
 
 ## Parked (เจอระหว่างทางแต่อยู่นอก scope)
-- Receive money: after Save, the Receiving account dropdown still shows the old balance (`Bank (฿0.00)`) until the page is reloaded — display only (seen on the live URL 2026-11-21)
+- ~~Receive money stale balance after Save~~ → DEF-01 (Issue #81)
 - รวม `getTodayBangkok()` (server/src/lib/ledger.ts) กับ `bangkokToday()` (server/src/lib/period.ts) และ `formatTHB` ใน AccountsPage/PayPage/ReceiveMoneyPage ให้ใช้ `client/src/format.ts`
 -
