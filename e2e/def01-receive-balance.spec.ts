@@ -12,8 +12,8 @@ test('TEST-F04-08 after Save the Receiving account select shows the updated bala
   await page.getByRole('button', { name: 'Log in' }).click()
   await expect(page).toHaveURL(/\/overview$/)
 
-  // A fresh CASH account keeps this spec independent of the exact totals other specs assert (bob in TEST-F06-07).
-  const name = `Wallet DEF01 ${Date.now()}`
+  // A fresh CASH account keeps this spec independent of the exact totals other specs assert (bob in TEST-F06-07) and of name patterns (/Wallet/ in TEST-F07-08).
+  const name = `DEF01 Purse ${Date.now()}`
   const wallet = (await (await page.request.post('/api/accounts', { data: { name, type: 'CASH' } })).json()) as { id: number; balance: number }
 
   await page.goto('/receive')

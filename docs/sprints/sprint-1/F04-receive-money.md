@@ -108,7 +108,7 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | TEST-F04-05 | AC-F04-05 | API-DB | alice cookie; bob's account ids | Post with bob's Bank as primary; post with bob's Salary as line | Both 404; counts unchanged; bob balances unchanged |
 | TEST-F04-06 | AC-F04-06 | API-DB | `vi.spyOn` balance-update step to throw | Post a valid RECEIPT | 500 `INTERNAL`; transactions/lines count 0; Bank balance unchanged |
 | TEST-F04-07 | AC-F04-07 | E2E | alice logged in; Bank, Salary exist | Fill total 1000.00, line 900.00; check Save; fix to 1000.00, set date via request intercept to tomorrow, submit | Mismatch message + Save disabled; after 422 date error shown and total/line/note values kept |
-| TEST-F04-08 | AC-F04-08 | E2E (DEF-01 regression) | alice logged in; a new CASH account "Wallet DEF01 …" (balance B = 0) | Receive ฿1.00 into it ← Salary, Save; then click "Receive another payment" | Both times its option reads `Wallet DEF01 … (B + ฿1.00)`; no reload |
+| TEST-F04-08 | AC-F04-08 | E2E (DEF-01 regression) | alice logged in; a new CASH account "DEF01 Purse …" (balance B = 0) | Receive ฿1.00 into it ← Salary, Save; then click "Receive another payment" | Both times its option reads `DEF01 Purse … (B + ฿1.00)`; no reload |
 
 ## 9 Done evidence
 | AC | Test file::name | Result | Commit |
@@ -129,4 +129,4 @@ Indexes: `transactions (user_id, txn_date DESC, id DESC)`; `transaction_lines (a
 | 0.2 | 2026-11-07 | Owner set to Leviathan-c137 (teammate joined the repository). No behaviour change. | Team |
 | 0.3 | 2026-11-13 | Record done evidence for AC-F04-01..07 after implementation | D1-S6b |
 | 0.4 | 2026-11-28 | §4 success state shows the updated balance; AC-F04-08 / TEST-F04-08 added (defect regression) | DEF-01 (Issue #81) |
-| 0.5 | 2026-11-28 | TEST-F04-08 precondition: alice with a new CASH account instead of bob's Bank. The first version changed bob's totals and broke TEST-F06-07, which asserts exact values for bob. Behaviour unchanged | DEF-01 |
+| 0.5 | 2026-11-28 | TEST-F04-08 precondition: alice with a new CASH account instead of bob's Bank. The first version changed bob's totals and broke TEST-F06-07, which asserts exact values for bob; the account is named "DEF01 Purse" because TEST-F07-08 matches /Wallet/. Behaviour unchanged | DEF-01 |
