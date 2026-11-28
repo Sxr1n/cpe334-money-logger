@@ -3,8 +3,8 @@
 | Item | Value |
 |---|---|
 | Sources | `docs/srs.md` v0.2, `docs/features.md` v0.1 |
-| Document version | 0.3 |
-| Tested release | — (no release yet; Sprint 1 results are per feature commit until v0.1.0-sprint1) |
+| Document version | 0.24 |
+| Tested release | `v0.2.0-sprint2` (`76aaabc`, deployed); results after it are per commit until `v0.3.0-rc1` |
 
 Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and results live in the Sprint 1 contracts (`docs/sprints/sprint-1/`). Sprint 2–3 requirements are allocated to a feature and sprint; their AC/TEST are written with the sprint's contracts. Test results use `PASS / FAIL / SKIPPED / NOT RUN / INCOMPLETE` with the commit SHA.
 
@@ -23,7 +23,7 @@ Sprint 1 AC and TEST IDs below are **planned**; their full text, STS rows and re
 | FR-08 | F-07 Account management | 2 | AC-F07-01, AC-F07-02, AC-F07-03, AC-F07-08 | TEST-F07-01, TEST-F07-02, TEST-F07-03, TEST-F07-08 |
 | FR-09 | F-07 Account management | 2 | AC-F07-04, AC-F07-05, AC-F07-06, AC-F07-08 | TEST-F07-04, TEST-F07-05, TEST-F07-06, TEST-F07-08 |
 | FR-10 | F-08 Opening balance management | 2 | AC-F08-01, AC-F08-02, AC-F08-03, AC-F08-04, AC-F08-06 | TEST-F08-01, TEST-F08-02, TEST-F08-03, TEST-F08-04, TEST-F08-06 |
-| FR-11 | F-04 Receive money | 1 | AC-F04-01 | TEST-F04-01 |
+| FR-11 | F-04 Receive money | 1 | AC-F04-01, AC-F04-08 | TEST-F04-01, TEST-F04-08 |
 | FR-12 | F-05 Make a payment or record a charge | 1 | AC-F05-01 | TEST-F05-01 |
 | FR-13 | F-05 Make a payment or record a charge | 1 | AC-F05-02, AC-F05-06 | TEST-F05-02, TEST-F05-06 |
 | FR-14 | F-09 Transfers | 2 | AC-F09-01, AC-F09-02, AC-F09-03, AC-F09-05, AC-F09-07 | TEST-F09-01, TEST-F09-02, TEST-F09-03, TEST-F09-05, TEST-F09-07 |
@@ -112,6 +112,7 @@ Short descriptions only; the contracts in `docs/sprints/sprint-1/` hold the full
 | AC-F04-05 | Primary or line account belongs to another user → 404, nothing stored | TEST-F04-05 | API-DB | | `server/tests/f04-transactions.api.test.ts` | PASS | b2a4f70 |
 | AC-F04-06 | Injected failure after first line insert → no transaction, lines or balance change | TEST-F04-06 | API-DB | | `server/tests/f04-transactions.api.test.ts` | PASS | b2a4f70 |
 | AC-F04-07 | Receive-money form shows field errors and the line-total mismatch before submit, keeping entered values | TEST-F04-07 | E2E | | `e2e/f04-receive.spec.ts` | PASS | b2a4f70 |
+| AC-F04-08 | (DEF-01) After a saved receipt, the Receiving account select shows the new balance without a reload | TEST-F04-08 | E2E | TDD | `e2e/def01-receive-balance.spec.ts` | PASS | 5fa7f24 |
 | AC-F05-01 | Card charge ฿1,200 = Dining ฿700 + Groceries ฿500 → card debt +1,200.00, Dining +700.00, Groceries +500.00 | TEST-F05-01 | unit + API-DB | | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
 | AC-F05-02 | PAYMENT Bank → card ฿1,200 → Bank −1,200, card debt −1,200, expense total unchanged | TEST-F05-02 | unit + API-DB | TDD | `server/tests/f05-transactions.api.test.ts`, `server/tests/f05-ledger.unit.test.ts` | PASS | 6f52657 |
 | AC-F05-03 | PAYMENT with line sum ≠ total → 422, nothing stored | TEST-F05-03 | API-DB | | `server/tests/f05-transactions.api.test.ts` | PASS | 6f52657 |
@@ -262,3 +263,4 @@ None yet. Changes approved by the TA are listed here with their CHG-ID (details 
 | 0.21 | 2026-11-28 | F-11 concurrency (AC-F11-11) and CHG-01 BR-18 on edit (AC-F11-12) PASS on `ce2ae73` | CHG-01 / PR #75 |
 | 0.22 | 2026-11-28 | CHG-01 released in `v0.2.0-sprint2` and deployed (post-deploy 11/11 PASS) | CHG-01 (Lab 7) |
 | 0.23 | 2026-11-28 | AC-F08-07 (NFR-05) PASS on `ced1120`; AC-F14-03 re-run on the F-11 void API | D2-RC |
+| 0.24 | 2026-11-28 | AC-F04-08 (DEF-01 regression) PASS on `5fa7f24`; header version and tested release brought up to date | DEF-01 / D2-RC |

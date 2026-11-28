@@ -2,10 +2,10 @@
 
 ## Current
 - Phase / next checkpoint: D1 submitted; Lab 5 submitted on LEB2 2026-11-22 (`lab5_sec131_Help_me.pdf`, team 59). **D2, Lab 6 and Lab 7 due 29 Nov 23:59**; Final 13 Dec
-- Next session: RC `v0.3.0-rc1` (release PR → tag → deploy → post-deploy checks) · Lab 7 PDF · D2 PDF parts · Lab 6 partner UAT (cloud test accounts through the private handoff) · due 29 Nov 23:59
-- Latest release on main: `v0.2.0-sprint2` (commit `76aaabc`, tagged on `main`, 2026-11-27); previous `v0.1.0-sprint1` (`e1747cb`)
+- Next session: Lab 6 partner UAT + DEF-01 re-test · fill D2-RC items · Lab 7 and D2 PDFs · due 29 Nov 23:59
+- Latest release on main: `v0.3.0-rc1` (commit `a56ebe5`, PR #85, 2026-11-28); previous `v0.2.0-sprint2` (`76aaabc`), `v0.1.0-sprint1` (`e1747cb`)
 - Active staging branch: `staging/sprint-2` (from `staging/sprint-1` `3fd73fe`; contracts PR #49 merged)
-- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `76aaabc` = `v0.2.0-sprint2` (revision `s87ce2df5-00006-bbr`, Deploy demo run 46064946596)
+- Deployed URL / version: https://s87ce2df5-4d7hbszvwq-as.a.run.app — `a56ebe5` = `v0.3.0-rc1` (revision `s87ce2df5-00007-lk8`, Deploy demo run 46158159954)
 
 ## Feature board
 | F-ID | Name | Sprint | Status | Owner | Contract | Issue/PR | Evidence |
@@ -47,6 +47,18 @@
 | DEF-01 | Receive money shows a stale balance after Save (#81) | minor | FIXED, not released |
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-RC release v0.3.0-rc1 + deploy — Claude + Sxr1n
+- Done: release PR #85 approved by Leviathan-c137 (on `73f3e96`, CI 6/6) and merged to `main` (`a56ebe5`); annotated tag `v0.3.0-rc1` pushed; Deploy demo run 46158159954 (CI 6/6, deploy, smoke 4/4 PASS); UAT cases header filled with the RC SHA/tag/URL; DEF-01 → FIXED (released, re-test pending); Issues #51 and #81 closed by #85
+- Evidence: run 46158159954, revision `s87ce2df5-00007-lk8`; live `/api/health` version `a56ebe5112242ab3217f02b6ecea2c27defdccdd`, `/api/ready` 200 (checked by Claude after the deploy); no migration in this release; post-deploy checks **11/11 PASS** (`evidence/d2/post-deploy-v0.3.0-rc1.txt`, run by Sxr1n in Cloud Shell 2026-11-28 16:11 UTC, transcribed from a screenshot)
+- Decisions: none new
+- Open issues: partner UAT and DEF-01 re-test; D2-RC items (A.1, A.2, B.2, C.2, Part E)
+- Next session: UAT handoff → D2-RC items → PDFs
+### 2026-11-28 — D2-RC release v0.3.0-rc1 (prep) — Claude + Sxr1n
+- Done: #82 (DEF-01), #84 (UAT cases v0.4) and #83 (D2 parts, after merging staging in to resolve STATUS/ai-use conflicts by keeping both sides) merged, all approved by Leviathan-c137 with CI 6/6 → staging `d9fa4c8`; branch `release/v0.3.0-rc1`; traceability v0.24 (AC-F04-08 row, FR-11 link, header version)
+- Evidence: `evidence/d2/release-v0.3.0-rc1.txt` on `d9fa4c8`: server tsc OK, 34 files / 140 tests passed; client 1 test + build OK; E2E 20 passed; Docker image build OK; 0 failed, 0 skipped. UAT v0.4 rehearsal (local, `6a46b12`, not UAT evidence): every expected value in UAT-01–05 matched
+- Decisions: none new; no migration since `v0.2.0-sprint2`
+- Open issues: release PR needs Leviathan-c137's approval; then tag, deploy, post-deploy checks; UAT doc header gets the RC SHA/tag before it goes to the partner; DEF-01 re-test by the partner
+- Next session: tag `v0.3.0-rc1` → deploy → post-deploy checks → send the UAT handoff → fill D2-RC items
 ### 2026-11-28 — D2-P D2 PDF parts (before RC) — Claude + Sxr1n
 - Done: #78, #79, #80 merged (approved by Leviathan-c137, CI 6/6) → staging `0ce1c5f`; D2 Part A.3 (baseline revisions), B.1/B.3/B.4/B.5, C.1/C.3 filled; directives (include/code/gitdiff) moved to `submission/directives.py`, shared by the D2 and Lab 7 builders
 - Evidence: `evidence/d2/B3-excerpts-run.txt` (TEST-F11-04 and TEST-F11-08, 2 passed, 9 filtered by `-t`); test builds: D2 77 pages, Lab 7 39 pages (unchanged)
