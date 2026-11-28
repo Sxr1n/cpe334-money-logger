@@ -61,7 +61,7 @@ No change.
 |---|---|---|---|
 | AC-F14-01 | `client/src/duplicate.test.ts::TEST-F14-01` | PASS | b5cc4a3 |
 | AC-F14-02 | `e2e/f14-duplicate.spec.ts::TEST-F14-02` | PASS | b5cc4a3 |
-| AC-F14-03 | `e2e/f14-duplicate.spec.ts::TEST-F14-03` | PASS | b5cc4a3 |
+| AC-F14-03 | `e2e/f14-duplicate.spec.ts::TEST-F14-03` | PASS | b5cc4a3; re-run on the F-11 void API `ced1120` |
 | AC-F14-04 | `e2e/f14-duplicate.spec.ts::TEST-F14-04` | PASS | b5cc4a3 |
 
 Red `255be65` → `evidence/d2/F14-red.txt` (unit: module missing; E2E 3 fail: no Duplicate link / banner). Green `b5cc4a3` → `evidence/d2/F14-green.txt` (server tsc OK, 25 files / 98 tests; client 1 test, build OK; E2E 15/15). The feat commit also raised TEST-F14-02's starting receipt from ฿2,000 to ฿3,000: the duplicate was correctly rejected by BR-07 because the test had not funded both payments; no assertion changed.
@@ -72,3 +72,4 @@ Red `255be65` → `evidence/d2/F14-red.txt` (unit: module missing; E2E 3 fail: n
 | 0.1 | 2026-11-25 | Initial contract. No new endpoint; BR-17 in a client mapping function with a client unit test. VOID can be duplicated (D-15). | D2-S5 |
 | 0.2 | 2026-11-26 | TEST-F14-01 runs with Vitest added to `client/` (`npm test`, also in the CI job "Client build"). TEST-F14-03 sets the source receipt to VOID through `server/prisma/e2e-void.ts` because the void endpoint (F-11) does not exist yet; switch to the F-11 API once it merges. A `?duplicate=` id of the other form (e.g. a receipt on `/pay`) is treated as not found. | D2-S9 (Sxr1n): F-11 not started |
 | 0.3 | 2026-11-26 | Status TESTED; done evidence filled. Archived/empty account selects show "Choose an account" and block Save. | D2-S9 |
+| 0.4 | 2026-11-28 | TEST-F14-03 now voids the source through `POST /api/transactions/:id/void` (F-11), as the STS precondition says; `server/prisma/e2e-void.ts` removed. PASS on `ced1120`. No AC changed. | D2-RC (F-11 merged) |
