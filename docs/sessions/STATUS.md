@@ -47,6 +47,12 @@
 | DEF-01 | Receive money shows a stale balance after Save (#81) | minor | FIXED, not released |
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-RC fill D2 items that needed the candidate — Claude + Sxr1n
+- Done: UAT cases v0.6 (#87, deployed revision added); D2 Part A.1 (TEST-F06-07 on the candidate), A.2 (register summary by source), B.2 (F-11 and F-12 demonstrations, 8 captioned screenshots), C.2 (F-15 test excerpt, run and screenshot), C.3 updated, Part E.1–E.6; DEF-02 registered (Lab 5 seed defect, found 2026-11-07 and fixed before D1, missing from the register)
+- Evidence: `evidence/d2/A1-critical-journey-rc1.txt` (1 passed), `C2-f15-rc1.txt` (5 passed), `E3-cross-feature-rc1.txt` (8 passed, 21 filtered by `-t`), `B2-C2-screenshots-run.txt` (screen values read by the script); all on staging `bd49b09`, application code identical to `a56ebe5`; screenshots in `submission/d2/img/` from local dev servers (temporary Playwright script, not committed); test build D2 93 pages = cover 1 + [2, 37, 15, 30, 8]
+- Decisions: screenshots and UI journeys are taken locally, not on the cloud, while the Lab 6 partner UAT uses alice and bob there; DEF-02 severity "major" is Claude's proposal for the team to confirm
+- Open issues: Lab 6 rows in A.2 and the DEF-01 re-test wait for the partner UAT; C.3 plan still needs confirmation by both students; Lab 6 partner details not yet in the repo
+- Next session: Lab 6 partner UAT (both roles) → Lab 6 / Lab 7 / D2 PDFs with student IDs
 ### 2026-11-28 — D2-RC release v0.3.0-rc1 + deploy — Claude + Sxr1n
 - Done: release PR #85 approved by Leviathan-c137 (on `73f3e96`, CI 6/6) and merged to `main` (`a56ebe5`); annotated tag `v0.3.0-rc1` pushed; Deploy demo run 46158159954 (CI 6/6, deploy, smoke 4/4 PASS); UAT cases header filled with the RC SHA/tag/URL; DEF-01 → FIXED (released, re-test pending); Issues #51 and #81 closed by #85
 - Evidence: run 46158159954, revision `s87ce2df5-00007-lk8`; live `/api/health` version `a56ebe5112242ab3217f02b6ecea2c27defdccdd`, `/api/ready` 200 (checked by Claude after the deploy); no migration in this release; post-deploy checks **11/11 PASS** (`evidence/d2/post-deploy-v0.3.0-rc1.txt`, run by Sxr1n in Cloud Shell 2026-11-28 16:11 UTC, transcribed from a screenshot)

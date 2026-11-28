@@ -1,4 +1,4 @@
-> The Sprint 2 contracts and the DoD are on the previous pages. Lines marked TO FILL (D2-RC) are completed from the release candidate run; no result is written before it was run.
+> The Sprint 2 contracts and the DoD are on the previous pages. Every result below comes from a real run whose output file is named.
 
 ## B.1 Sprint 2 feature completion
 Every Sprint 2 feature went through contract → red test → implementation → teammate review → `staging/sprint-2`. Test files are under `server/tests/` (API-DB and unit, real PostgreSQL) and `e2e/` (Playwright).
@@ -15,7 +15,56 @@ Every Sprint 2 feature went through contract → red test → implementation →
 `v0.2.0-sprint2` = `76aaabc` on `main` (PR #77, approved by Leviathan-c137). Release regression on its tree `22acd51`: server 33 files / 139 tests, client 1 test + build, E2E 19, Docker build; 0 failed, 0 skipped (`evidence/d2/release-v0.2.0-sprint2.txt`). Re-run on the candidate: Part E.
 
 ## B.2 Program demonstrations (two Sprint 2 features)
-TO FILL (D2-RC): captioned screenshots from the candidate version for F-11 (edit and void a payment; a rejected edit under D-12) and F-12 (filter History; the filter survives a reload), each with the role, starting data, steps, expected and actual results.
+Demonstrations of F-11 and F-12 on the candidate code: `v0.3.0-rc1` (`a56ebe5`), run on 2026-11-28 16:50 UTC on local dev servers from staging `bd49b09`, whose application code is identical to the tag. The footer reads "API version: dev" because the dev server does not set a version. A temporary Playwright script drove the browser and took the screenshots (not committed); every value it read from the screen is in `evidence/d2/B2-C2-screenshots-run.txt`. We did not use the cloud deployment because the Lab 6 partner team is testing it with alice and bob at the same time.
+
+**Role and starting data.** User alice on a freshly seeded database. Starting data was created through the API:
+- Bank opening balance ฿10,000.00 (1 Nov).
+- Payment "Team lunch" Bank → Dining ฿1,000.00 (20 Nov).
+- Payment "Weekly groceries" Bank → Groceries ฿500.00.
+- Receipts "zebra bonus" ฿200.00 and "zebra refund" ฿100.00 into Bank from Salary (21 Nov).
+
+Bank = 10,000 − 1,000 − 500 + 200 + 100 = **฿8,800.00** (read on Overview before the first step).
+
+### F-11 Transaction corrections (AC-F11-04, AC-F11-05, AC-F11-10)
+| Step | Action | Expected | Actual |
+|---|---|---|---|
+| 1 | Open "Team lunch" detail → Edit | Edit form pre-filled with ฿1,000.00 | Figures B-1, B-2 |
+| 2 | Change total and Dining line to ฿1,500.00 → Save changes | "Transaction updated"; Paid ฿1,500.00; Bank = 8,800 − 500 = ฿8,300.00 | "Transaction updated · Paid ฿1,500.00 · Dining ฿1,500.00"; Overview Bank ฿8,300.00 (Figures B-3, B-4) |
+| 3 | Edit again to ฿20,000.00 → Save changes (rule rejection, D-12 / BR-07) | Rejected; Bank would be 8,300 + 1,500 − 20,000 = −฿10,200.00; inputs kept; Bank unchanged | "Business rule violation." and "Bank would go below ฿0.00 (−฿10,200.00)" under Total; total still 20000.00; Overview Bank still ฿8,300.00 (Figure B-5) |
+| 4 | Detail → Void → Confirm void | Void badge; Edit/Void gone; Bank = 8,300 + 1,500 = ฿9,800.00 | Void badge shown; Overview Bank ฿9,800.00; History row marked Void (Figure B-6) |
+
+![Figure B-1. F-11: detail of the payment "Team lunch" ฿1,000.00 before the edit (alice).](img/b2-01-f11-detail-before.png)
+*Figure B-1. F-11: detail of the payment "Team lunch" ฿1,000.00 before the edit (alice).*
+
+![Figure B-2. F-11: Edit payment with the total and the Dining line changed to ฿1,500.00.](img/b2-02-f11-edit-form.png)
+*Figure B-2. F-11: Edit payment with the total and the Dining line changed to ฿1,500.00.*
+
+![Figure B-3. F-11: after Save changes, "Transaction updated" and Paid ฿1,500.00 (saved data read back).](img/b2-03-f11-after-edit.png)
+*Figure B-3. F-11: after Save changes, "Transaction updated" and Paid ฿1,500.00 (saved data read back).*
+
+![Figure B-4. F-11: Overview after the edit, Bank ฿8,300.00 (= 8,800 − 500).](img/b2-04-f11-overview-after-edit.png)
+*Figure B-4. F-11: Overview after the edit, Bank ฿8,300.00 (= 8,800 − 500).*
+
+![Figure B-5. F-11 rule rejection (D-12 / BR-07): editing to ฿20,000.00 would leave Bank at −฿10,200.00; the edit is refused and the inputs are kept.](img/b2-05-f11-edit-rejected.png)
+*Figure B-5. F-11 rule rejection (D-12 / BR-07): editing to ฿20,000.00 would leave Bank at −฿10,200.00; the edit is refused and the inputs are kept.*
+
+![Figure B-6. F-11: after Confirm void, the detail shows the Void badge and no Edit or Void buttons.](img/b2-06-f11-voided.png)
+*Figure B-6. F-11: after Confirm void, the detail shows the Void badge and no Edit or Void buttons.*
+
+### F-12 Search and filter (AC-F12-02, AC-F12-04, AC-F12-07)
+| Step | Action | Expected | Actual |
+|---|---|---|---|
+| 1 | History (unfiltered) | All four transactions | 4 rows: zebra refund, zebra bonus, Weekly groceries, Team lunch (Void) |
+| 2 | Account = Salary, Text = `ZEBRA BONUS` → Apply | Only "zebra bonus" (account match on a line, text case-insensitive); filters in the URL | 1 row "21 Nov 2026 Received Bank zebra bonus ฿200.00"; URL `/transactions?accountId=3&q=ZEBRA+BONUS` (Figure B-7) |
+| 3 | Reload the page | Same filters and the same row | Text box still `ZEBRA BONUS`; 1 row, the same (Figure B-8) |
+
+![Figure B-7. F-12: History filtered by account Salary and text "ZEBRA BONUS"; one matching receipt.](img/b2-07-f12-filtered.png)
+*Figure B-7. F-12: History filtered by account Salary and text "ZEBRA BONUS"; one matching receipt.*
+
+![Figure B-8. F-12: after a browser reload the filters and the result are unchanged.](img/b2-08-f12-after-reload.png)
+*Figure B-8. F-12: after a browser reload the filters and the result are unchanged.*
+
+The automated tests for the same behaviour are TEST-F11-10 and TEST-F12-07 (E2E). They passed in the candidate regression run (Part E.2).
 
 ## B.3 Test excerpts
 Both excerpts are from `server/tests/f11-corrections.api.test.ts` (API-DB on PostgreSQL). Shared setup: a fresh database with alice and bob (each with the default accounts), an administrator, and a Wallet for alice.

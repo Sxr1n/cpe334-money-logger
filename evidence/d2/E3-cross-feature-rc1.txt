@@ -1,0 +1,46 @@
+# E.3 Cross-feature checks on the candidate - run 2026-11-28 23:52 local, on top of commit bd49b09 (code tree identical to v0.3.0-rc1 a56ebe5)
+# Command: cd server && npx vitest run tests/f11-corrections.api.test.ts tests/f07-accounts.api.test.ts tests/f15-categories.api.test.ts tests/f16-monthly.api.test.ts tests/nfr05-recompute.api.test.ts -t "TEST-F11-01|TEST-F11-05|TEST-F11-07|TEST-F07-05|TEST-F07-06|TEST-F15-02|TEST-F16-02|TEST-NFR05-01" --reporter=verbose
+# -t selects the cross-feature tests; the other tests in these files are reported as skipped by the filter (they run in the full suite, evidence/d2/release-v0.3.0-rc1.txt).
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+stdout | tests/nfr05-recompute.api.test.ts > NFR-05 balance recomputation (API-DB, property) > TEST-NFR05-01 after 1000 seeded random operations every stored balance equals the recomputation (0 satang)
+TEST-NFR05-01 seed 3342026: {"posted":464,"edited":121,"voided":73,"openingEdits":126,"rejected":216}; 7 balance accounts checked
+
+ ✓ tests/nfr05-recompute.api.test.ts > NFR-05 balance recomputation (API-DB, property) > TEST-NFR05-01 after 1000 seeded random operations every stored balance equals the recomputation (0 satang) 35359ms
+ ↓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-01 creates accounts of all five types, listed and usable
+ ↓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-02 validates name and type
+ ↓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-03 rejects duplicate names per user and type, ignoring case
+ ↓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-04 rename shows the new name on earlier transactions
+ ✓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-05 archive needs a zero balance for CASH/LOAN; EXPENSE keeps its history 1330ms
+ ✓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-06 archived accounts cannot be used until unarchived 976ms
+ ↓ tests/f07-accounts.api.test.ts > F-07 Account management > TEST-F07-07 401 / 403 / cross-user 404; identity only from the session
+ ✓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-01 editing card payment replaces lines, adjusts debt by net delta, and updates category totals 1472ms
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-02 editing receipt primary from Bank to Wallet moves balances and updates date/note
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-03 invalid edits (lines mismatch, future date, changed form, same primary/line) return 422 leaving DB unchanged
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-04 D-12 rejects edit that leaves Bank negative (399999 -> 422), accepts exact 400000 (Bank = 0)
+ ✓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-05 voiding a PAYMENT restores Bank balance, removes expense, and keeps transaction in history/detail as VOID 1287ms
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-06 voiding receipt whose cash was spent returns 422 naming Bank; voiding or editing VOID returns 422
+ ✓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-07 voiding a payment on an archived Wallet returns 422 Unarchive Wallet first 1300ms
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-08 401 / 403 / cross-user 404 on PUT and void
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-09 (NFR-06) failure on 2nd balance update rolls back edit atomically
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-11 (concurrency) parallel identical PUTs and parallel PUT + void keep balances exact
+ ↓ tests/f11-corrections.api.test.ts > F-11 Transaction corrections (API-DB) > TEST-F11-12 (BR-18) editing a Credit Card payment over its creditLimit is rejected with 422
+ ↓ tests/f16-monthly.api.test.ts > F-16 Period reports > TEST-F16-01 one row per month (empty months included) plus a total row
+ ✓ tests/f16-monthly.api.test.ts > F-16 Period reports > TEST-F16-02 repayments, transfers, opening balances and VOID are not income or expense (BR-06) 1282ms
+ ↓ tests/f16-monthly.api.test.ts > F-16 Period reports > TEST-F16-03 Bangkok calendar months: 10-31 is October, 11-01 is November
+ ↓ tests/f16-monthly.api.test.ts > F-16 Period reports > TEST-F16-04 at most 12 months; reversed or invalid months rejected; default last 6 months
+ ↓ tests/f16-monthly.api.test.ts > F-16 Period reports > TEST-F16-05 401 / 403 / only own figures
+ ↓ tests/f15-categories.api.test.ts > F-15 Category spending > TEST-F15-01 totals and percentages per EXPENSE account, largest first
+ ✓ tests/f15-categories.api.test.ts > F-15 Category spending > TEST-F15-02 repayments, income and VOID transactions are not spending (BR-06) 1181ms
+ ↓ tests/f15-categories.api.test.ts > F-15 Category spending > TEST-F15-03 inclusive bounds, archived accounts listed, empty period
+ ↓ tests/f15-categories.api.test.ts > F-15 Category spending > TEST-F15-04 invalid periods → 422 naming the parameter
+ ↓ tests/f15-categories.api.test.ts > F-15 Category spending > TEST-F15-05 401 / 403 / only own spending
+
+ Test Files  5 passed (5)
+      Tests  8 passed | 21 skipped (29)
+   Start at  23:51:35
+   Duration  55.43s (transform 692ms, setup 151ms, import 4.33s, tests 45.27s, environment 1ms)
+
+exit 0

@@ -1,0 +1,15 @@
+# A.1 Sprint 1 critical journey on the candidate - run 2026-11-28 23:48 local, on top of commit bd49b09
+# Code tree identical to v0.3.0-rc1 (a56ebe5): git diff a56ebe5 HEAD -- server client e2e Dockerfile playwright.config.ts package.json deploy .github is empty
+# Command: npx playwright test --grep "TEST-F06-07" --reporter=list  (PW_CHANNEL=chrome; global setup resets and seeds the local dev DB)
+
+[WebServer] (node:55128) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:30100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [desktop] › e2e\f06-journey.spec.ts:28:1 › TEST-F06-07 full Sprint 1 journey in the UI; results survive reload and logout/login (10.2s)
+
+  1 passed (18.6s)
+exit 0

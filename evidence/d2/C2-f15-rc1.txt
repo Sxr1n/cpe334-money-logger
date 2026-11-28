@@ -1,0 +1,14 @@
+# C.2 F-15 Category spending API tests on the candidate - run 2026-11-28 23:48 local, on top of commit bd49b09
+# Code tree identical to v0.3.0-rc1 (a56ebe5): git diff a56ebe5 HEAD -- server client e2e Dockerfile playwright.config.ts package.json deploy .github is empty
+# Command: cd server && npx vitest run tests/f15-categories.api.test.ts
+
+
+ RUN  v4.1.12 C:/Users/akemi/OneDrive/Desktop/CPE334_Duo_pj/server
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  23:48:44
+   Duration  4.44s (transform 178ms, setup 22ms, import 478ms, tests 2.06s, environment 0ms)
+
+exit 0
