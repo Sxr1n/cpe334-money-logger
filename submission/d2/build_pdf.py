@@ -13,6 +13,9 @@ from pathlib import Path
 
 from pypdf import PdfWriter
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from directives import expand  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 _spec = importlib.util.spec_from_file_location('d1', ROOT / 'submission/d1/build_pdf.py')
 d1 = importlib.util.module_from_spec(_spec)
@@ -55,7 +58,7 @@ def deployed_version():
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    parts = [(l, t, ids, d1.part_body(l, t, files)) for l, t, files, ids in PARTS]
+    parts = [(l, t, ids, d1.part_body(l, t, files, expand)) for l, t, files, ids in PARTS]
     counts = [d1.pages(d1.print_pdf(d1.PAGE.format(title=f'Part {l}', body=b), f'part-{l}')) for l, _, _, b in parts]
 
     tag_commit = d1.git('rev-list', '-n', '1', TAG)

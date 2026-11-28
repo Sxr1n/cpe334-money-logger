@@ -47,6 +47,12 @@
 | DEF-01 | Receive money shows a stale balance after Save (#81) | minor | FIXED, not released |
 
 ## Session log (ใหม่สุดอยู่บนสุด)
+### 2026-11-28 — D2-P D2 PDF parts (before RC) — Claude + Sxr1n
+- Done: #78, #79, #80 merged (approved by Leviathan-c137, CI 6/6) → staging `0ce1c5f`; D2 Part A.3 (baseline revisions), B.1/B.3/B.4/B.5, C.1/C.3 filled; directives (include/code/gitdiff) moved to `submission/directives.py`, shared by the D2 and Lab 7 builders
+- Evidence: `evidence/d2/B3-excerpts-run.txt` (TEST-F11-04 and TEST-F11-08, 2 passed, 9 filtered by `-t`); test builds: D2 77 pages, Lab 7 39 pages (unchanged)
+- Decisions: C.3 owners and dates are a proposal — both students confirm
+- Open issues: TO FILL (D2-RC): A.1, A.2, B.2, C.2, Part E; PR #82 (DEF-01) awaits approval
+- Next session: #82 merge → RC `v0.3.0-rc1` → fill the D2-RC items
 ### 2026-11-28 — DEF-01 Receive stale balance — Claude + Sxr1n
 - Done: DEF-01 registered (Issue #81, `docs/changes.md`, F-04 v0.4–0.6 AC-F04-08 / TEST-F04-08); `ReceiveMoneyPage` reloads accounts after a successful POST (Pay already did)
 - Evidence: spec `d628f1f`; red `85d87d1` → `evidence/d2/DEF01-red.txt` (option text still `(฿0.00)`); green `5fa7f24` → `evidence/d2/DEF01-green.txt` (server tsc OK, 33 files / 139; client 1 + build OK; E2E 20 passed; 0 failed, 0 skipped)
