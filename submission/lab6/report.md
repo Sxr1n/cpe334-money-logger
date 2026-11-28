@@ -27,7 +27,7 @@
 | Role | Version | Note |
 |---|---|---|
 | Sprint 1 baseline | `v0.1.0-sprint1` / `e1747cb` | Deliverable 1 release |
-| Deployed for UAT | ⟨TODO tag / SHA⟩ | Sprint 1 + approved changes + Sprint 2–3 (out of UAT scope); see UAT cases v0.4 header |
+| Deployed for UAT | `v0.3.0-rc1` / `a56ebe5`, revision `s87ce2df5-00007-lk8` | Sprint 1 + approved changes + Sprint 2–3 (out of UAT scope); see UAT cases v0.4 header |
 | Defective commit(s) | ⟨TODO or none⟩ | |
 | Regression test (red) | ⟨TODO⟩ | |
 | Fix (green), release to main | ⟨TODO⟩ | merge commits explained |
