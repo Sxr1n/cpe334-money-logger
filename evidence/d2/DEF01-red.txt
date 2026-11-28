@@ -1,8 +1,8 @@
-DEF-01 red - run 2026-11-28 18:38 local, commit 1c059f0 (test only, no fix)
+DEF-01 red - run 2026-11-28 18:43 local, commit 85d87d1 (test only, no fix)
 Command: npx playwright test e2e/def01-receive-balance.spec.ts e2e/f04-receive.spec.ts
-The earlier red run on 65d3663 (bob's Bank, same failure) is kept in git history at 1c059f0.
+Earlier red runs of the same assertion (65d3663 bob's Bank; 1c059f0 'Wallet DEF01') are in git history of this file.
 
-node.exe : [WebServer] (node:53920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+node.exe : [WebServer] (node:35144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 At line:1 char:1
 + & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,7 +14,7 @@ At line:1 char:1
 
 Running 2 tests using 1 worker
 
-(node:28828) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:50552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 [1/2] [desktop] › e2e\def01-receive-balance.spec.ts:8:1 › TEST-F04-08 after Save the Receiving account select shows the updated balance without a reload
@@ -22,14 +22,14 @@ Running 2 tests using 1 worker
 
     Error: expect(locator).toHaveCount(expected) failed
 
-    Locator:  locator('#primaryAccountSelect').locator('option').filter({ hasText: 'Wallet DEF01 1795865915509 (฿1.00)' })
+    Locator:  locator('#primaryAccountSelect').locator('option').filter({ hasText: 'DEF01 Purse 1795866172566 (฿1.00)' })
     Expected: 1
     Received: 0
     Timeout:  15000ms
 
     Call log:
-      - Expect "toHaveCount" locator('#primaryAccountSelect').locator('option').filter({ hasText: 'Wallet DEF01 1795865915509 (฿1.00)' }) with timeout 15000ms
-      - waiting for locator('#primaryAccountSelect').locator('option').filter({ hasText: 'Wallet DEF01 1795865915509 (฿1.00)' })
+      - Expect "toHaveCount" locator('#primaryAccountSelect').locator('option').filter({ hasText: 'DEF01 Purse 1795866172566 (฿1.00)' }) with timeout 15000ms
+      - waiting for locator('#primaryAccountSelect').locator('option').filter({ hasText: 'DEF01 Purse 1795866172566 (฿1.00)' })
         33 × locator resolved to 0 elements
            - unexpected value "0"
 
@@ -54,10 +54,10 @@ Running 2 tests using 1 worker
     ────────────────────────────────────────────────────────────────────────────────────────────────
 
 
-(node:31172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:44572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 [2/2] [desktop] › e2e\f04-receive.spec.ts:5:1 › TEST-F04-07 receive money form enforces line sum, handles 422 keeping values, and saves successfully
   1 failed
     [desktop] › e2e\def01-receive-balance.spec.ts:8:1 › TEST-F04-08 after Save the Receiving account select shows the updated balance without a reload 
-  1 passed (26.3s)
+  1 passed (1.1m)
