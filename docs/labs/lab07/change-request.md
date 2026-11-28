@@ -7,7 +7,7 @@
 | Requested by | Team (Sxr1n, Leviathan-c137) |
 | Approval | The instructor's Lab 7 announcement says Sprint 1 change requests need no instructor or TA approval; the team chooses the change. Team approval: Sxr1n (owner) 2026-11-27; Leviathan-c137 approves by reviewing the contract PR (approval date = PR approval date) |
 | Owner / reviewer | Sxr1n / Leviathan-c137 |
-| Status | IMPLEMENTED + TESTED on the feature branch; awaiting code review, CI and deploy |
+| Status | RELEASED in `v0.2.0-sprint2` (`76aaabc`) and DEPLOYED (revision `s87ce2df5-00006-bbr`); post-deploy checks 11/11 PASS |
 
 ## 1 Original Sprint 1 requirement and implemented rule
 - **Requirement:** FR-12 (record a charge from a LOAN_TAKEN account) and decision **D-04**, which says repayments cannot exceed the outstanding amount (BR-08) and that credit cards have **no credit limit** in the baseline.
@@ -106,4 +106,7 @@ The full server, client and E2E suites run on every PR (CI `test-and-docker`).
 | Teammate review of the contract | PR #73 approved by Leviathan-c137, merged `7832344` | 2026-11-27 (18:27 UTC) |
 | Failing tests (`test(CHG-01): red`) | `f8a9b70` → `evidence/lab7/CHG01-red.txt` (unit 3 fail, API 7 fail, E2E 1 fail) | 2026-11-28 |
 | Implementation (`feat(CHG-01)`) | `1660d08` → `evidence/lab7/CHG01-green.txt` (server 31 files / 127 tests, client 1 + build, E2E 18/18, 0 failed, 0 skipped) | 2026-11-28 |
-| Code review, CI, deploy | TO FILL | |
+| Code review + CI | PR #74 approved by Leviathan-c137, CI run 46051342340 (6/6 checks), merged into `staging/sprint-2` as `3f8e176` | 2026-11-27 19:14 UTC |
+| Release to main | PR #77 (approved by Leviathan-c137) → `main` `76aaabc`, tag `v0.2.0-sprint2`; release regression `evidence/d2/release-v0.2.0-sprint2.txt` (139 + 1 + 19 passed, 0 failed, 0 skipped) | 2026-11-27 |
+| Deploy | Deploy demo run 46064946596: CI 6/6, migration job `s87ce2df5-migrate-89jqv` (applied `add_credit_limit`), revision `s87ce2df5-00006-bbr` at 100 % traffic, smoke 4/4; `/api/health` version `76aaabc…` | 2026-11-27 |
+| Post-deploy checks | `evidence/lab7/post-deploy-v0.2.0-sprint2.txt` (`deploy/post_deploy_checks.py`, run by Sxr1n): changed behaviour PD-02..06 (limit set, 1 satang over → 422, exact → 201, persisted); preserved PD-07 (BR-07), PD-08 (401), PD-09/10 (admin 403), PD-11 (bob → alice 404, unchanged): **11/11 PASS** | 2026-11-27 21:19 UTC |
