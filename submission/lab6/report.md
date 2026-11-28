@@ -9,7 +9,7 @@
 | Theme | 7 — Personal Money and Expense Logging System (Money Logger) |
 | Sprint 1 scope | F-01 Authentication and session, F-02 Administrator user access, F-03 Opening balance, F-04 Receive money, F-05 Make a payment or record a charge, F-06 Overview, summary and history |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Tested release | baseline `v0.1.0-sprint1` (`e1747cb`); deployed ⟨TODO: main SHA⟩ (same application code) |
+| Tested release | baseline `v0.1.0-sprint1` (`e1747cb`); deployed ⟨TODO: main tag / SHA⟩ — a later main release with the approved changes D-10, CHG-01, DEF-01 (UAT cases v0.4) |
 | Deployed URL / version | ⟨TODO⟩ |
 | Partner team (both roles) | ⟨TODO: team, students⟩ |
 | Independent UAT testers of our product | ⟨TODO: names⟩ |
@@ -27,7 +27,7 @@
 | Role | Version | Note |
 |---|---|---|
 | Sprint 1 baseline | `v0.1.0-sprint1` / `e1747cb` | Deliverable 1 release |
-| Deployed for UAT | ⟨TODO SHA⟩ | Lab 5 deployment files only; `git diff v0.1.0-sprint1 <SHA> -- server client Dockerfile` is empty |
+| Deployed for UAT | ⟨TODO tag / SHA⟩ | Sprint 1 + approved changes + Sprint 2–3 (out of UAT scope); see UAT cases v0.4 header |
 | Defective commit(s) | ⟨TODO or none⟩ | |
 | Regression test (red) | ⟨TODO⟩ | |
 | Fix (green), release to main | ⟨TODO⟩ | merge commits explained |
