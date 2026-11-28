@@ -2,6 +2,7 @@
 
 Usage (repo root):  STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab5/report.md <output.pdf>
 Student IDs are not committed (public repository): `{{ID_A}}` / `{{ID_B}}` in the Markdown are filled at build time.
+The partner team's student names and IDs are not committed either: PARTNER_STUDENTS="<name A> <id A>;<name B> <id B>" fills `{{PARTNER_A}}` / `{{PARTNER_B}}`.
 Relative `img/...` PNG links resolve against the Markdown file's folder and are embedded.
 """
 import base64
@@ -24,6 +25,8 @@ def main():
     # `<!-- include: docs/x.md -->` embeds a repo document, so the PDF shows the committed version.
     text = re.sub(r'<!-- include: (\S+) -->', lambda m: (ROOT / m.group(1)).read_text(encoding='utf-8'), text)
     text = text.replace('{{ID_A}}', ids[0].strip() or '(set STUDENT_IDS)').replace('{{ID_B}}', ids[1].strip() or '(set STUDENT_IDS)')
+    partners = (os.environ.get('PARTNER_STUDENTS', '').split(';') + ['', ''])[:2]
+    text = text.replace('{{PARTNER_A}}', partners[0].strip() or '(set PARTNER_STUDENTS)').replace('{{PARTNER_B}}', partners[1].strip() or '(set PARTNER_STUDENTS)')
     # Embed img/ files as data URIs: headless Chrome printed only the first few file:// images.
     text = re.sub(r'\]\(img/([^)]+)\)', lambda m: '](data:image/png;base64,' + base64.b64encode((src.parent / 'img' / m.group(1)).read_bytes()).decode() + ')', text)
     body = '<script type="text/markdown">' + text.replace('</script', '<\\/script') + '</script>'

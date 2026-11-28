@@ -1,6 +1,6 @@
 # CPE334 Lab 6 — Independent user acceptance testing and defect management
 
-<!-- Build: STUDENT_IDS="<id A>,<id B>" python submission/build_report.py submission/lab6/report.md submission/lab6/lab6.pdf
+<!-- Build: STUDENT_IDS="<id A>,<id B>" PARTNER_STUDENTS="<name A> <id A>;<name B> <id B>" python submission/build_report.py submission/lab6/report.md submission/lab6/lab6.pdf
      Replace every ⟨TODO⟩ with real evidence. Fill the page column of the contents table after the first build. -->
 
 | Item | Value |
@@ -9,9 +9,9 @@
 | Theme | 7 — Personal Money and Expense Logging System (Money Logger) |
 | Sprint 1 scope | F-01 Authentication and session, F-02 Administrator user access, F-03 Opening balance, F-04 Receive money, F-05 Make a payment or record a charge, F-06 Overview, summary and history |
 | Repository | https://github.com/Sxr1n/cpe334-money-logger |
-| Tested release | baseline `v0.1.0-sprint1` (`e1747cb`); deployed ⟨TODO: main tag / SHA⟩ — a later main release with the approved changes D-10, CHG-01, DEF-01 (UAT cases v0.4) |
-| Deployed URL / version | ⟨TODO⟩ |
-| Partner team (both roles) | ⟨TODO: team, students⟩ |
+| Tested release | baseline `v0.1.0-sprint1` (`e1747cb`); deployed `v0.3.0-rc1` (`a56ebe5`) — a later main release with the approved changes D-10, CHG-01, DEF-01 (UAT cases v0.6) |
+| Deployed URL / version | https://s87ce2df5-4d7hbszvwq-as.a.run.app — `/api/health` version `a56ebe5…`, Cloud Run revision `s87ce2df5-00007-lk8` |
+| Partner team (both roles) | วอดส์ (TH-018_P9) — {{PARTNER_A}}, {{PARTNER_B}} |
 | Independent UAT testers of our product | ⟨TODO: names⟩ |
 | **Final UAT decision on our Sprint 1** | ⟨TODO: Accepted / Accepted with minor limitations / Not Accepted — by whom, date, version⟩ |
 
